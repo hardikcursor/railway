@@ -1,7 +1,6 @@
 @extends('layouts.backend')
 @section('main')
     <div class="content-wrapper">
-        <!-- START PAGE CONTENT-->
         <div class="page-content fade-in-up">
             <div class="row">
                 <div class="col-lg-3 col-md-6">
@@ -42,7 +41,6 @@
                 </div>
             </div>
             <div class="row">
-                <!-- Bar Chart Section -->
                 <div class="col-lg-8 col-md-12 mb-4">
                     <div class="ibox">
                         <div class="ibox-body">
@@ -51,8 +49,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Pie Chart Section -->
                 <div class="col-lg-4 col-md-12 mb-4">
                     <div class="ibox">
                         <div class="ibox-head">
@@ -74,7 +70,7 @@
                                 <a class="ibox-collapse"><i class="fa fa-minus"></i></a>
                             </div>
                         </div>
-                        <div class="ibox-body ">
+                        <div class="ibox-body">
                             <table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0"
                                 width="100%">
                                 <thead>
@@ -93,7 +89,18 @@
                                 <tbody>
                                     @foreach ($reports as $key => $report)
                                         <tr
-                                            class="{{ $report->status == 'pending' ? 'table-warning' : ($report->status == 'sent' ? 'table-danger' : 'table-success') }}">
+                                            class="
+                                        @if ($report->status == 'approved') table-success
+                                        @elseif ($report->last_clicked_by_role == 'user' || $report->last_clicked_by_role == 'admin')
+                                            table-danger
+                                        @elseif ($report->status == 'pending')
+                                            table-warning
+                                        @elseif ($report->status == 'sent')
+                                            table-danger
+                                        @else
+                                            table-default @endif
+                                    ">
+
                                             <td>{{ ++$key }}</td>
                                             <td>{{ $report->created_at->format('d-m-Y') }}</td>
                                             <td>{{ $report->NameInspection }}</td>
@@ -104,34 +111,63 @@
                                                 <form action="{{ route('posts.sendToAdmin', $report->id) }}"
                                                     method="POST">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-primary">
+                                                    <button type="submit"
+                                                        class="btn {{ $report->last_clicked_by_role == 'admin' || $report->last_clicked_by_role == 'user' ? 'btn-danger' : 'btn-primary' }}">
                                                         <i class="ti-control-forward"></i>
                                                     </button>
                                                 </form>
                                             </td>
+
                                             <td>
                                                 <a class="btn btn-sm btn-primary"
                                                     href="{{ route('reports.download', $report->id) }}">Download</a>
                                             </td>
+
                                             <td>
-                                                <form action="{{ route('admin.approval', $report->id) }}" method="POST">
+                                                <form action="{{ route('admin.approval', $report->id) }}" method="POST"
+                                                    class="d-inline">
                                                     @csrf
                                                     <button type="submit" class="btn btn-success">ok</button>
                                                 </form>
+
+                                                <button type="button" class="btn btn-primary open-chat mt-1"
+                                                    data-report-id="{{ $report->id }}">
+                                                    <i class="fa fa-comments"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
+
 
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Chatbox -->
+            <div class="chatbox-container" id="chatbox">
+                <div class="chatbox-header bg-primary text-white text-center p-2 d-flex justify-content-between">
+                    <h5 class="mb-0">Chat Box</h5>
+                    <button id="close-chat" class="btn btn-danger btn-sm">X</button>
+                </div>
+                <div class="chatbox-body" id="chat-messages"
+                    style="height: 300px; overflow-y: auto; background: #f1f1f1; padding: 10px;">
+
+                </div>
+                <div class="chatbox-footer d-flex p-2 border-top">
+                    <input type="text" id="chat-input" class="form-control" placeholder="Type your message..." />
+                    <button id="send-button" class="btn btn-success ms-2">Send</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
+    <!-- Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
     <script>
         // Bar Chart
         new Chart("barChart", {
@@ -158,18 +194,9 @@
         });
 
         // Pie Chart
-        const pieLabels = [ "Pending", "Approved","Sent"];
-        const pieData = [
-            {{ $pendingCount }},
-            {{ $approvedReports }},
-            {{ $forwardCount }}
-        ];
-
-        const pieColors = [
-            "#ffc107", // Yellow for Pending (Bootstrap warning)
-            "#28a745", // Green for Approved (Bootstrap success)
-            "#dc3545" // Red for Sent (Bootstrap danger)
-        ];
+        const pieLabels = ["Pending", "Approved", "Sent"];
+        const pieData = [{{ $pendingCount }}, {{ $approvedReports }}, {{ $forwardCount }}];
+        const pieColors = ["#ffc107", "#28a745", "#dc3545"];
 
         new Chart("pieChart", {
             type: "pie",
@@ -187,5 +214,60 @@
                 }
             }
         });
+
+        // Chatbox Show/Hide (Updated for multiple buttons)
+        const chatbox = document.getElementById('chatbox');
+        const closeChat = document.getElementById('close-chat');
+
+        chatbox.style.display = 'none';
+
+        document.querySelectorAll('.open-chat').forEach(button => {
+            button.addEventListener('click', () => {
+                let reportId = button.getAttribute('data-report-id');
+
+                // Optional: You can store the reportId to load previous messages or send it to backend
+                chatbox.setAttribute('data-report-id', reportId);
+
+                chatbox.style.display = 'block';
+                chatbox.style.position = 'fixed';
+                chatbox.style.bottom = '80px';
+                chatbox.style.right = '20px';
+                chatbox.style.width = '300px';
+                chatbox.style.border = '1px solid #ccc';
+                chatbox.style.borderRadius = '10px';
+                chatbox.style.boxShadow = '0 0 10px rgba(0,0,0,0.3)';
+                chatbox.style.background = '#fff';
+                chatbox.style.zIndex = '9999';
+            });
+        });
+
+        closeChat.addEventListener('click', () => {
+            chatbox.style.display = 'none';
+        });
+
+        // Chat Send Button
+        document.getElementById('send-button').addEventListener('click', function() {
+            let input = document.getElementById('chat-input');
+            let message = input.value.trim();
+            if (message !== '') {
+                let chatBody = document.getElementById('chat-messages');
+
+                // User Message
+                let newMessage = document.createElement('div');
+                newMessage.classList.add('message', 'right', 'p-2', 'mb-2', 'text-white', 'bg-primary', 'rounded');
+                newMessage.style.maxWidth = '75%';
+                newMessage.style.alignSelf = 'flex-end';
+                newMessage.textContent = message;
+                chatBody.appendChild(newMessage);
+
+                input.value = '';
+                chatBody.scrollTop = chatBody.scrollHeight;
+
+                // Optional: Send message to backend using AJAX with reportId
+                // let reportId = chatbox.getAttribute('data-report-id');
+            }
+        });
     </script>
 @endsection
+
+

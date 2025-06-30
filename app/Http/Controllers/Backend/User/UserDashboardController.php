@@ -74,15 +74,14 @@ class UserDashboardController extends Controller
     public function sendToAdmin($id)
     {
         $report = Report::findOrFail($id);
-        if ($report->status === 'pending') {
-            $report->status = 'sent';
+        if (empty($report->last_clicked_by_role)) {
+            $report->last_clicked_by_role = 'user';
+            $report->save();
+
+            return redirect()->back()->with('success', 'Report status updated successfully!');
         } else {
             return redirect()->back()->with('info', 'Report is already approved.');
         }
-
-        $report->save();
-
-        return redirect()->back()->with('success', 'Report status updated successfully!');
     }
 
     public function sendtoapproved($id)
@@ -90,13 +89,19 @@ class UserDashboardController extends Controller
         $post = Report::findOrFail($id);
 
         if ($post->status === 'pending') {
+
+            if (in_array($post->last_clicked_by_role, ['user', 'admin'])) {
+                return redirect()->back()->with('error', 'Approval not allowed when last clicked by User or Admin.');
+            }
+
             $post->status = 'approved';
+            $post->last_clicked_by_role = null;
             $post->save();
 
             return redirect()->back()->with('success', 'Report approved successfully!');
         }
 
-        return redirect()->back()->with('info', 'Report must be in sent status to approve.');
+        return redirect()->back()->with('info', 'Report must be in pending status to approve.');
     }
 
     public function downloadReport($id)
@@ -116,7 +121,7 @@ class UserDashboardController extends Controller
     public function isearch(Request $request)
     {
         $search = $request->input('search');
-        $date   = $request->input('date'); // assuming format is Y-m-d
+        $date   = $request->input('date');
 
         $reports = Report::when($search, function ($query, $search) {
             return $query->where('NameInspector', 'like', '%' . $search . '%');

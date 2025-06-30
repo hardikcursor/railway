@@ -1,15 +1,27 @@
 <?php
-
 namespace App\Http\Controllers\Backend\Superadmin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Report;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SuperadminDashboardController extends Controller
 {
     public function index()
     {
-        return view('superadmin.dashboard');
+        $reports           = Report::paginate(10);
+        $totalInspections  = Report::count();
+        $approvedReports   = Report::where('status', 'approved')->count();
+        $pendingCount      = Report::where('status', 'pending')->count();
+        $forwardCount      = Report::where('status', 'sent')->count();
+        $replyPendingCount = Report::whereIn('status', ['pending', 'sent'])->count();
+
+        $monthlyReports = $reports->groupBy(function ($item) {
+            return \Carbon\Carbon::parse($item->created_at)->format('F');
+        })->map(function ($group) {
+            return $group->count();
+        });
+        return view('superadmin.dashboard', compact('reports', 'totalInspections', 'approvedReports', 'pendingCount', 'forwardCount', 'replyPendingCount', 'monthlyReports'));
     }
 
     public function onemonth()
@@ -26,4 +38,30 @@ class SuperadminDashboardController extends Controller
     {
         return view('superadmin.report.6month');
     }
+
+    public function sendtoapproved($id)
+    {
+        $post = Report::findOrFail($id);
+
+        if ($post->status === 'pending') {
+            $post->status = 'approved';
+            $post->last_clicked_by_role = null;
+
+            $post->save();
+
+            return redirect()->back()->with('success', 'Report approved successfully!');
+        }
+
+        return redirect()->back()->with('info', 'Report must be in sent status to approve.');
+    }
+
+    public function downloadReport($id)
+    {
+        $report = Report::findOrFail($id);
+
+        $pdf = Pdf::loadView('user.pdf.report', compact('report'));
+
+        return $pdf->download('report_' . $report->id . '.pdf');
+    }
+
 }

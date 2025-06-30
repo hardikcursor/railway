@@ -159,16 +159,22 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <div class="input-group-icon right">
-                    <div class="input-icon"><i class="fa fa-lock font-16"></i></div>
-                    <input class="form-control" type="password" name="password" placeholder="Password">
-                    <span class="text-danger">
-                        @error('password')
-                            {{ $message }}
-                        @enderror
-                    </span>
-                </div>
+            <div class="form-group" style="position: relative;">
+                <!-- Password Input -->
+                <input class="form-control" type="password" name="password" id="password" placeholder="Password">
+
+                <!-- Eye Icon -->
+                <span style="cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);"
+                    onclick="togglePassword()">
+                    <i class="fa fa-eye" id="toggleIcon"></i>
+                </span>
+
+                <!-- Validation Error -->
+                <span class="text-danger">
+                    @error('password')
+                        {{ $message }}
+                    @enderror
+                </span>
             </div>
 
             <div class="form-group d-flex justify-content-between">
@@ -204,27 +210,22 @@
     <script src="{{ asset('assets/vendors/jquery-validation/dist/jquery.validate.min.js') }}"></script>
     <script src="{{ asset('assets/js/app.js') }}"></script>
 
+    <!-- JavaScript to toggle password -->
     <script>
-        $(function() {
-            $('#login-form').validate({
-                errorClass: "help-block",
-                rules: {
-                    email: {
-                        required: true,
-                        email: true
-                    },
-                    password: {
-                        required: true
-                    }
-                },
-                highlight: function(e) {
-                    $(e).closest(".form-group").addClass("has-error")
-                },
-                unhighlight: function(e) {
-                    $(e).closest(".form-group").removeClass("has-error")
-                },
-            });
-        });
+        function togglePassword() {
+            var passwordInput = document.getElementById('password');
+            var toggleIcon = document.getElementById('toggleIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
     </script>
 </body>
 

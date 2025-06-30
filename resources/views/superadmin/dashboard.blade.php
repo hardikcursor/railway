@@ -1,143 +1,264 @@
 @extends('layouts.backend')
 @section('main')
-      <!-- Sale & Revenue Start -->
-      <div class="container-fluid pt-4 px-4">
-        <div class="row g-4">
-            <div class="col-sm-6 col-xl-3">
-                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                    <i class="fa fa-chart-line fa-3x text-primary"></i>
-                    <div class="ms-3">
-                        <p class="mb-2">Today Sale</p>
-                        <h6 class="mb-0">$1234</h6>
+    <div class="content-wrapper">
+        <!-- START PAGE CONTENT-->
+        <div class="page-content fade-in-up">
+           <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="ibox bg-success color-white widget-stat">
+                        <div class="ibox-body">
+                            <h2 class="m-b-5 font-strong">{{ $totalInspections }}</h2>
+                            <div class="m-b-5">TOTAL INSPECTION</div><i class="ti-shopping-cart widget-stat-icon"></i>
+                            <div><i class="fa fa-level-up m-r-5"></i><small>25% higher</small></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="ibox bg-info color-white widget-stat">
+                        <div class="ibox-body">
+                            <h2 class="m-b-5 font-strong">{{ $pendingCount }}</h2>
+                            <div class="m-b-5">PENDING INTRUCTIONS</div><i class="ti-bar-chart widget-stat-icon"></i>
+                            <div><i class="fa fa-level-up m-r-5"></i><small>17% higher</small></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="ibox bg-warning color-white widget-stat">
+                        <div class="ibox-body">
+                            <h2 class="m-b-5 font-strong">{{ $forwardCount }}</h2>
+                            <div class="m-b-5">FORWARD CONCERNED</div><i class="fa fa-money widget-stat-icon"></i>
+                            <div><i class="fa fa-level-up m-r-5"></i><small>22% higher</small></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="ibox bg-danger color-white widget-stat">
+                        <div class="ibox-body">
+                            <h2 class="m-b-5 font-strong">{{ $replyPendingCount }}</h2>
+                            <div class="m-b-5">TOTAL PENDING</div><i class="ti-user widget-stat-icon"></i>
+                            <div><i class="fa fa-level-down m-r-5"></i><small>-12% Lower</small></div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6 col-xl-3">
-                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                    <i class="fa fa-chart-bar fa-3x text-primary"></i>
-                    <div class="ms-3">
-                        <p class="mb-2">Total Sale</p>
-                        <h6 class="mb-0">$1234</h6>
+
+            <!-- Charts -->
+            <div class="row">
+                <!-- Bar Chart -->
+                <div class="col-lg-8 col-md-12 mb-4">
+                    <div class="ibox">
+                        <div class="ibox-body">
+                            <h4 class="mb-3">Weekly Statistics</h4>
+                            <canvas id="barChart" style="width:100%; height:300px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pie Chart -->
+                <div class="col-lg-4 col-md-12 mb-4">
+                    <div class="ibox">
+                        <div class="ibox-head">
+                            <div class="ibox-title"> Data Analysis</div>
+                        </div>
+                        <div class="ibox-body d-flex justify-content-center align-items-center" style="height: 100%;">
+                            <canvas id="pieChart" style="width:100%; height:300px;"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6 col-xl-3">
-                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                    <i class="fa fa-chart-area fa-3x text-primary"></i>
-                    <div class="ms-3">
-                        <p class="mb-2">Today Revenue</p>
-                        <h6 class="mb-0">$1234</h6>
+
+            <!-- Form Link -->
+            <a href="{{ route('user.form') }}">form</a>
+
+            <!-- Latest Records Table -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox">
+                        <div class="ibox-head">
+                            <div class="ibox-title">Latest Record</div>
+                            <div class="ibox-tools">
+                                <a class="ibox-collapse"><i class="fa fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="ibox-body">
+                            <table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0"
+                                width="100%">
+                                <thead>
+                                    <tr class="text-dark">
+                                        <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Name of Inspector</th>
+                                        <th scope="col">Station</th>
+                                        <th scope="col">Type of Inspection</th>
+                                        <th scope="col">Duration</th>
+                                        <th>Download</th>
+                                        <th>Approve</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($reports as $key => $report)
+                                        <tr
+                                            class="
+                                            @if ($report->last_clicked_by_role == 'admin') table-danger
+                                            @elseif ($report->status == 'pending')
+                                                table-warning
+                                            @elseif ($report->status == 'sent')
+                                                table-danger
+                                            @else
+                                                table-success @endif
+                                        ">
+                                            <td>{{ ++$key }}</td>
+                                            <td>{{ $report->created_at->format('d-m-Y') }}</td>
+                                            <td>{{ $report->NameInspection }}</td>
+                                            <td>{{ $report->Station }}</td>
+                                            <td>{{ $report->TypeofInspection }}</td>
+                                            <td>{{ $report->Duration }}</td>
+                                            <td>
+                                           <a class="btn btn-sm btn-primary" href="{{ route('superadmin.reports.download', $report->id) }}">Download</a>
+                                            </td>
+                                            <td>
+                                                <form action="{{ route('superadmin.approval', $report->id) }}" method="POST"
+                                                    class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-success">ok</button>
+                                                </form>
+
+                                                <button type="button" class="btn btn-primary open-chat mt-1"
+                                                    data-report-id="{{ $report->id }}">
+                                                    <i class="fa fa-comments"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+
+
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6 col-xl-3">
-                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                    <i class="fa fa-chart-pie fa-3x text-primary"></i>
-                    <div class="ms-3">
-                        <p class="mb-2">Total Revenue</p>
-                        <h6 class="mb-0">$1234</h6>
-                    </div>
+
+            <!-- Chatbox -->
+            <div class="chatbox-container" id="chatbox">
+                <div class="chatbox-header bg-primary text-white text-center p-2 d-flex justify-content-between">
+                    <h5 class="mb-0">Chat Box</h5>
+                    <button id="close-chat" class="btn btn-danger btn-sm">X</button>
+                </div>
+                <div class="chatbox-body" id="chat-messages"
+                    style="height: 300px; overflow-y: auto; background: #f1f1f1; padding: 10px;">
+
+                </div>
+                <div class="chatbox-footer d-flex p-2 border-top">
+                    <input type="text" id="chat-input" class="form-control" placeholder="Type your message..." />
+                    <button id="send-button" class="btn btn-success ms-2">Send</button>
                 </div>
             </div>
+
         </div>
     </div>
-    <!-- Sale & Revenue End -->
 
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
-    <!-- Sales Chart Start -->
-    <div class="container-fluid pt-4 px-4">
+    <script>
+        // Bar Chart
+        new Chart("barChart", {
+            type: "bar",
+            data: {
+                labels: ["Italy", "France", "Spain", "USA", "Argentina"],
+                datasets: [{
+                    backgroundColor: ["red", "green", "blue", "orange", "brown"],
+                    data: [55, 49, 44, 24, 15]
+                }]
+            },
+            options: {
+                legend: {
+                    display: false
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
 
-    </div>
-    <!-- Sales Chart End -->
+        // Pie Chart
+        const pieLabels = ["Pending", "Approved", "Sent"];
+        const pieData = [{{ $pendingCount }}, {{ $approvedReports }}, {{ $forwardCount }}];
+        const pieColors = ["#ffc107", "#28a745", "#dc3545"];
 
+        new Chart("pieChart", {
+            type: "pie",
+            data: {
+                labels: pieLabels,
+                datasets: [{
+                    backgroundColor: pieColors,
+                    data: pieData
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: "Report Status Breakdown"
+                }
+            }
+        });
 
-    <!-- Recent Sales Start -->
-    <div class="container-fluid pt-4 px-4">
-        <div class="bg-light text-center rounded p-4">
-            <div class="d-flex align-items-center justify-content-between mb-4">
-                <h6 class="mb-0">Recent Salse</h6>
-                <a href="">Show All</a>
-            </div>
-            <div class="table-responsive">
-                <table class="table text-start align-middle table-bordered table-hover mb-0">
-                    <thead>
-                        <tr class="text-dark">
-                            <th scope="col"><input class="form-check-input" type="checkbox"></th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Invoice</th>
-                            <th scope="col">Customer</th>
-                            <th scope="col">Amount</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox"></td>
-                            <td>01 Jan 2045</td>
-                            <td>INV-0123</td>
-                            <td>Jhon Doe</td>
-                            <td>$123</td>
-                            <td>Paid</td>
-                            <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                        </tr>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox"></td>
-                            <td>01 Jan 2045</td>
-                            <td>INV-0123</td>
-                            <td>Jhon Doe</td>
-                            <td>$123</td>
-                            <td>Paid</td>
-                            <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                        </tr>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox"></td>
-                            <td>01 Jan 2045</td>
-                            <td>INV-0123</td>
-                            <td>Jhon Doe</td>
-                            <td>$123</td>
-                            <td>Paid</td>
-                            <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                        </tr>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox"></td>
-                            <td>01 Jan 2045</td>
-                            <td>INV-0123</td>
-                            <td>Jhon Doe</td>
-                            <td>$123</td>
-                            <td>Paid</td>
-                            <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                        </tr>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox"></td>
-                            <td>01 Jan 2045</td>
-                            <td>INV-0123</td>
-                            <td>Jhon Doe</td>
-                            <td>$123</td>
-                            <td>Paid</td>
-                            <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <!-- Recent Sales End -->
+        // Chatbox Show/Hide (Updated for multiple buttons)
+        const chatbox = document.getElementById('chatbox');
+        const closeChat = document.getElementById('close-chat');
 
+        chatbox.style.display = 'none';
 
-    <!-- Widgets Start -->
-    <div class="container-fluid pt-4 px-4">
-        <div class="row g-4">
-            <div class="col-sm-12 col-md-6 col-xl-4">
-                <div class="h-100 bg-light rounded p-4">
-                    <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h6 class="mb-0">Calender</h6>
-                        <a href="">Show All</a>
-                    </div>
-                    <div id="calender"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Widgets End -->
+        document.querySelectorAll('.open-chat').forEach(button => {
+            button.addEventListener('click', () => {
+                let reportId = button.getAttribute('data-report-id');
+
+                // Optional: You can store the reportId to load previous messages or send it to backend
+                chatbox.setAttribute('data-report-id', reportId);
+
+                chatbox.style.display = 'block';
+                chatbox.style.position = 'fixed';
+                chatbox.style.bottom = '80px';
+                chatbox.style.right = '20px';
+                chatbox.style.width = '300px';
+                chatbox.style.border = '1px solid #ccc';
+                chatbox.style.borderRadius = '10px';
+                chatbox.style.boxShadow = '0 0 10px rgba(0,0,0,0.3)';
+                chatbox.style.background = '#fff';
+                chatbox.style.zIndex = '9999';
+            });
+        });
+
+        closeChat.addEventListener('click', () => {
+            chatbox.style.display = 'none';
+        });
+
+        // Chat Send Button
+        document.getElementById('send-button').addEventListener('click', function() {
+            let input = document.getElementById('chat-input');
+            let message = input.value.trim();
+            if (message !== '') {
+                let chatBody = document.getElementById('chat-messages');
+
+                // User Message
+                let newMessage = document.createElement('div');
+                newMessage.classList.add('message', 'right', 'p-2', 'mb-2', 'text-white', 'bg-primary', 'rounded');
+                newMessage.style.maxWidth = '75%';
+                newMessage.style.alignSelf = 'flex-end';
+                newMessage.textContent = message;
+                chatBody.appendChild(newMessage);
+
+                input.value = '';
+                chatBody.scrollTop = chatBody.scrollHeight;
+
+                // Optional: Send message to backend using AJAX with reportId
+                // let reportId = chatbox.getAttribute('data-report-id');
+            }
+        });
+    </script>
 @endsection

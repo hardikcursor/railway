@@ -3,7 +3,7 @@
 use App\Http\Controllers\API\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Api\BookingOfficeAnswerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,10 +21,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::post('/signup',[AuthController::class,'signup']);
-Route::post('/signin',[AuthController::class,'login']);
-Route::post('/logout',[AuthController::class,'logout'])->middleware('auth:sanctum');
+// Auth Routes
+Route::post('/signup', [AuthController::class, 'signup']);
+Route::post('/signin', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::get('/user', [AuthController::class, 'getuser']);
 
+// Booking Office Answer Routes
+Route::prefix('booking-office-answers')->group(function () {
+    Route::post('/bookinganswer', [BookingOfficeAnswerController::class, 'store']);
+    Route::get('/', [BookingOfficeAnswerController::class, 'index']);
+    Route::get('/{id}', [BookingOfficeAnswerController::class, 'show']);
+});
 
-Route::get('/user',[AuthController::class,'getuser']);
 

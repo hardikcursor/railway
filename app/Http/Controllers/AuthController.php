@@ -40,7 +40,7 @@ class AuthController extends Controller
                 return back()->with('error', 'Unauthorized role.');
             }
         } else {
-            return back()->with('error', 'Invalid credentials.');
+            return back()->with('error', 'Incorrect Email or password. Please try again.');
         }
     }
 

@@ -2,20 +2,24 @@
 namespace App\Http\Controllers\Backend\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking_office;
 use App\Models\Report;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\Validator;
 
 class AdminDashboardController extends Controller
 {
 
     public function index()
     {
-        $reports = Report::get();
-        $totalInspections = Report::count();
-        $pendingCount = Report::where('status', 'pending')->count();
-        $forwardCount = Report::where('status', 'sent')->count();
+        $reports           = Report::get();
+        $totalInspections  = Report::count();
+        $pendingCount      = Report::where('status', 'pending')->count();
+        $forwardCount      = Report::where('status', 'sent')->count();
         $replyPendingCount = Report::whereIn('status', ['pending', 'sent'])->count();
-        return view('admin.dashboard', compact('reports','totalInspections','pendingCount','forwardCount','replyPendingCount'));
+        return view('admin.dashboard', compact('reports', 'totalInspections', 'pendingCount', 'forwardCount', 'replyPendingCount'));
     }
 
     public function onemonth()
@@ -33,31 +37,38 @@ class AdminDashboardController extends Controller
         return view('admin.report.6month');
     }
 
-    // public function send($id)
-    // {
-    //     $post = Report::findOrFail($id);
+   public function sendToApprove($id)
+{
+    $post = Report::findOrFail($id);
 
-    //     // Only update if not already approved
-    //     if ($post->status !== 'approved') {
-    //         $post->status = 'approved';
-    //         $post->save(); // or $post->update();
-    //     }
+    if ($post->status === 'pending') {
+        if ($post->last_clicked_by_role === 'admin') {
+            return redirect()->back()->with('error', 'Approval is not allowed if last clicked by admin.');
+        }
 
-    //     return redirect()->back()->with('success', 'Report marked as approved!');
-    // }
+        $post->status = 'approved';
+        $post->last_clicked_by_role = null;
+
+        $post->save();
+
+        return redirect()->back()->with('success', 'Report approved successfully!');
+    }
+
+    return redirect()->back()->with('info', 'Report must be in pending status to approve.');
+}
+
 
     public function send($id)
     {
-        $post = Report::findOrFail($id);
+        $report = Report::findOrFail($id);
+        if ($report->last_clicked_by_role === 'user') {
+            $report->last_clicked_by_role = 'admin';
+            $report->save();
 
-        if ($post->status === 'sent') {
-            $post->status = 'approved';
-            $post->save();
-
-            return redirect()->back()->with('success', 'Report approved successfully!');
+            return redirect()->back()->with('success', 'Report status updated successfully!');
+        } else {
+            return redirect()->back()->with('info', 'Only reports clicked by user can be approved by admin.');
         }
-
-        return redirect()->back()->with('info', 'Report must be in sent status to approve.');
     }
 
     public function downloadReport($id)
@@ -68,5 +79,26 @@ class AdminDashboardController extends Controller
 
         return $pdf->download('report_' . $report->id . '.pdf');
     }
+
+
+    public function generatereport() {
+        return view('admin.createreport');
+    }
+
+public function savequotationreport(Request $request)
+{
+    $request->validate([
+        'report_type' => 'required',
+        'daily_quotation' => 'required|string',
+    ]);
+
+    $report = new Booking_office();
+    $report->checks = $request->daily_quotation;
+    $report->save();
+
+    return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
+}
+
+
 
 }

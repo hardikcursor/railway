@@ -1,40 +1,5 @@
 @extends('layouts.backend')
 @section('main')
-    <!-- Sale & Revenue Start -->
-    {{-- <div class="container-fluid pt-4 px-4">
-        <form action="{{ route('user.store') }}" method="POST">
-            @csrf
-            @php
-            $fieldValue = old('question', $model->question ?? '');
-        @endphp
-        
-        <label for="question" class="form-label">Question</label>
-        <input 
-            type="text" 
-            name="question" 
-            id="question" 
-            class="form-control" 
-            value="{{ $fieldValue }}" 
-            @if ($fieldValue) readonly @endif
-        >
-        
-            <label>Name of Inspection	:</label>
-            <input type="text" name="title" class="form-control"><br>
-
-            <label>Name of Inspector	:</label>
-            <input type="text" name="Inspector" class="form-control"><br>
-        
-            <label>Station	:</label>
-            <input type="text" name="author" class="form-control"><br>
-        
-            <label>Type of Inspection	:</label>
-            <textarea name="description" class="form-control"></textarea><br>
-        
-            <label>Duration:</label>
-            <input type="text" name="category" class="form-control"><br>   
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    </div> --}}
     <div class="content-wrapper">
 
         <div class="page-content fade-in-up">
@@ -53,13 +18,6 @@
                         @php
                             $fieldValue = old('question', $model->question ?? '');
                         @endphp
-                        <div class="form-group row">
-                            <label for="question" class="col-sm-2 col-form-label">Question</label>
-                            <div class="col-sm-10">
-                                <input type="text" name="question" id="question" class="form-control"
-                                    value="{{ $fieldValue }}" @if ($fieldValue) readonly @endif>
-                            </div>
-                        </div>
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Name of Inspection :</label>
                             <div class="col-sm-10">
