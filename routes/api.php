@@ -31,7 +31,8 @@ Route::get('/user', [AuthController::class, 'getuser']);
 Route::prefix('booking-office-answers')->group(function () {
     Route::post('/bookinganswer', [BookingOfficeAnswerController::class, 'store']);
     Route::get('/', [BookingOfficeAnswerController::class, 'index']);
-    Route::get('/{id}', [BookingOfficeAnswerController::class, 'show']);
+    // Route::get('/{id}', [BookingOfficeAnswerController::class, 'show']);
+    Route::get('/quotations', [BookingOfficeAnswerController::class, 'bookingquotionshow']);
 });
 
 

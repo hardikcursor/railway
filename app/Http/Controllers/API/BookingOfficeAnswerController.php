@@ -40,18 +40,23 @@ class BookingOfficeAnswerController extends Controller
         ]);
     }
 
-    // Get Single Answer
-    public function show($id)
+    public function bookingquotionshow()
     {
-        $answer = Booking_office::with('bookingOffice')->find($id);
-
-        if (!$answer) {
-            return response()->json(['success' => false, 'message' => 'Answer not found'], 404);
-        }
+        $quotations = Booking_office::get();
 
         return response()->json([
             'success' => true,
-            'data' => $answer,
+            'data' => $quotations,
         ]);
     }
+    
+    //  public function show($id)
+    // {
+    //     $answer = Booking_office_answer::with('bookingOffice')->findOrFail($id);
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'data' => $answer,
+    //     ]);
+    // }
 }

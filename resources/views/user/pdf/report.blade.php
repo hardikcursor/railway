@@ -42,6 +42,21 @@
             <td>{{ ucfirst($report->status) }}</td>
         </tr>
     </table>
+    <h3>Booking Office Details</h3>
+    <table>
+        <tr>
+            <th>Sr.No</th>
+            <th>Checks </th>
+            <th>Remarks/Action taken </th>
+        </tr>
+        @foreach($bookingOfficeAnswers as $key => $answer)
+            <tr>
+                <td>{{ $key + 1 }}</td>
+                <td>{{ $answer->bookingOffice->checks ?? 'N/A' }}</td>
+                  <td>{{ $answer->remarks }}</td>
+            </tr>
+        @endforeach
+    </table>
 </body>
 </html>
 

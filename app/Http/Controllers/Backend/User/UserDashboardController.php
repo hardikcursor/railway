@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Imports\NFR_RevenueImport;
 use App\Imports\Outward_Freight_RegisterImport;
 use App\Imports\RecordsImport;
+use App\Models\Booking_office_answer;
 use App\Models\Outward_Freight_Register;
 use App\Models\Report;
 use App\Models\User;
@@ -104,14 +105,20 @@ class UserDashboardController extends Controller
         return redirect()->back()->with('info', 'Report must be in pending status to approve.');
     }
 
-    public function downloadReport($id)
-    {
-        $report = Report::findOrFail($id);
+   public function downloadReport($id)
+{
+    $report = Report::findOrFail($id);
 
-        $pdf = Pdf::loadView('user.pdf.report', compact('report'));
+    // Get all booking office answers related to this report (assuming report ID == booking_office_id)
+    $bookingOfficeAnswers = Booking_office_answer::with('bookingOffice')
+        ->where('booking_office_id', $report->id)
+        ->get();
 
-        return $pdf->download('report_' . $report->id . '.pdf');
-    }
+    $pdf = Pdf::loadView('user.pdf.report', compact('report', 'bookingOfficeAnswers'));
+
+    return $pdf->download('report_' . $report->id . '.pdf');
+}
+
 
     public function dailyReport()
     {

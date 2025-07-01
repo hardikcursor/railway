@@ -3,10 +3,11 @@ namespace App\Http\Controllers\Backend\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking_office;
+use App\Models\Booking_office_answer;
 use App\Models\Report;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Http\Request;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class AdminDashboardController extends Controller
@@ -75,10 +76,16 @@ class AdminDashboardController extends Controller
     {
         $report = Report::findOrFail($id);
 
-        $pdf = Pdf::loadView('admin.pdf.report', compact('report'));
+            $bookingOfficeAnswers = Booking_office_answer::with('bookingOffice')
+        ->where('booking_office_id', $report->id)
+        ->get();
+
+        $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingOfficeAnswers'));
 
         return $pdf->download('report_' . $report->id . '.pdf');
     }
+
+
 
 
     public function generatereport() {
