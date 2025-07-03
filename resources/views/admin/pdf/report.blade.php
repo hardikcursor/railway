@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Report PDF</title>
     <style>
@@ -9,81 +10,102 @@
             margin: 0;
             padding: 0;
         }
+
         .cover-page {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding-top: 120px; /* Adjust top padding */
-            padding-bottom: 100px; /* Optional bottom spacing */
+            padding-top: 120px;
+            /* Adjust top padding */
+            padding-bottom: 100px;
+            /* Optional bottom spacing */
             box-sizing: border-box;
         }
+
         .cover-page h1 {
             font-size: 32px;
             font-weight: bold;
             margin-bottom: 30px;
         }
+
         .cover-page img {
             width: 200px;
             margin-bottom: 30px;
         }
+
         .cover-page h3 {
             font-size: 24px;
             margin-bottom: 10px;
             text-transform: uppercase;
         }
+
         .cover-page h4 {
             font-size: 20px;
             margin-bottom: 5px;
             font-weight: normal;
         }
+
         .cover-page .month {
             margin-top: 30px;
             font-size: 18px;
             font-style: italic;
         }
+
         table {
             width: 80%;
             margin: 40px auto;
             border-collapse: collapse;
             font-family: Arial, sans-serif;
         }
-        td, th {
+
+        td,
+        th {
             border: 1px solid #999;
             padding: 8px;
             text-align: left;
         }
+
         th {
             background-color: #f2f2f2;
         }
+
         .page-break {
             page-break-after: always;
         }
-          h2, h3 {
+
+        h2,
+        h3 {
             text-align: center;
             margin-bottom: 20px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
             font-size: 14px;
         }
-        th, td {
+
+        th,
+        td {
             border: 1px solid #000;
             padding: 8px;
             text-align: left;
             vertical-align: top;
         }
+
         th {
             background-color: #f2f2f2;
         }
+
         .no-border {
             border: none !important;
         }
     </style>
 </head>
+
 <body>
 
     <!-- Cover Page -->
@@ -123,43 +145,61 @@
         </tr>
     </table>
 
-       <h2>Monthly Inspection Report</h2>
+    <h2>Monthly Inspection Report</h2>
 
     <p><strong>Name of Station:</strong> __________________ <strong>Date of Inspection:</strong> __________________</p>
 
     <h3>1. <u>Booking Office</u> :</h3>
 
-    <table class="no-border">
-        <tr>
-            <td class="no-border" style="width: 3%;">I.</td>
-            <td class="no-border" style="width: 40%;">Name of CBS:</td>
-            <td class="no-border" style="border-bottom: 1px solid #000;">{{ $bookingOffice->name_of_cbs ?? '' }}</td>
-        </tr>
-        <tr>
-            <td class="no-border">II.</td>
-            <td class="no-border">No. of on duty staff:</td>
-            <td class="no-border" style="border-bottom: 1px solid #000;">{{ $bookingOffice->duty_staff_no ?? '' }}</td>
-        </tr>
-        <tr>
-            <td class="no-border">III.</td>
-            <td class="no-border">Sanctioned Cadre:</td>
-            <td class="no-border" style="border-bottom: 1px solid #000;">{{ $bookingOffice->sanctioned_cadre ?? '' }}</td>
-            <td class="no-border">Available:</td>
-            <td class="no-border" style="border-bottom: 1px solid #000;">{{ $bookingOffice->available ?? '' }}</td>
-            <td class="no-border">Vacancy/Excess:</td>
-            <td class="no-border" style="border-bottom: 1px solid #000;">{{ $bookingOffice->vacancy_excess ?? '' }}</td>
-        </tr>
-        <tr>
-            <td class="no-border">IV.</td>
-            <td class="no-border">No. of Counters:</td>
-            <td class="no-border">(1) UTS:</td>
-            <td class="no-border" style="border-bottom: 1px solid #000;">{{ $bookingOffice->uts_counter ?? '' }}</td>
-            <td class="no-border">(2) PRS:</td>
-            <td class="no-border" style="border-bottom: 1px solid #000;">{{ $bookingOffice->prs_counter ?? '' }}</td>
-            <td class="no-border">(3) UTS-cum-PRS:</td>
-            <td class="no-border" style="border-bottom: 1px solid #000;">{{ $bookingOffice->uts_prs_counter ?? '' }}</td>
-        </tr>
-    </table>
+    <div style="font-size: 14px; line-height: 1.8;">
+
+        <div style="margin-bottom: 10px;">
+            <span style="display: inline-block; width: 30px;">I.</span>
+            <span style="display: inline-block; width: 180px;">Name of CBS:</span>
+            <span
+                style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $bookingOffice->name_of_cbs ?? '' }}</span>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <span style="display: inline-block; width: 30px;">II.</span>
+            <span style="display: inline-block; width: 180px;">No. of on duty staff:</span>
+            <span
+                style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $bookingOffice->duty_staff_no ?? '' }}</span>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; margin-bottom: 10px;">
+            <span style="display: inline-block; width: 30px;">III.</span>
+            <span style="display: inline-block; width: 180px;">Sanctioned Cadre:</span>
+            <span
+                style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $bookingOffice->sanctioned_cadre ?? '' }}</span>
+
+            <span style="display: inline-block; width: 100px;">Available:</span>
+            <span
+                style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $bookingOffice->available ?? '' }}</span>
+
+            <span style="display: inline-block; width: 130px;">Vacancy/Excess:</span>
+            <span
+                style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px;">{{ $bookingOffice->vacancy_excess ?? '' }}</span>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap;">
+            <span style="display: inline-block; width: 30px;">IV.</span>
+            <span style="display: inline-block; width: 180px;">No. of Counters:</span>
+
+            <span>(1) UTS:</span>
+            <span
+                style="display: inline-block; border-bottom: 1px solid #000; min-width: 60px; margin-right: 15px;">{{ $bookingOffice->uts_counter ?? '' }}</span>
+
+            <span>(2) PRS:</span>
+            <span
+                style="display: inline-block; border-bottom: 1px solid #000; min-width: 60px; margin-right: 15px;">{{ $bookingOffice->prs_counter ?? '' }}</span>
+
+            <span>(3) UTS-cum-PRS:</span>
+            <span
+                style="display: inline-block; border-bottom: 1px solid #000; min-width: 80px;">{{ $bookingOffice->uts_prs_counter ?? '' }}</span>
+        </div>
+
+    </div>
 
     <table>
         <tr>
@@ -167,14 +207,15 @@
             <th style="width: 60%;">Checks</th>
             <th style="width: 35%;">Remarks/Action taken</th>
         </tr>
-        @foreach($bookingOfficeAnswers as $key => $answer)
+        @foreach ($bookingOfficeAnswers as $key => $answer)
             <tr>
                 <td>{{ $key + 1 }}</td>
                 <td>{{ $answer->bookingOffice->checks ?? 'N/A' }}</td>
-                  <td>{{ $answer->remarks }}</td>
+                <td>{{ $answer->remarks }}</td>
             </tr>
         @endforeach
     </table>
 
 </body>
+
 </html>

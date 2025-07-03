@@ -29,10 +29,21 @@ Route::get('/user', [AuthController::class, 'getuser']);
 
 // Booking Office Answer Routes
 Route::prefix('booking-office-answers')->group(function () {
-    Route::post('/bookinganswer', [BookingOfficeAnswerController::class, 'store']);
+    Route::post('/bookinganswer', [BookingOfficeAnswerController::class, 'store'])->middleware('auth:sanctum');
     Route::get('/', [BookingOfficeAnswerController::class, 'index']);
-    // Route::get('/{id}', [BookingOfficeAnswerController::class, 'show']);
+    // Route::get('/{id}', [BookingOfficeAnswerController::class, 'show']); 
     Route::get('/quotations', [BookingOfficeAnswerController::class, 'bookingquotionshow']);
+    Route::get('/prs-quotations', [BookingOfficeAnswerController::class, 'prsgquotionshow']);
+    Route::get('/parcel-quotations', [BookingOfficeAnswerController::class, 'parcelgquotionshow']);
+    Route::get('/goodshed-quotations', [BookingOfficeAnswerController::class, 'goodshedoffice']);
+    Route::get('/ticketexaminer-quotations', [BookingOfficeAnswerController::class, 'ticketexaminerquotionshow']);
+    Route::get('/nonfare-quotations', [BookingOfficeAnswerController::class, 'nonfarequotionshow']);
+    Route::get('/inspection-quotations', [BookingOfficeAnswerController::class, 'inspectionOfPassengerAmenitiesItems']);
+    Route::get('/station-cleanliness', [BookingOfficeAnswerController::class, 'stationCleanlinessProforma']);
+    Route::get('/inspection-pay-use-toilets', [BookingOfficeAnswerController::class, 'inspectionOfPayAndUseToilets']);
+    Route::get('/inspection-tea-and-light-refreshment-stall', [BookingOfficeAnswerController::class, 'inspectionOfTeaAndLightRefreshmentStall']);
+    Route::get('/inspection-pantry-car', [BookingOfficeAnswerController::class, 'inspectionOfPantryCar']);
+    Route::get('/inspection-base-kitchen', [BookingOfficeAnswerController::class, 'inspectionOfBaseKitchen']);
 });
 
 

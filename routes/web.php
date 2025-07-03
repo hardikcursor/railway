@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Backend\Admin\AdminDashboardController;
+use App\Http\Controllers\Backend\Admin\PRSOfficeAnswerController;
 use App\Http\Controllers\Backend\Superadmin\SuperadminDashboardController;
 use App\Http\Controllers\Backend\User\UserDashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -38,6 +40,17 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/record/{id}/approve', [AdminDashboardController::class, 'sendToApprove'])->name('admin.sendToApprove');
     Route::get('/admin/generate-report', [AdminDashboardController::class, 'generatereport'])->name('admin.generateReport');
     Route::post('/admin/savequotationreport', [AdminDashboardController::class, 'savequotationreport'])->name('admin.savequotationreport');
+    Route::post('/PRSanswer', [AdminDashboardController::class, 'prsSaveQuotationReport'])->name('admin.PRSanswer.store');
+    Route::post('/Parcelanswer', [AdminDashboardController::class, 'parcelSaveQuotationReport'])->name('admin.Parcelanswer.store');
+    Route::post('/GoodsShedanswer', [AdminDashboardController::class, 'goodsSaveQuotationReport'])->name('admin.GoodsShedanswer.store');
+    Route::post('/TicketExamineranswer', [AdminDashboardController::class, 'ticketSaveQuotationReport'])->name('admin.TicketExamineranswer.store');
+    Route::post('/nonfareanswer', [AdminDashboardController::class, 'nonfareSaveQuotationReport'])->name('admin.nonfareanswer.store');
+    Route::post('/inspectionpassengeranswer', [AdminDashboardController::class, 'inspectionPassengerSaveQuotationReport'])->name('admin.inspectionpassengeranswer.store');
+    Route::post('/stationcleanlinessanswer', [AdminDashboardController::class, 'stationCleanlinessSaveQuotationReport'])->name('admin.stationcleanlinessanswer.store');  
+    Route::post('/inspectionpayuseanswer', [AdminDashboardController::class, 'inspectionPayUseSaveQuotationReport'])->name('admin.inspectionpayuseanswer.store');
+    Route::post('/inspectionteaanswer', [AdminDashboardController::class, 'inspectionTeaRefreshmentSaveQuotationReport'])->name('admin.inspectionteaanswer.store');
+    Route::post('/inspectionpantrycaranswer', [AdminDashboardController::class, 'inspectionPantryCarSaveQuotationReport'])->name('admin.inspectionpantrycaranswer.store');
+    Route::post('/inspectionkitchenanswer', [AdminDashboardController::class, 'inspectionKitchenSaveQuotationReport'])->name('admin.inspectionkitchenanswer.store');
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {

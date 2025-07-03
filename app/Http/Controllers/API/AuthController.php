@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
+use function Laravel\Prompts\alert;
+
 class AuthController extends Controller
 {
     public function signup(Request $request)
