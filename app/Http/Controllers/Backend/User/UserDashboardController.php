@@ -33,7 +33,7 @@ class UserDashboardController extends Controller
     $reports           = Report::get();
     $totalInspections  = Report::count();
     $approvedReports   = Report::where('status', 'approved')->count();
-    $pendingCount      = Report::where('status', 'pending')->count();
+    $pendingCount      = Report::where('status', ['pending'])->count();
     $forwardCount      = Report::whereIn('last_clicked_by_role',['user','admin'])->count();
     $replyPendingCount = $pendingCount + $forwardCount;
 
@@ -49,20 +49,20 @@ class UserDashboardController extends Controller
 
     public function onemonth()
     {
-        $reports = Report::where('duration', '1 month')->get();
+        $reports = Report::where('duration', '1 months')->get();
 
         return view('user.report.1month', compact('reports'));
     }
 
     public function secondmonth()
     {
-        $reports = Report::where('duration', '3 month')->get();
+        $reports = Report::where('duration', '3 months')->get();
         return view('user.report.3month', compact('reports'));
     }
 
     public function thirdmonth()
     {
-        $reports = Report::where('duration', '6 month')->get();
+        $reports = Report::where('duration', '6 months')->get();
 
         return view('user.report.6month', compact('reports'));
     }

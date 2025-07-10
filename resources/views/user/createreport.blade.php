@@ -53,6 +53,7 @@
                             </div>
                         </div>
                     </form>
+
                     <!-- Select Box -->
                     <div class="form-group">
                         <label for="report_type">Select Report Type</label>
@@ -77,14 +78,15 @@
                     <form id="daily_form" class="report-form" style="display: none;"> @csrf
                         <input type="hidden" name="report_type" value="BookingOffice">
                         <div class="form-group">
-                            <label>Enter Booking Office Quotion</label>
+                            <label>Enter Booking Office Report Details</label>
                             <input type="text" name="daily_quotation" class="form-control">
                             <span>
                                 @error('daily_quotation')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </span>
-                            <button type="submit" class="btn btn-success mt-2">Generate Booking Office Report</button>
+                        </div>
+                        <button type="submit" class="btn btn-success mt-2">Generate Booking Office Report</button>
                     </form>
 
                     <!-- PRS Office Form -->

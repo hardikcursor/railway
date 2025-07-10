@@ -9,7 +9,7 @@
                         <div class="ibox-body">
                             <h2 class="m-b-5 font-strong">{{ $totalInspections }}</h2>
                             <div class="m-b-5">TOTAL INSPECTION</div><i class="ti-shopping-cart widget-stat-icon"></i>
-                            <div><i class="fa fa-level-up m-r-5"></i><small>25% higher</small></div>
+                            <div></div>
                         </div>
                     </div>
                 </div>
@@ -18,7 +18,7 @@
                         <div class="ibox-body">
                             <h2 class="m-b-5 font-strong">{{ $pendingCount }}</h2>
                             <div class="m-b-5">PENDING INTRUCTIONS</div><i class="ti-bar-chart widget-stat-icon"></i>
-                            <div><i class="fa fa-level-up m-r-5"></i><small>17% higher</small></div>
+                            <div></div>
                         </div>
                     </div>
                 </div>
@@ -27,7 +27,7 @@
                         <div class="ibox-body">
                             <h2 class="m-b-5 font-strong">{{ $forwardCount }}</h2>
                             <div class="m-b-5">FORWARD CONCERNED</div><i class="fa fa-money widget-stat-icon"></i>
-                            <div><i class="fa fa-level-up m-r-5"></i><small>22% higher</small></div>
+                            <div></div>
                         </div>
                     </div>
                 </div>
@@ -36,7 +36,7 @@
                         <div class="ibox-body">
                             <h2 class="m-b-5 font-strong">{{ $replyPendingCount }}</h2>
                             <div class="m-b-5">TOTAL PENDING</div><i class="ti-user widget-stat-icon"></i>
-                            <div><i class="fa fa-level-down m-r-5"></i><small>-12% Lower</small></div>
+                            <div></div>
                         </div>
                     </div>
                 </div>
@@ -68,14 +68,9 @@
                 <div class="col-lg-12">
                     <div class="ibox">
                         <div class="ibox-head">
-                            <div class="ibox-title">Latest Orders</div>
+                            <div class="ibox-title">All Record</div>
                             <div class="ibox-tools">
                                 <a class="ibox-collapse"><i class="fa fa-minus"></i></a>
-                                <a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item">option 1</a>
-                                    <a class="dropdown-item">option 2</a>
-                                </div>
                             </div>
                         </div>
 

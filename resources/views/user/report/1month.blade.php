@@ -17,9 +17,9 @@
                                 <th>Name of Inspector</th>
                                 <th>Station</th>
                                 <th>Type of Inspection</th>
-                                <th>Duration</th>
+                                {{-- <th>Duration</th>
                                 <th>Send To Admin </th>
-                                <th>Download</th>
+                                <th>Download</th> --}}
                                 <th>Approve</th>
                             </tr>
                         </thead>
@@ -32,7 +32,7 @@
                                     <td>{{ $report->NameInspector }}</td>
                                     <td>{{ $report->Station }}</td>
                                     <td>{{ $report->TypeofInspection }}</td>
-                                    <td>{{ $report->Duration }}</td>
+                                    {{-- <td>{{ $report->Duration }}</td>
                                     <td>
                                         <form action="{{ route('posts.sendToAdmin', $report->id) }}" method="POST">
                                             @csrf
@@ -41,7 +41,7 @@
                                         </form>
                                     </td>
                                     <td><a class="btn btn-sm btn-primary"
-                                            href="{{ route('reports.download', $report->id) }}">Download</a></td>
+                                            href="{{ route('reports.download', $report->id) }}">Download</a></td> --}}
                                     <td>
                                         <form action="{{ route('admin.approval', $report->id) }}" method="POST">
                                             @csrf

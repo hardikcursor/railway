@@ -8,7 +8,7 @@
                         <div class="ibox-body">
                             <h2 class="m-b-5 font-strong">{{ $totalInspections }}</h2>
                             <div class="m-b-5">TOTAL INSPECTION</div><i class="ti-shopping-cart widget-stat-icon"></i>
-                            <div><i class="fa fa-level-up m-r-5"></i><small>25% higher</small></div>
+                            <div></div>
                         </div>
                     </div>
                 </div>
@@ -17,7 +17,7 @@
                         <div class="ibox-body">
                             <h2 class="m-b-5 font-strong">{{ $pendingCount }}</h2>
                             <div class="m-b-5">PENDING INTRUCTIONS</div><i class="ti-bar-chart widget-stat-icon"></i>
-                            <div><i class="fa fa-level-up m-r-5"></i><small>17% higher</small></div>
+                            <div></div>
                         </div>
                     </div>
                 </div>
@@ -26,7 +26,7 @@
                         <div class="ibox-body">
                             <h2 class="m-b-5 font-strong">{{ $forwardCount }}</h2>
                             <div class="m-b-5">FORWARD CONCERNED</div><i class="fa fa-money widget-stat-icon"></i>
-                            <div><i class="fa fa-level-up m-r-5"></i><small>22% higher</small></div>
+                            <div></div>
                         </div>
                     </div>
                 </div>
@@ -35,12 +35,12 @@
                         <div class="ibox-body">
                             <h2 class="m-b-5 font-strong">{{ $replyPendingCount }}</h2>
                             <div class="m-b-5">TOTAL PENDING</div><i class="ti-user widget-stat-icon"></i>
-                            <div><i class="fa fa-level-down m-r-5"></i><small>-12% Lower</small></div>
+                            <div></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row">
+            {{-- <div class="row">
                 <div class="col-lg-8 col-md-12 mb-4">
                     <div class="ibox">
                         <div class="ibox-body">
@@ -59,13 +59,13 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             {{-- <a href="{{ route('user.form') }}">form</a> --}}
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox">
                         <div class="ibox-head">
-                            <div class="ibox-title">Latest Record</div>
+                            <div class="ibox-title">All Record</div>
                             <div class="ibox-tools">
                                 <a class="ibox-collapse"><i class="fa fa-minus"></i></a>
                             </div>

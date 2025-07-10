@@ -137,23 +137,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Chatbox -->
-            <div class="chatbox-container" id="chatbox">
-                <div class="chatbox-header bg-primary text-white text-center p-2 d-flex justify-content-between">
-                    <h5 class="mb-0">Chat Box</h5>
-                    <button id="close-chat" class="btn btn-danger btn-sm">X</button>
-                </div>
-                <div class="chatbox-body" id="chat-messages"
-                    style="height: 300px; overflow-y: auto; background: #f1f1f1; padding: 10px;">
-
-                </div>
-                <div class="chatbox-footer d-flex p-2 border-top">
-                    <input type="text" id="chat-input" class="form-control" placeholder="Type your message..." />
-                    <button id="send-button" class="btn btn-success ms-2">Send</button>
-                </div>
-            </div>
-
         </div>
     </div>
 
