@@ -14,6 +14,45 @@
                         Quotation report created successfully!
                     </div>
 
+                           <form action="{{ route('admin.store') }}" method="POST" class="form-horizontal" id="form-sample-1"
+                        novalidate="novalidate">
+                        @csrf
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Name of Inspection :</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="title" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Name of Inspector</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="Inspector" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Station</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="author" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Type of Inspection</label>
+                            <div class="col-sm-10">
+                                <textarea name="description" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Duration</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="category" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-10 ml-sm-auto">
+                                <button class="btn btn-info" type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </form>
                     <!-- Select Box -->
                     <div class="form-group">
                         <label for="report_type">Select Report Type</label>

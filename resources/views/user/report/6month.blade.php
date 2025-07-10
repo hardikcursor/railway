@@ -28,7 +28,7 @@
                                     class="{{ $report->status == 'pending' ? 'table-warning' : ($report->status == 'sent' ? 'table-danger' : 'table-success') }}">
                                     <td><input class="form-check-input" type="checkbox"></td>
                                     <td>{{ $report->created_at->format('d-m-Y') }}</td>
-                                    <td>{{ $report->NameInspection }}</td>
+                                    <td>{{ $report->NameInspector }}</td>
                                     <td>{{ $report->Station }}</td>
                                     <td>{{ $report->TypeofInspection }}</td>
                                     <td>{{ $report->Duration }}</td>

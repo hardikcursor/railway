@@ -13,9 +13,13 @@ return new class extends Migration
     {
         Schema::create('booking_office_answers', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id')->comment('Foreign key to users table');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('booking_office_id')->comment('Foreign key to booking_offices table');
             $table->foreign('booking_office_id')->references('id')->on('booking_offices')->onDelete('cascade')->onUpdate('cascade');
-            $table->longText('remarks')->comment('Answers provided by the booking office');
+            $table->longText('answer')->comment('Answers provided by the booking office');
+            $table->longText('remark')->nullable()->comment('remark provided by the booking office');
+
             $table->timestamps();
         });
     }

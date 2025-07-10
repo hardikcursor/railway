@@ -67,8 +67,7 @@
                 </div>
             </div>
 
-            <!-- Form Link -->
-            <a href="{{ route('user.form') }}">form</a>
+ 
 
             <!-- Latest Records Table -->
             <div class="row">
@@ -109,7 +108,7 @@
                                         ">
                                             <td>{{ ++$key }}</td>
                                             <td>{{ $report->created_at->format('d-m-Y') }}</td>
-                                            <td>{{ $report->NameInspection }}</td>
+                                            <td>{{ $report->NameInspector }}</td>
                                             <td>{{ $report->Station }}</td>
                                             <td>{{ $report->TypeofInspection }}</td>
                                             <td>{{ $report->Duration }}</td>
@@ -123,10 +122,10 @@
                                                     <button type="submit" class="btn btn-success">ok</button>
                                                 </form>
 
-                                                <button type="button" class="btn btn-primary open-chat mt-1"
+                                                {{-- <button type="button" class="btn btn-primary open-chat mt-1"
                                                     data-report-id="{{ $report->id }}">
                                                     <i class="fa fa-comments"></i>
-                                                </button>
+                                                </button> --}}
                                             </td>
                                         </tr>
                                     @endforeach

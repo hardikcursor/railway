@@ -30,7 +30,7 @@ Route::get('/user', [AuthController::class, 'getuser']);
 // Booking Office Answer Routes
 Route::prefix('booking-office-answers')->group(function () {
     Route::post('/bookinganswer', [BookingOfficeAnswerController::class, 'store'])->middleware('auth:sanctum');
-    Route::get('/', [BookingOfficeAnswerController::class, 'index']);
+    Route::get('/', [BookingOfficeAnswerController::class, 'bookinganswershow']);
     // Route::get('/{id}', [BookingOfficeAnswerController::class, 'show']); 
     Route::get('/quotations', [BookingOfficeAnswerController::class, 'bookingquotionshow']);
     Route::get('/prs-quotations', [BookingOfficeAnswerController::class, 'prsgquotionshow']);

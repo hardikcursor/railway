@@ -15,10 +15,10 @@ class Superadminseeder extends Seeder
     public function run(): void
     {
         $data = [
-            'name' => 'Supervisor',
-            'email' => 'supervisor@gmail.com',
-            'password' =>  Hash::make('supervisor'),
-             'status' => 1,
+           'name'     => 'Officer',
+            'email'    => 'officer@gmail.com',
+            'password' => Hash::make('officer'),
+            'status'   => 1,
             
         ];
 

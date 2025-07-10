@@ -13,8 +13,8 @@ class SuperadminDashboardController extends Controller
         $totalInspections  = Report::count();
         $approvedReports   = Report::where('status', 'approved')->count();
         $pendingCount      = Report::where('status', 'pending')->count();
-        $forwardCount      = Report::where('status', 'sent')->count();
-        $replyPendingCount = Report::whereIn('status', ['pending', 'sent'])->count();
+        $forwardCount      = Report::where('last_clicked_by_role', ['user', 'admin'])->count();
+        $replyPendingCount = $pendingCount + $forwardCount;
 
         $monthlyReports = $reports->groupBy(function ($item) {
             return \Carbon\Carbon::parse($item->created_at)->format('F');
@@ -43,8 +43,8 @@ class SuperadminDashboardController extends Controller
     {
         $post = Report::findOrFail($id);
 
-        if ($post->status === 'pending') {
-            $post->status = 'approved';
+        if ($post->status === 'sent') {
+            $post->status               = 'approved';
             $post->last_clicked_by_role = null;
 
             $post->save();

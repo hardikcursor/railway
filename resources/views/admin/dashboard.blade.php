@@ -78,7 +78,19 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="ibox-body ">
+                            @if (session('success'))
+                                <div class="alert alert-success alert-dismissible fade show" id="flash-message">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
+
+                            @if (session('info'))
+                                <div class="alert alert-info alert-dismissible fade show" id="flash-message">
+                                    {{ session('info') }}
+                                </div>
+                            @endif
                             <table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0"
                                 width="100%">
                                 <thead>
@@ -108,7 +120,7 @@
                                         ">
                                             <td>{{ ++$key }}</td>
                                             <td>{{ $report->created_at->format('d-m-Y') }}</td>
-                                            <td>{{ $report->NameInspection }}</td>
+                                            <td>{{ $report->NameInspector }}</td>
                                             <td>{{ $report->Station }}</td>
                                             <td>{{ $report->TypeofInspection }}</td>
                                             <td>{{ $report->Duration }}</td>
@@ -196,6 +208,16 @@
                     text: "Report Status Breakdown"
                 }
             }
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            setTimeout(function() {
+                $("#flash-message").fadeOut('slow');
+            }, 5000); // 5000ms = 5 seconds
         });
     </script>
 @endsection

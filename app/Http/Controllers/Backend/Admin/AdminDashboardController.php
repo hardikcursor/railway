@@ -5,11 +5,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking_office;
 use App\Models\Booking_office_answer;
 use App\Models\Goods_Shed_office;
-use App\Models\INSPECTION_TEA;
 use App\Models\INSPECTIONKITCHEN;
 use App\Models\InspectionPantryCar;
 use App\Models\InspectionPassenger_items;
 use App\Models\InspectionPayUseToilets;
+use App\Models\INSPECTION_TEA;
 use App\Models\NonFare_Revenue;
 use App\Models\Parcel_Office;
 use App\Models\PRS_office;
@@ -27,8 +27,8 @@ class AdminDashboardController extends Controller
         $reports           = Report::get();
         $totalInspections  = Report::count();
         $pendingCount      = Report::where('status', 'pending')->count();
-        $forwardCount      = Report::where('status', 'sent')->count();
-        $replyPendingCount = Report::whereIn('status', ['pending', 'sent'])->count();
+        $forwardCount      = Report::whereIn('last_clicked_by_role', ['user', 'admin'])->count();
+        $replyPendingCount = $pendingCount + $forwardCount;
         return view('admin.dashboard', compact('reports', 'totalInspections', 'pendingCount', 'forwardCount', 'replyPendingCount'));
     }
 
@@ -70,14 +70,20 @@ class AdminDashboardController extends Controller
     public function send($id)
     {
         $report = Report::findOrFail($id);
-        if ($report->last_clicked_by_role === 'user') {
+
+        if ($report->status === 'approved') {
+            return redirect()->back()->with('info', 'Report is already approved. No changes allowed.');
+        }
+
+        if (empty($report->last_clicked_by_role)) {
             $report->last_clicked_by_role = 'admin';
+            $report->status               = 'sent';
             $report->save();
 
-            return redirect()->back()->with('success', 'Report status updated successfully!');
-        } else {
-            return redirect()->back()->with('info', 'Only reports clicked by user can be approved by admin.');
+            return redirect()->back()->with('success', 'Report sent successfully!');
         }
+
+        return redirect()->back()->with('info', 'Report was already sent/processed.');
     }
 
     public function downloadReport($id)
@@ -119,7 +125,7 @@ class AdminDashboardController extends Controller
     public function prsSaveQuotationReport(Request $request)
     {
         $request->validate([
-            'report_type'     => 'required',
+            'report_type'   => 'required',
             'prs_quotation' => 'required|string',
         ]);
 
@@ -133,7 +139,7 @@ class AdminDashboardController extends Controller
     public function parcelSaveQuotationReport(Request $request)
     {
         $request->validate([
-            'report_type'     => 'required',
+            'report_type'      => 'required',
             'parcel_quotation' => 'required|string',
         ]);
 
@@ -144,7 +150,8 @@ class AdminDashboardController extends Controller
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
     }
 
-    public function goodsSaveQuotationReport(Request $request)  {
+    public function goodsSaveQuotationReport(Request $request)
+    {
 
         $request->validate([
             'report_type'     => 'required',
@@ -158,10 +165,11 @@ class AdminDashboardController extends Controller
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
     }
 
-    public function ticketSaveQuotationReport(Request $request)  {
+    public function ticketSaveQuotationReport(Request $request)
+    {
 
         $request->validate([
-            'report_type'     => 'required',
+            'report_type'      => 'required',
             'ticket_quotation' => 'required|string',
         ]);
 
@@ -172,10 +180,11 @@ class AdminDashboardController extends Controller
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
     }
 
-    public function nonfareSaveQuotationReport(Request $request)  {
+    public function nonfareSaveQuotationReport(Request $request)
+    {
 
         $request->validate([
-            'report_type'     => 'required',
+            'report_type'       => 'required',
             'nonfare_quotation' => 'required|string',
         ]);
 
@@ -186,88 +195,106 @@ class AdminDashboardController extends Controller
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
     }
 
-    public function inspectionPassengerSaveQuotationReport(Request $request)  {
+    public function inspectionPassengerSaveQuotationReport(Request $request)
+    {
 
         $request->validate([
-            'report_type'     => 'required',
+            'report_type'         => 'required',
             'passenger_quotation' => 'required|string',
         ]);
 
-        $report         = new InspectionPassenger_items();
+        $report        = new InspectionPassenger_items();
         $report->items = $request->passenger_quotation;
         $report->save();
 
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
     }
 
-    public function stationCleanlinessSaveQuotationReport(Request $request)  {
+    public function stationCleanlinessSaveQuotationReport(Request $request)
+    {
 
         $request->validate([
-            'report_type'     => 'required',
+            'report_type'                  => 'required',
             'stationcleanliness_quotation' => 'required|string',
         ]);
 
-        $report         = new StationCleanliness();
+        $report        = new StationCleanliness();
         $report->items = $request->stationcleanliness_quotation;
         $report->save();
 
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
     }
 
-    public function inspectionPayUseSaveQuotationReport(Request $request)  {
+    public function inspectionPayUseSaveQuotationReport(Request $request)
+    {
 
         $request->validate([
-            'report_type'     => 'required',
+            'report_type'      => 'required',
             'payuse_quotation' => 'required|string',
         ]);
 
-        $report         = new InspectionPayUseToilets();
+        $report              = new InspectionPayUseToilets();
         $report->Particulars = $request->payuse_quotation;
         $report->save();
 
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
     }
 
-    public function inspectionTeaRefreshmentSaveQuotationReport(Request $request)  {
+    public function inspectionTeaRefreshmentSaveQuotationReport(Request $request)
+    {
 
         $request->validate([
-            'report_type'     => 'required',
+            'report_type'   => 'required',
             'tea_quotation' => 'required|string',
         ]);
 
-        $report         = new INSPECTION_TEA();
+        $report              = new INSPECTION_TEA();
         $report->Particulars = $request->tea_quotation;
         $report->save();
 
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
     }
 
-
-    public function inspectionPantryCarSaveQuotationReport(Request $request)  {
+    public function inspectionPantryCarSaveQuotationReport(Request $request)
+    {
 
         $request->validate([
-            'report_type'     => 'required',
+            'report_type'      => 'required',
             'pantry_quotation' => 'required|string',
         ]);
 
-        $report         = new InspectionPantryCar();
+        $report        = new InspectionPantryCar();
         $report->items = $request->pantry_quotation;
         $report->save();
 
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
     }
 
-    public function inspectionKitchenSaveQuotationReport(Request $request)  {
+    public function inspectionKitchenSaveQuotationReport(Request $request)
+    {
 
         $request->validate([
-            'report_type'     => 'required',
+            'report_type'    => 'required',
             'base_quotation' => 'required|string',
         ]);
 
-        $report         = new INSPECTIONKITCHEN();
+        $report              = new INSPECTIONKITCHEN();
         $report->Particulars = $request->base_quotation;
         $report->save();
 
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
+    }
+
+    public function store(Request $request)
+    {
+        $post                   = new Report;
+        $post->NameInspection   = $request->title;
+        $post->NameInspector    = $request->Inspector;
+        $post->Station          = $request->author;
+        $post->TypeofInspection = $request->description;
+        $post->Duration         = $request->category;
+        $post->save();
+
+        return redirect()->route('admin.dashboard')->with('success', 'Post created successfully!');
     }
 }

@@ -5,11 +5,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking_office;
 use App\Models\Booking_office_answer;
 use App\Models\Goods_Shed_office;
-use App\Models\INSPECTION_TEA;
 use App\Models\INSPECTIONKITCHEN;
 use App\Models\InspectionPantryCar;
 use App\Models\InspectionPassenger_items;
 use App\Models\InspectionPayUseToilets;
+use App\Models\INSPECTION_TEA;
 use App\Models\NonFare_Revenue;
 use App\Models\Parcel_Office;
 use App\Models\PRS_office;
@@ -22,22 +22,17 @@ class BookingOfficeAnswerController extends Controller
 {
     public function store(Request $request)
     {
-        // This is optional now because middleware will already block unauthenticated users.
-        if (! Auth::check()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized: Please login first.',
-            ], 401);
-        }
-
         $request->validate([
             'booking_office_id' => 'required|exists:booking_offices,id',
-            'remarks'           => 'required|string',
+            'answer'            => 'required|string',
+            'remark'            => 'nullable|string',
         ]);
 
         $answer                    = new Booking_office_answer();
+        $answer->user_id           = Auth::id();
         $answer->booking_office_id = $request->booking_office_id;
-        $answer->remarks           = $request->remarks;
+        $answer->answer            = $request->answer;
+        $answer->remark            = $request->remark;
         $answer->save();
 
         return response()->json([
@@ -47,9 +42,18 @@ class BookingOfficeAnswerController extends Controller
         ]);
     }
 
-    public function index()
+    public function bookinganswershow()
     {
-        $answers = Booking_office_answer::with('bookingOffice')->get();
+        $answers = Booking_office_answer::with('bookingOffice')->get()->map(function ($answer) {
+            return [
+                'id'                => $answer->id,
+                'user_id'           => $answer->user_id,
+                'booking_office_id' => $answer->booking_office_id,
+                'answer'            => $answer->answer ?? "",
+                'remark'            => $answer->remark ?? "",
+                'booking_office'    => $answer->bookingOffice,
+            ];
+        });
 
         return response()->json([
             'success' => true,
@@ -89,8 +93,7 @@ class BookingOfficeAnswerController extends Controller
         ]);
     }
 
-
-   public function parcelgquotionshow()
+    public function parcelgquotionshow()
     {
         $quotations = Parcel_Office::get();
 
@@ -100,7 +103,8 @@ class BookingOfficeAnswerController extends Controller
         ]);
     }
 
-    public function goodshedoffice()  {
+    public function goodshedoffice()
+    {
         $quotations = Goods_Shed_office::get();
 
         return response()->json([
@@ -109,7 +113,8 @@ class BookingOfficeAnswerController extends Controller
         ]);
     }
 
-    public function ticketexaminerquotionshow()  {
+    public function ticketexaminerquotionshow()
+    {
         $quotations = Ticket_Examineroffice::get();
 
         return response()->json([
@@ -118,7 +123,8 @@ class BookingOfficeAnswerController extends Controller
         ]);
     }
 
-    public function nonfarequotionshow()  {
+    public function nonfarequotionshow()
+    {
         $quotations = NonFare_Revenue::get();
 
         return response()->json([
@@ -127,7 +133,8 @@ class BookingOfficeAnswerController extends Controller
         ]);
     }
 
-       public function inspectionOfPassengerAmenitiesItems()  {
+    public function inspectionOfPassengerAmenitiesItems()
+    {
         $quotations = InspectionPassenger_items::get();
 
         return response()->json([
@@ -136,7 +143,8 @@ class BookingOfficeAnswerController extends Controller
         ]);
     }
 
-    public function stationCleanlinessProforma() {
+    public function stationCleanlinessProforma()
+    {
         $quotations = StationCleanliness::get();
 
         return response()->json([
@@ -145,7 +153,8 @@ class BookingOfficeAnswerController extends Controller
         ]);
     }
 
-    public function inspectionOfPayAndUseToilets() {
+    public function inspectionOfPayAndUseToilets()
+    {
 
         $quotations = InspectionPayUseToilets::get();
 
@@ -155,7 +164,8 @@ class BookingOfficeAnswerController extends Controller
         ]);
     }
 
-    public function inspectionOfTeaAndLightRefreshmentStall()  {
+    public function inspectionOfTeaAndLightRefreshmentStall()
+    {
 
         $quotations = INSPECTION_TEA::get();
 
@@ -165,7 +175,8 @@ class BookingOfficeAnswerController extends Controller
         ]);
     }
 
-    public function inspectionOfPantryCar()  {
+    public function inspectionOfPantryCar()
+    {
 
         $quotations = InspectionPantryCar::get();
 
@@ -175,7 +186,8 @@ class BookingOfficeAnswerController extends Controller
         ]);
     }
 
-    public function inspectionOfBaseKitchen()  {
+    public function inspectionOfBaseKitchen()
+    {
 
         $quotations = INSPECTIONKITCHEN::get();
 

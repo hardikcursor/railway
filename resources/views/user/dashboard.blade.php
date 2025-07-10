@@ -60,7 +60,7 @@
                     </div>
                 </div>
             </div>
-            <a href="{{ route('user.form') }}">form</a>
+            {{-- <a href="{{ route('user.form') }}">form</a> --}}
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox">
@@ -81,8 +81,8 @@
                                         <th scope="col">Station</th>
                                         <th scope="col">Type of Inspection</th>
                                         <th scope="col">Duration</th>
-                                        <th scope="col">Send To Admin </th>
-                                        <th>Download</th>
+                                        {{-- <th scope="col">Send To Admin </th>
+                                        <th>Download</th> --}}
                                         <th>Approve</th>
                                     </tr>
                                 </thead>
@@ -103,11 +103,11 @@
 
                                             <td>{{ ++$key }}</td>
                                             <td>{{ $report->created_at->format('d-m-Y') }}</td>
-                                            <td>{{ $report->NameInspection }}</td>
+                                            <td>{{ $report->NameInspector }}</td>
                                             <td>{{ $report->Station }}</td>
                                             <td>{{ $report->TypeofInspection }}</td>
                                             <td>{{ $report->Duration }}</td>
-                                            <td>
+                                            {{-- <td>
                                                 <form action="{{ route('posts.sendToAdmin', $report->id) }}"
                                                     method="POST">
                                                     @csrf
@@ -116,12 +116,12 @@
                                                         <i class="ti-control-forward"></i>
                                                     </button>
                                                 </form>
-                                            </td>
-
+                                            </td> --}}
+{{-- 
                                             <td>
                                                 <a class="btn btn-sm btn-primary"
                                                     href="{{ route('reports.download', $report->id) }}">Download</a>
-                                            </td>
+                                            </td> --}}
 
                                             <td>
                                                 <form action="{{ route('admin.approval', $report->id) }}" method="POST"
@@ -129,11 +129,6 @@
                                                     @csrf
                                                     <button type="submit" class="btn btn-success">ok</button>
                                                 </form>
-
-                                                <button type="button" class="btn btn-primary open-chat mt-1"
-                                                    data-report-id="{{ $report->id }}">
-                                                    <i class="fa fa-comments"></i>
-                                                </button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -147,20 +142,7 @@
             </div>
 
             <!-- Chatbox -->
-            <div class="chatbox-container" id="chatbox">
-                <div class="chatbox-header bg-primary text-white text-center p-2 d-flex justify-content-between">
-                    <h5 class="mb-0">Chat Box</h5>
-                    <button id="close-chat" class="btn btn-danger btn-sm">X</button>
-                </div>
-                <div class="chatbox-body" id="chat-messages"
-                    style="height: 300px; overflow-y: auto; background: #f1f1f1; padding: 10px;">
-
-                </div>
-                <div class="chatbox-footer d-flex p-2 border-top">
-                    <input type="text" id="chat-input" class="form-control" placeholder="Type your message..." />
-                    <button id="send-button" class="btn btn-success ms-2">Send</button>
-                </div>
-            </div>
+      
 
         </div>
     </div>
