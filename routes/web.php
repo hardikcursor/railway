@@ -27,6 +27,7 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
     Route::get('/admin/sixmonth', [SuperadminDashboardController::class, 'thirdmonth'])->name('superadmin.report.sixmonth');
     Route::post('/superadmin/record/{id}/approval', [SuperadminDashboardController::class, 'sendtoapproved'])->name('superadmin.approval');
     Route::get('/superadmin/reports/{id}/download', [SuperadminDashboardController::class, 'downloadReport'])->name('superadmin.reports.download');
+    Route::get('/getuser', [SuperadminDashboardController::class, 'userdataget'])->name('superadmin.userdataget');
 
 });
 
@@ -54,7 +55,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/reports/{id}/download', [UserDashboardController::class, 'downloadReport'])->name('reports.download');
     Route::get('/user/search', [UserDashboardController::class, 'isearch'])->name('reports.index');
     Route::post('/import', [UserDashboardController::class, 'import'])->name('user.import');
-    Route::get('/getuser', [UserDashboardController::class, 'userdataget'])->name('user.userdataget');
+    
     Route::post('/chengestatus', [UserDashboardController::class, 'changestatus'])->name('user.chnageStatus');
         Route::get('/admin/generate-report', [UserDashboardController::class, 'generatereport'])->name('user.generateReport');
     Route::post('/user/savequotationreport', [UserDashboardController::class, 'savequotationreport'])->name('user.savequotationreport');

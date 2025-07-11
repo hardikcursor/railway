@@ -81,8 +81,8 @@
                                         <th scope="col">Station</th>
                                         <th scope="col">Type of Inspection</th>
                                         <th scope="col">Duration</th>
-                                        {{-- <th scope="col">Send To Admin </th>
-                                        <th>Download</th> --}}
+                                        <th scope="col">Send To Admin </th>
+                                        <th>Download</th>
                                         <th>Approve</th>
                                     </tr>
                                 </thead>
@@ -107,7 +107,7 @@
                                             <td>{{ $report->Station }}</td>
                                             <td>{{ $report->TypeofInspection }}</td>
                                             <td>{{ $report->Duration }}</td>
-                                            {{-- <td>
+                                            <td>
                                                 <form action="{{ route('posts.sendToAdmin', $report->id) }}"
                                                     method="POST">
                                                     @csrf
@@ -116,12 +116,12 @@
                                                         <i class="ti-control-forward"></i>
                                                     </button>
                                                 </form>
-                                            </td> --}}
-{{-- 
+                                            </td>
+
                                             <td>
                                                 <a class="btn btn-sm btn-primary"
                                                     href="{{ route('reports.download', $report->id) }}">Download</a>
-                                            </td> --}}
+                                            </td>
 
                                             <td>
                                                 <form action="{{ route('admin.approval', $report->id) }}" method="POST"

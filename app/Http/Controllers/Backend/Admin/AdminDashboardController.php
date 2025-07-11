@@ -34,17 +34,20 @@ class AdminDashboardController extends Controller
 
     public function onemonth()
     {
-        return view('admin.report.1month');
+        $reports = Report::where('duration', '1 months')->get();
+        return view('admin.report.1month', compact('reports'));
     }
 
     public function secondmonth()
     {
-        return view('admin.report.3month');
+        $reports = Report::where('duration', '3 months')->get();
+        return view('admin.report.3month', compact('reports'));
     }
 
     public function thirdmonth()
     {
-        return view('admin.report.6month');
+        $reports = Report::where('duration', '6 months')->get();
+        return view('admin.report.6month', compact('reports'));
     }
 
     public function sendToApprove($id)
@@ -89,10 +92,8 @@ class AdminDashboardController extends Controller
     public function downloadReport($id)
     {
         $report = Report::findOrFail($id);
-
-        $bookingOfficeAnswers = Booking_office_answer::with('bookingOffice')
-            ->where('booking_office_id', $report->id)
-            ->get();
+        
+        $bookingOfficeAnswers = Booking_office_answer::with('bookingOffice')->get();
 
         $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingOfficeAnswers'));
 

@@ -63,9 +63,9 @@
                 </ul>
             </li>
 
-            @role('user')
+            @role('super-admin')
                 <li>
-                    <a href="{{ route('user.userdataget') }}">
+                    <a href="{{ route('superadmin.userdataget') }}">
                         <i class="sidebar-item-icon fa fa-user"></i>
                         <span class="nav-label">User</span>
                     </a>

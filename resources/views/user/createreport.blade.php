@@ -264,7 +264,7 @@
         </div> <!-- /.page-content -->
     </div> <!-- /.content-wrapper -->
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
         $(document).ready(function() {

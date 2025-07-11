@@ -2,8 +2,12 @@
 namespace App\Http\Controllers\Backend\Superadmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking_office_answer;
 use App\Models\Report;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class SuperadminDashboardController extends Controller
 {
@@ -13,7 +17,7 @@ class SuperadminDashboardController extends Controller
         $totalInspections  = Report::count();
         $approvedReports   = Report::where('status', 'approved')->count();
         $pendingCount      = Report::where('status', 'pending')->count();
-        $forwardCount      = Report::where('last_clicked_by_role', ['user', 'admin'])->count();
+        $forwardCount      = Report::whereIn('last_clicked_by_role', ['user', 'admin'])->count();
         $replyPendingCount = $pendingCount + $forwardCount;
 
         $monthlyReports = $reports->groupBy(function ($item) {
@@ -58,10 +62,18 @@ class SuperadminDashboardController extends Controller
     public function downloadReport($id)
     {
         $report = Report::findOrFail($id);
+        
+        $bookingOfficeAnswers = Booking_office_answer::with('bookingOffice')->get();
 
-        $pdf = Pdf::loadView('user.pdf.report', compact('report'));
+        $pdf = Pdf::loadView('superadmin.pdf.report', compact('report', 'bookingOfficeAnswers'));
 
         return $pdf->download('report_' . $report->id . '.pdf');
+    }
+
+        public function userdataget()
+    {
+        $users = User::where('id', '!=', Auth::id())->get();
+        return view('user.userdata', compact('users'));
     }
 
 }
