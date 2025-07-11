@@ -6,8 +6,8 @@ use App\Models\Booking_office_answer;
 use App\Models\Report;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class SuperadminDashboardController extends Controller
 {
@@ -62,7 +62,7 @@ class SuperadminDashboardController extends Controller
     public function downloadReport($id)
     {
         $report = Report::findOrFail($id);
-        
+
         $bookingOfficeAnswers = Booking_office_answer::with('bookingOffice')->get();
 
         $pdf = Pdf::loadView('superadmin.pdf.report', compact('report', 'bookingOfficeAnswers'));
@@ -70,10 +70,23 @@ class SuperadminDashboardController extends Controller
         return $pdf->download('report_' . $report->id . '.pdf');
     }
 
-        public function userdataget()
+    public function userdataget()
     {
         $users = User::where('id', '!=', Auth::id())->get();
-        return view('user.userdata', compact('users'));
+        return view('superadmin.userdata', compact('users'));
+    }
+
+    public function changestatus(Request $request)
+    {
+        $user = User::find($request->id);
+        if ($user) {
+            $user->status = $request->val;
+            $user->save();
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'User not found'], 404);
     }
 
 }

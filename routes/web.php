@@ -28,6 +28,8 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
     Route::post('/superadmin/record/{id}/approval', [SuperadminDashboardController::class, 'sendtoapproved'])->name('superadmin.approval');
     Route::get('/superadmin/reports/{id}/download', [SuperadminDashboardController::class, 'downloadReport'])->name('superadmin.reports.download');
     Route::get('/getuser', [SuperadminDashboardController::class, 'userdataget'])->name('superadmin.userdataget');
+    Route::post('/chengestatus', [SuperadminDashboardController::class, 'changestatus'])->name('admin.chnageStatus');
+
 
 });
 
@@ -54,10 +56,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/record/{id}/send-to-admin', [UserDashboardController::class, 'sendToAdmin'])->name('posts.sendToAdmin');
     Route::get('/reports/{id}/download', [UserDashboardController::class, 'downloadReport'])->name('reports.download');
     Route::get('/user/search', [UserDashboardController::class, 'isearch'])->name('reports.index');
-    Route::post('/import', [UserDashboardController::class, 'import'])->name('user.import');
-    
-    Route::post('/chengestatus', [UserDashboardController::class, 'changestatus'])->name('user.chnageStatus');
-        Route::get('/admin/generate-report', [UserDashboardController::class, 'generatereport'])->name('user.generateReport');
+    Route::post('/import', [UserDashboardController::class, 'import'])->name('user.import');        Route::get('/admin/generate-report', [UserDashboardController::class, 'generatereport'])->name('user.generateReport');
     Route::post('/user/savequotationreport', [UserDashboardController::class, 'savequotationreport'])->name('user.savequotationreport');
     Route::post('/PRSanswer', [UserDashboardController::class, 'prsSaveQuotationReport'])->name('user.PRSanswer.store');
     Route::post('/Parcelanswer', [UserDashboardController::class, 'parcelSaveQuotationReport'])->name('user.Parcelanswer.store');

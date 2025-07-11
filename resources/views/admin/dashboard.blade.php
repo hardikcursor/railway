@@ -41,7 +41,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            {{-- <div class="row">
                 <!-- Bar Chart Section -->
                 <div class="col-lg-8 col-md-12 mb-4">
                     <div class="ibox">
@@ -63,7 +63,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox">

@@ -89,7 +89,7 @@
                 event.preventDefault();
                 let id = $(this).data('id');
                 let val = $(this).data('status');
-                let url = "{{ route('user.chnageStatus') }}";
+                let url = "{{ route('admin.chnageStatus') }}";
 
                 $.ajax({
                     type: 'POST',

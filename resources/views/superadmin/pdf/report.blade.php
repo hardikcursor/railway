@@ -146,11 +146,20 @@
     </table>
 
     <h2>
-        @if (Str::contains(strtolower($report->Duration), '3 month'))
+        @php
+            $duration = strtolower($report->Duration);
+        @endphp
+
+        @if (Str::contains($duration, '3 month'))
             Quarterly Inspection Report
-        @else
+        @elseif (Str::contains($duration, '6 month'))
+            Half Yearly Inspection Report
+        @elseif (Str::contains($duration, '1 month'))
             Monthly Inspection Report
+        @else
+            Inspection Report
         @endif
+
     </h2>
 
     <p><strong>Name of Station:</strong> __________________ <strong>Date of Inspection:</strong> __________________</p>

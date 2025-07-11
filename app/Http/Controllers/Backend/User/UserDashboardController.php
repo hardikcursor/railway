@@ -202,18 +202,7 @@ class UserDashboardController extends Controller
         return view('user.userdata', compact('users'));
     }
 
-    public function changestatus(Request $request)
-    {
-        $user = User::find($request->id);
-        if ($user) {
-            $user->status = $request->val;
-            $user->save();
 
-            return response()->json(['success' => true]);
-        }
-
-        return response()->json(['success' => false, 'message' => 'User not found'], 404);
-    }
 
     public function generatereport()
     {

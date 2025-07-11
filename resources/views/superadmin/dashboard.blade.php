@@ -43,7 +43,7 @@
             </div>
 
             <!-- Charts -->
-            <div class="row">
+            {{-- <div class="row">
                 <!-- Bar Chart -->
                 <div class="col-lg-8 col-md-12 mb-4">
                     <div class="ibox">
@@ -65,7 +65,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
  
 
@@ -74,7 +74,7 @@
                 <div class="col-lg-12">
                     <div class="ibox">
                         <div class="ibox-head">
-                            <div class="ibox-title">Latest Record</div>
+                            <div class="ibox-title">All Record</div>
                             <div class="ibox-tools">
                                 <a class="ibox-collapse"><i class="fa fa-minus"></i></a>
                             </div>

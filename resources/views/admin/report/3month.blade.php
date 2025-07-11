@@ -31,16 +31,16 @@
                                     <td>{{ $report->Station }}</td>
                                     <td>{{ $report->TypeofInspection }}</td>
                                     <td>
-                                        <form action="{{ route('posts.sendToAdmin', $report->id) }}" method="POST">
+                                        <form action="{{ route('admin.sendToAdmin', $report->id) }}" method="POST">
                                             @csrf
                                             <button type="submit" class="btn btn-primary"><i
                                                     class="fa-solid fa-share"></i></button>
                                         </form>
                                     </td>
                                     <td><a class="btn btn-sm btn-primary"
-                                            href="{{ route('reports.download', $report->id) }}">Download</a></td>
+                                            href="{{ route('admin.reports.download', $report->id) }}">Download</a></td>
                                     <td>
-                                        <form action="{{ route('admin.approval', $report->id) }}" method="POST">
+                                        <form action="{{ route('admin.sendToApprove', $report->id) }}" method="POST">
                                             @csrf
                                             <button type="submit" class="btn btn-success">ok</button>
                                         </form>

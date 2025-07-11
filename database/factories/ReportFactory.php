@@ -16,11 +16,16 @@ class ReportFactory extends Factory
     public function definition(): array
     {
         return [
-            'NameInspection'              => $this->faker->sentence(3),
-            'NameInspector'          => $this->faker->name(),
-            'Station'            => $this->faker->city(),
-            'TypeofInspection' => $this->faker->text(100),
-            'Duration'           => $this->faker->numberBetween(1, 12) . ' months',
+            'NameInspection'   => $this->faker->sentence(3),
+            'NameInspector'    => $this->faker->name(),
+            'Station'          => $this->faker->randomElement([
+                'Surat', 'Vadodara', 'Ahmedabad', 'Mumbai Central', 'Howrah', 'Chennai Central',
+                'New Delhi', 'Secunderabad', 'Patna', 'Bhopal', 'Nagpur', 'Lucknow',
+                'Kanpur Central', 'Jaipur', 'Ernakulam', 'Kolkata', 'Pune', 'Bangalore City', 'Ranchi',
+            ]),
+            'TypeofInspection' => 'Causal',
+            'Duration'         => $this->faker->randomElement(['1 months', '3 months', '6 months']),
         ];
     }
+
 }
