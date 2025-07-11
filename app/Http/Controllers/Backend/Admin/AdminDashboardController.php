@@ -1,6 +1,5 @@
 <?php
 namespace App\Http\Controllers\Backend\Admin;
-
 use App\Http\Controllers\Controller;
 use App\Models\Booking_office;
 use App\Models\Booking_office_answer;
@@ -50,6 +49,42 @@ class AdminDashboardController extends Controller
         return view('admin.report.6month', compact('reports'));
     }
 
+    public function quotationshow()
+    {
+        $quotation = Booking_office::get();
+        $PRS_office = PRS_office::get();
+        $Parcel_Office = Parcel_Office::get();
+        return view('admin.quotationdisplay', compact('quotation','PRS_office','Parcel_Office'));
+    }
+
+public function remove($model, $id)
+{
+    switch ($model) {
+        case 'booking':
+            $record = Booking_office::find($id);
+            break;
+
+        case 'prs':
+            $record = PRS_office::find($id);
+            break;
+
+        case 'parcel':
+            $record = Parcel_office::find($id);
+            break;
+
+        default:
+            return redirect()->back()->with('info', 'Invalid model type.');
+    }
+
+    if ($record) {
+        $record->delete();
+        return redirect()->route('admin.quotationshow')->with('success', ucfirst($model) . ' quotation deleted successfully!');
+    }
+
+    return redirect()->route('admin.quotationdisplay')->with('info', ucfirst($model) . ' quotation not found or already deleted.');
+}
+
+
     public function sendToApprove($id)
     {
         $post = Report::findOrFail($id);
@@ -92,7 +127,7 @@ class AdminDashboardController extends Controller
     public function downloadReport($id)
     {
         $report = Report::findOrFail($id);
-        
+
         $bookingOfficeAnswers = Booking_office_answer::with('bookingOffice')->get();
 
         $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingOfficeAnswers'));

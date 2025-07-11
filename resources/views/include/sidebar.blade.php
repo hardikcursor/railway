@@ -74,7 +74,7 @@
 
             @role('admin')
                 <li>
-                    <a href="#">
+                    <a href="{{ route('admin.quotationshow') }}">
                         <i class="sidebar-item-icon fa-solid fa-file-pen"></i>
                         <span class="nav-label">Change Quotation</span>
                     </a>

@@ -6,8 +6,8 @@ use App\Models\Booking_office_answer;
 use App\Models\Report;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SuperadminDashboardController extends Controller
 {
@@ -88,5 +88,7 @@ class SuperadminDashboardController extends Controller
 
         return response()->json(['success' => false, 'message' => 'User not found'], 404);
     }
+
+  
 
 }
