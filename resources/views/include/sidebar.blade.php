@@ -72,6 +72,15 @@
                 </li>
             @endrole
 
+            @role('admin')
+                <li>
+                    <a href="#">
+                        <i class="sidebar-item-icon fa-solid fa-file-pen"></i>
+                        <span class="nav-label">Change Quotation</span>
+                    </a>
+                </li>
+            @endrole
+
 
             @role('user')
                 <li>
