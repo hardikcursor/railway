@@ -39,7 +39,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/record', [AdminDashboardController::class, 'store'])->name('admin.userstore');
     Route::get('/admin/quotationshow', [AdminDashboardController::class, 'quotationshow'])->name('admin.quotationshow');
     Route::get('/admin/quotation/delete/{model}/{id}', [AdminDashboardController::class, 'remove'])->name('admin.quotation.delete');
-    
     Route::post('/user/savequotationreport', [AdminDashboardController::class, 'savequotationreport'])->name('admin.savequotationreport');
     Route::post('/PRSanswer', [AdminDashboardController::class, 'prsSaveQuotationReport'])->name('admin.PRSanswer.store');
     Route::post('/Parcelanswer', [AdminDashboardController::class, 'parcelSaveQuotationReport'])->name('admin.Parcelanswer.store');
@@ -52,6 +51,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/inspectionteaanswer', [AdminDashboardController::class, 'inspectionTeaRefreshmentSaveQuotationReport'])->name('admin.inspectionteaanswer.store');
     Route::post('/inspectionpantrycaranswer', [AdminDashboardController::class, 'inspectionPantryCarSaveQuotationReport'])->name('admin.inspectionpantrycaranswer.store');
     Route::post('/inspectionkitchenanswer', [AdminDashboardController::class, 'inspectionKitchenSaveQuotationReport'])->name('admin.inspectionkitchenanswer.store');
+    Route::get('/quotation/edit/{model}/{id}', [AdminDashboardController::class, 'edit'])->name('admin.quotation.edit');
+    Route::post('/quotation/update/{model}/{id}', [AdminDashboardController::class, 'update'])->name('admin.quotation.update');
+
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {

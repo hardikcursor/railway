@@ -19,31 +19,56 @@
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Name of Inspection :</label>
                             <div class="col-sm-10">
-                                <input type="text" name="title" class="form-control">
+                                <input type="text" name="title" class="form-control @error('title') is-invalid @enderror">
+                                <span class="text-danger">
+                                    @error('title')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </span>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Name of Inspector</label>
                             <div class="col-sm-10">
-                                <input type="text" name="Inspector" class="form-control">
+                                <input type="text" name="Inspector" class="form-control @error('Inspector') is-invalid @enderror">
+                                <span class="text-danger">
+                                    @error('Inspector')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </span>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Station</label>
                             <div class="col-sm-10">
-                                <input type="text" name="author" class="form-control">
+                                <input type="text" name="author" class="form-control @error('author') is-invalid @enderror">
+                                <span class="text-danger">
+                                    @error('author')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </span>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Type of Inspection</label>
                             <div class="col-sm-10">
-                                <textarea name="description" class="form-control"></textarea>
+                                <textarea name="description" class="form-control @error('description') is-invalid @enderror"></textarea>
+                                <span class="text-danger">
+                                    @error('description')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </span>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Duration</label>
                             <div class="col-sm-10">
-                                <input type="text" name="category" class="form-control">
+                                <input type="text" name="category" class="form-control @error('category') is-invalid @enderror">
+                                <span class="text-danger">
+                                    @error('category')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </span>
                             </div>
                         </div>
                         <div class="form-group row">

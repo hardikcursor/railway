@@ -50,13 +50,21 @@ class AdminDashboardController extends Controller
         return view('admin.report.6month', compact('reports'));
     }
 
-    public function quotationshow()
-    {
-        $quotation     = Booking_office::get();
-        $PRS_office    = PRS_office::get();
-        $Parcel_Office = Parcel_Office::get();
-        return view('admin.quotationdisplay', compact('quotation', 'PRS_office', 'Parcel_Office'));
-    }
+  public function quotationshow()
+{
+    $quotation = Booking_office::paginate(5, ['*'], 'booking_page');
+    $PRS_office = PRS_office::paginate(5, ['*'], 'prs_page');
+    $Parcel_Office = Parcel_Office::paginate(5, ['*'], 'parcel_page');
+    $Goods_Shed_office = Goods_Shed_office::paginate(5, ['*'], 'goods_shed_page');
+    $Ticket_Examineroffice = Ticket_Examineroffice::paginate(5, ['*'], 'ticket_page');
+    $NonFare_Revenue = NonFare_Revenue::paginate(5, ['*'], 'nonfare_page');
+    $InspectionPassenger_items = InspectionPassenger_items::paginate(5, ['*'], 'inspection_passenger_page');
+    $StationCleanliness = StationCleanliness::paginate(5, ['*'], 'station_cleanliness_page');
+    return view('admin.quotationdisplay', compact('quotation', 'PRS_office', 'Parcel_Office', 'Goods_Shed_office', 'Ticket_Examineroffice', 'NonFare_Revenue', 'InspectionPassenger_items', 'StationCleanliness'));
+}
+
+
+    
 
     public function remove($model, $id)
     {
@@ -71,6 +79,9 @@ class AdminDashboardController extends Controller
 
             case 'parcel':
                 $record = Parcel_office::find($id);
+                break;
+            case 'goods_shed':
+                $record = Goods_Shed_office::find($id);
                 break;
 
             default:
@@ -148,7 +159,14 @@ class AdminDashboardController extends Controller
             'author'      => 'required|string|max:255',
             'description' => 'required|string',
             'category'    => 'required|string',
-        ]);
+        ],
+            [
+                'title.required'       => 'The name of inspection is required.',
+                'Inspector.required'   => 'The name of inspector is required.',
+                'author.required'      => 'The station is required.',
+                'description.required' => 'The type of inspection is required.',
+                'category.required'    => 'The duration is required.',
+            ]);
 
         $report                   = new Report();
         $report->NameInspection   = $request->title;
@@ -341,6 +359,38 @@ class AdminDashboardController extends Controller
         $report->save();
 
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
+    }
+
+    public function edit($model, $id)
+    {
+        $modelClass = $this->getModelClass($model);
+        $quotation  = $modelClass::findOrFail($id);
+
+        return view('admin.quotation.edit', compact('quotation', 'model'));
+    }
+
+    public function update(Request $request, $model, $id)
+    {
+        $request->validate([
+            'checks' => 'required|string|max:255',
+        ]);
+
+        $modelClass        = $this->getModelClass($model);
+        $quotation         = $modelClass::findOrFail($id);
+        $quotation->checks = $request->checks;
+        $quotation->save();
+
+        return redirect()->route('admin.quotationshow')->with('success', 'Quotation updated successfully!');
+    }
+
+    private function getModelClass($model)
+    {
+        return match ($model) {
+            'booking' => Booking_office::class,
+            'prs' => PRS_office::class,
+            'parcel' => Parcel_Office::class,
+            default => abort(404),
+        };
     }
 
 }
