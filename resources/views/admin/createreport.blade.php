@@ -14,8 +14,7 @@
                         Quotation report created successfully!
                     </div>
 
-                           <form action="{{ route('admin.store') }}" method="POST" class="form-horizontal" id="form-sample-1"
-                        novalidate="novalidate">
+                    <form action="{{ route('admin.userstore') }}" method="POST" class="form-horizontal" id="form-sample-1" novalidate="novalidate">
                         @csrf
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Name of Inspection :</label>
@@ -145,7 +144,8 @@
                                 @enderror
                             </span>
                         </div>
-                        <button type="submit" class="btn btn-success mt-2">Generate Ticket Examiner Office Report</button>
+                        <button type="submit" class="btn btn-success mt-2">Generate Ticket Examiner Office
+                            Report</button>
                     </form>
 
                     <!-- Non Fare Revenue at Stations Form -->

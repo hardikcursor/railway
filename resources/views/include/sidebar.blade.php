@@ -84,7 +84,7 @@
 
             @role('admin')
                 <li>
-                    <a href="">
+                    <a href="{{ route('admin.generateReport') }}">
                         <i class="sidebar-item-icon fa fa-user"></i>
                         <span class="nav-label">Generate Report</span>
                     </a>

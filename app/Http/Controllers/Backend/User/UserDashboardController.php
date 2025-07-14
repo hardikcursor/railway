@@ -71,18 +71,6 @@ class UserDashboardController extends Controller
         return view('user.form');
     }
 
-    // public function store(Request $request)
-    // {
-    //     $post                   = new Report;
-    //     $post->NameInspection   = $request->title;
-    //     $post->NameInspector    = $request->Inspector;
-    //     $post->Station          = $request->author;
-    //     $post->TypeofInspection = $request->description;
-    //     $post->Duration         = $request->category;
-    //     $post->save();
-
-    //     return redirect()->route('user.dashboard')->with('success', 'Post created successfully!');
-    // }
 
     public function sendToAdmin($id)
     {
@@ -204,10 +192,10 @@ class UserDashboardController extends Controller
 
 
 
-    public function generatereport()
-    {
-        return view('user.createreport');
-    }
+    // public function generatereport()
+    // {
+    //     return view('user.createreport');
+    // }
 
     // This function is used to Booking save the quotation report
 
@@ -391,17 +379,6 @@ class UserDashboardController extends Controller
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
     }
 
-    public function store(Request $request)
-    {
-        $post                   = new Report;
-        $post->NameInspection   = $request->title;
-        $post->NameInspector    = $request->Inspector;
-        $post->Station          = $request->author;
-        $post->TypeofInspection = $request->description;
-        $post->Duration         = $request->category;
-        $post->save();
 
-        return redirect()->route('user.dashboard')->with('success', 'Post created successfully!');
-    }
 
 }

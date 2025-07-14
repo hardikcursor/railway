@@ -35,9 +35,23 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/record/{id}/send', [AdminDashboardController::class, 'send'])->name('admin.sendToAdmin');
     Route::get('/adminreports/{id}/download', [AdminDashboardController::class, 'downloadReport'])->name('admin.reports.download');
     Route::post('/record/{id}/approve', [AdminDashboardController::class, 'sendToApprove'])->name('admin.sendToApprove');
+    Route::get('/admin/generate-report', [AdminDashboardController::class, 'generatereport'])->name('admin.generateReport');
+    Route::post('/record', [AdminDashboardController::class, 'store'])->name('admin.userstore');
     Route::get('/admin/quotationshow', [AdminDashboardController::class, 'quotationshow'])->name('admin.quotationshow');
     Route::get('/admin/quotation/delete/{model}/{id}', [AdminDashboardController::class, 'remove'])->name('admin.quotation.delete');
-
+    
+    Route::post('/user/savequotationreport', [AdminDashboardController::class, 'savequotationreport'])->name('admin.savequotationreport');
+    Route::post('/PRSanswer', [AdminDashboardController::class, 'prsSaveQuotationReport'])->name('admin.PRSanswer.store');
+    Route::post('/Parcelanswer', [AdminDashboardController::class, 'parcelSaveQuotationReport'])->name('admin.Parcelanswer.store');
+    Route::post('/GoodsShedanswer', [AdminDashboardController::class, 'goodsSaveQuotationReport'])->name('admin.GoodsShedanswer.store');
+    Route::post('/TicketExamineranswer', [AdminDashboardController::class, 'ticketSaveQuotationReport'])->name('admin.TicketExamineranswer.store');
+    Route::post('/nonfareanswer', [AdminDashboardController::class, 'nonfareSaveQuotationReport'])->name('admin.nonfareanswer.store');
+    Route::post('/inspectionpassengeranswer', [AdminDashboardController::class, 'inspectionPassengerSaveQuotationReport'])->name('admin.inspectionpassengeranswer.store');
+    Route::post('/stationcleanlinessanswer', [AdminDashboardController::class, 'stationCleanlinessSaveQuotationReport'])->name('admin.stationcleanlinessanswer.store');
+    Route::post('/inspectionpayuseanswer', [AdminDashboardController::class, 'inspectionPayUseSaveQuotationReport'])->name('admin.inspectionpayuseanswer.store');
+    Route::post('/inspectionteaanswer', [AdminDashboardController::class, 'inspectionTeaRefreshmentSaveQuotationReport'])->name('admin.inspectionteaanswer.store');
+    Route::post('/inspectionpantrycaranswer', [AdminDashboardController::class, 'inspectionPantryCarSaveQuotationReport'])->name('admin.inspectionpantrycaranswer.store');
+    Route::post('/inspectionkitchenanswer', [AdminDashboardController::class, 'inspectionKitchenSaveQuotationReport'])->name('admin.inspectionkitchenanswer.store');
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {
@@ -53,20 +67,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/record/{id}/send-to-admin', [UserDashboardController::class, 'sendToAdmin'])->name('posts.sendToAdmin');
     Route::get('/reports/{id}/download', [UserDashboardController::class, 'downloadReport'])->name('reports.download');
     Route::get('/user/search', [UserDashboardController::class, 'isearch'])->name('reports.index');
-    Route::post('/import', [UserDashboardController::class, 'import'])->name('user.import'); Route::get('/admin/generate-report', [UserDashboardController::class, 'generatereport'])->name('user.generateReport');
-    Route::post('/user/savequotationreport', [UserDashboardController::class, 'savequotationreport'])->name('user.savequotationreport');
-    Route::post('/PRSanswer', [UserDashboardController::class, 'prsSaveQuotationReport'])->name('user.PRSanswer.store');
-    Route::post('/Parcelanswer', [UserDashboardController::class, 'parcelSaveQuotationReport'])->name('user.Parcelanswer.store');
-    Route::post('/GoodsShedanswer', [UserDashboardController::class, 'goodsSaveQuotationReport'])->name('user.GoodsShedanswer.store');
-    Route::post('/TicketExamineranswer', [UserDashboardController::class, 'ticketSaveQuotationReport'])->name('user.TicketExamineranswer.store');
-    Route::post('/nonfareanswer', [UserDashboardController::class, 'nonfareSaveQuotationReport'])->name('user.nonfareanswer.store');
-    Route::post('/inspectionpassengeranswer', [UserDashboardController::class, 'inspectionPassengerSaveQuotationReport'])->name('user.inspectionpassengeranswer.store');
-    Route::post('/stationcleanlinessanswer', [UserDashboardController::class, 'stationCleanlinessSaveQuotationReport'])->name('user.stationcleanlinessanswer.store');
-    Route::post('/inspectionpayuseanswer', [UserDashboardController::class, 'inspectionPayUseSaveQuotationReport'])->name('user.inspectionpayuseanswer.store');
-    Route::post('/inspectionteaanswer', [UserDashboardController::class, 'inspectionTeaRefreshmentSaveQuotationReport'])->name('user.inspectionteaanswer.store');
-    Route::post('/inspectionpantrycaranswer', [UserDashboardController::class, 'inspectionPantryCarSaveQuotationReport'])->name('user.inspectionpantrycaranswer.store');
-    Route::post('/inspectionkitchenanswer', [UserDashboardController::class, 'inspectionKitchenSaveQuotationReport'])->name('user.inspectionkitchenanswer.store');
-    Route::post('/record', [UserDashboardController::class, 'store'])->name('user.store');
+    Route::post('/import', [UserDashboardController::class, 'import'])->name('user.import');
 });
 
 Route::fallback(function () {

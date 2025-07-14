@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers\Backend\Admin;
+
 use App\Http\Controllers\Controller;
 use App\Models\Booking_office;
 use App\Models\Booking_office_answer;
@@ -51,39 +52,38 @@ class AdminDashboardController extends Controller
 
     public function quotationshow()
     {
-        $quotation = Booking_office::get();
-        $PRS_office = PRS_office::get();
+        $quotation     = Booking_office::get();
+        $PRS_office    = PRS_office::get();
         $Parcel_Office = Parcel_Office::get();
-        return view('admin.quotationdisplay', compact('quotation','PRS_office','Parcel_Office'));
+        return view('admin.quotationdisplay', compact('quotation', 'PRS_office', 'Parcel_Office'));
     }
 
-public function remove($model, $id)
-{
-    switch ($model) {
-        case 'booking':
-            $record = Booking_office::find($id);
-            break;
+    public function remove($model, $id)
+    {
+        switch ($model) {
+            case 'booking':
+                $record = Booking_office::find($id);
+                break;
 
-        case 'prs':
-            $record = PRS_office::find($id);
-            break;
+            case 'prs':
+                $record = PRS_office::find($id);
+                break;
 
-        case 'parcel':
-            $record = Parcel_office::find($id);
-            break;
+            case 'parcel':
+                $record = Parcel_office::find($id);
+                break;
 
-        default:
-            return redirect()->back()->with('info', 'Invalid model type.');
+            default:
+                return redirect()->back()->with('info', 'Invalid model type.');
+        }
+
+        if ($record) {
+            $record->delete();
+            return redirect()->route('admin.quotationshow')->with('success', ucfirst($model) . ' quotation deleted successfully!');
+        }
+
+        return redirect()->route('admin.quotationdisplay')->with('info', ucfirst($model) . ' quotation not found or already deleted.');
     }
-
-    if ($record) {
-        $record->delete();
-        return redirect()->route('admin.quotationshow')->with('success', ucfirst($model) . ' quotation deleted successfully!');
-    }
-
-    return redirect()->route('admin.quotationdisplay')->with('info', ucfirst($model) . ' quotation not found or already deleted.');
-}
-
 
     public function sendToApprove($id)
     {
@@ -138,6 +138,28 @@ public function remove($model, $id)
     public function generatereport()
     {
         return view('admin.createreport');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'title'       => 'required|string|max:255',
+            'Inspector'   => 'required|string|max:255',
+            'author'      => 'required|string|max:255',
+            'description' => 'required|string',
+            'category'    => 'required|string',
+        ]);
+
+        $report                   = new Report();
+        $report->NameInspection   = $request->title;
+        $report->NameInspector    = $request->Inspector;
+        $report->Station          = $request->author;
+        $report->TypeofInspection = $request->description;
+        $report->Duration         = $request->category;
+        $report->status           = 'pending';
+        $report->save();
+
+        return redirect()->route('admin.dashboard')->with('success', 'Report created successfully!');
     }
 
     // This function is used to Booking save the quotation report
@@ -321,16 +343,4 @@ public function remove($model, $id)
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
     }
 
-    public function store(Request $request)
-    {
-        $post                   = new Report;
-        $post->NameInspection   = $request->title;
-        $post->NameInspector    = $request->Inspector;
-        $post->Station          = $request->author;
-        $post->TypeofInspection = $request->description;
-        $post->Duration         = $request->category;
-        $post->save();
-
-        return redirect()->route('admin.dashboard')->with('success', 'Post created successfully!');
-    }
 }
