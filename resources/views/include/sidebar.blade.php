@@ -82,9 +82,9 @@
             @endrole
 
 
-            @role('user')
+            @role('admin')
                 <li>
-                    <a href="{{ route('user.generateReport') }}">
+                    <a href="">
                         <i class="sidebar-item-icon fa fa-user"></i>
                         <span class="nav-label">Generate Report</span>
                     </a>
