@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('i_n_s_p_e_c_t_i_o_n_k_i_t_c_h_e_n_s', function (Blueprint $table) {
             $table->id();
-            $table->string('Particulars')->comment('Details of the Inspection Kitchen Items');
+            $table->string('checks')->comment('Details of the Inspection Kitchen Items');
             $table->timestamps();
         });
     }

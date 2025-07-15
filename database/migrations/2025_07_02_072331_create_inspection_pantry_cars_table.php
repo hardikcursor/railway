@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('inspection_pantry_cars', function (Blueprint $table) {
             $table->id();
-            $table->string('Items')->comment('Details of the Inspection Pantry Car');
+            $table->string('checks')->comment('Details of the Inspection Pantry Car');
             $table->timestamps();
         });
     }

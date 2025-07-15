@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('inspection_pay_use_toilets', function (Blueprint $table) {
             $table->id();
-            $table->string('Particulars')->comment('Name of the Inspection Pay Use Toilets Check');
+            $table->string('checks')->comment('Name of the Inspection Pay Use Toilets Check');
             $table->timestamps();
         });
     }

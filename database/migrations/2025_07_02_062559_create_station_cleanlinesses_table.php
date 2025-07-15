@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('station_cleanlinesses', function (Blueprint $table) {
             $table->id();
-            $table->string('items')->comment('Name of the Station Cleanliness Check');
+            $table->string('checks')->comment('Name of the Station Cleanliness Check');
             $table->timestamps();
         });
     }

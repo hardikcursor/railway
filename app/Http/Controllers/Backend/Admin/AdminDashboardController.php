@@ -50,21 +50,22 @@ class AdminDashboardController extends Controller
         return view('admin.report.6month', compact('reports'));
     }
 
-  public function quotationshow()
-{
-    $quotation = Booking_office::paginate(5, ['*'], 'booking_page');
-    $PRS_office = PRS_office::paginate(5, ['*'], 'prs_page');
-    $Parcel_Office = Parcel_Office::paginate(5, ['*'], 'parcel_page');
-    $Goods_Shed_office = Goods_Shed_office::paginate(5, ['*'], 'goods_shed_page');
-    $Ticket_Examineroffice = Ticket_Examineroffice::paginate(5, ['*'], 'ticket_page');
-    $NonFare_Revenue = NonFare_Revenue::paginate(5, ['*'], 'nonfare_page');
-    $InspectionPassenger_items = InspectionPassenger_items::paginate(5, ['*'], 'inspection_passenger_page');
-    $StationCleanliness = StationCleanliness::paginate(5, ['*'], 'station_cleanliness_page');
-    return view('admin.quotationdisplay', compact('quotation', 'PRS_office', 'Parcel_Office', 'Goods_Shed_office', 'Ticket_Examineroffice', 'NonFare_Revenue', 'InspectionPassenger_items', 'StationCleanliness'));
-}
-
-
-    
+    public function quotationshow()
+    {
+        $quotation                 = Booking_office::paginate(3, ['*'], 'booking_page');
+        $PRS_office                = PRS_office::paginate(3, ['*'], 'prs_page');
+        $Parcel_Office             = Parcel_Office::paginate(3, ['*'], 'parcel_page');
+        $Goods_Shed_office         = Goods_Shed_office::paginate(3, ['*'], 'goods_shed_page');
+        $Ticket_Examineroffice     = Ticket_Examineroffice::paginate(3, ['*'], 'ticket_page');
+        $NonFare_Revenue           = NonFare_Revenue::paginate(3, ['*'], 'nonfare_page');
+        $InspectionPassenger_items = InspectionPassenger_items::paginate(3, ['*'], 'inspection_passenger_page');
+        $StationCleanliness        = StationCleanliness::paginate(3, ['*'], 'station_cleanliness_page');
+        $InspectionPayUseToilets   = InspectionPayUseToilets::paginate(3, ['*'], 'inspection_payuse_page');
+        $INSPECTION_TEA            = INSPECTION_TEA::paginate(3, ['*'], 'inspection_tea_page');
+        $InspectionPantryCar       = InspectionPantryCar::paginate(3, ['*'], 'inspection_pantry_page');
+        $INSPECTIONKITCHEN         = INSPECTIONKITCHEN::paginate(3, ['*'], 'inspection_kitchen_page');
+        return view('admin.quotationdisplay', compact('quotation', 'PRS_office', 'Parcel_Office', 'Goods_Shed_office', 'Ticket_Examineroffice', 'NonFare_Revenue', 'InspectionPassenger_items', 'StationCleanliness', 'InspectionPayUseToilets', 'INSPECTION_TEA', 'InspectionPantryCar', 'INSPECTIONKITCHEN'));
+    }
 
     public function remove($model, $id)
     {
@@ -82,6 +83,30 @@ class AdminDashboardController extends Controller
                 break;
             case 'goods_shed':
                 $record = Goods_Shed_office::find($id);
+                break;
+            case 'ticket':
+                $record = Ticket_Examineroffice::find($id);
+                break;
+            case 'nonfare':
+                $record = NonFare_Revenue::find($id);
+                break;
+            case 'inspection_passenger':
+                $record = InspectionPassenger_items::find($id);
+                break;
+            case 'station_cleanliness':
+                $record = StationCleanliness::find($id);
+                break;
+            case 'inspection_payuse':
+                $record = InspectionPayUseToilets::find($id);
+                break;
+            case 'inspection_tea':
+                $record = INSPECTION_TEA::find($id);
+                break;
+            case 'inspection_pantry':
+                $record = InspectionPantryCar::find($id);
+                break;
+            case 'inspection_kitchen':
+                $record = INSPECTIONKITCHEN::find($id);
                 break;
 
             default:
@@ -280,7 +305,7 @@ class AdminDashboardController extends Controller
         ]);
 
         $report        = new InspectionPassenger_items();
-        $report->items = $request->passenger_quotation;
+        $report->checks = $request->passenger_quotation;
         $report->save();
 
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
@@ -295,7 +320,7 @@ class AdminDashboardController extends Controller
         ]);
 
         $report        = new StationCleanliness();
-        $report->items = $request->stationcleanliness_quotation;
+        $report->checks = $request->stationcleanliness_quotation;
         $report->save();
 
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
@@ -310,7 +335,7 @@ class AdminDashboardController extends Controller
         ]);
 
         $report              = new InspectionPayUseToilets();
-        $report->Particulars = $request->payuse_quotation;
+        $report->checks = $request->payuse_quotation;
         $report->save();
 
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
@@ -325,7 +350,7 @@ class AdminDashboardController extends Controller
         ]);
 
         $report              = new INSPECTION_TEA();
-        $report->Particulars = $request->tea_quotation;
+        $report->checks = $request->tea_quotation;
         $report->save();
 
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
@@ -340,7 +365,7 @@ class AdminDashboardController extends Controller
         ]);
 
         $report        = new InspectionPantryCar();
-        $report->items = $request->pantry_quotation;
+        $report->checks = $request->pantry_quotation;
         $report->save();
 
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
@@ -355,7 +380,7 @@ class AdminDashboardController extends Controller
         ]);
 
         $report              = new INSPECTIONKITCHEN();
-        $report->Particulars = $request->base_quotation;
+        $report->checks = $request->base_quotation;
         $report->save();
 
         return response()->json(['success' => true, 'message' => 'Quotation report created successfully!']);
@@ -369,19 +394,50 @@ class AdminDashboardController extends Controller
         return view('admin.quotation.edit', compact('quotation', 'model'));
     }
 
-    public function update(Request $request, $model, $id)
-    {
-        $request->validate([
-            'checks' => 'required|string|max:255',
-        ]);
+   public function update(Request $request, $model, $id)
+{
+    $modelClass = $this->getModelClass($model);
+    $quotation  = $modelClass::findOrFail($id);
 
-        $modelClass        = $this->getModelClass($model);
-        $quotation         = $modelClass::findOrFail($id);
-        $quotation->checks = $request->checks;
-        $quotation->save();
+    // ✅ Validate as a string
+    $request->validate([
+        'checks' => 'required|string|max:1000',
+    ], [
+        'checks.required' => 'The checks field is required.',
+    ]);
 
-        return redirect()->route('admin.quotationshow')->with('success', 'Quotation updated successfully!');
+    // ✅ Update field based on model type
+    switch ($model) {
+        case 'booking':
+        case 'prs':
+        case 'parcel':
+        case 'goods_shed':
+        case 'ticket':
+        case 'nonfare':
+            $quotation->checks = $request->input('checks');
+            break;
+
+        case 'inspection_passenger':
+        case 'station_cleanliness':
+        case 'inspection_pantry':
+            $quotation->checks = $request->input('checks');
+            break;
+
+        case 'inspection_payuse':
+        case 'inspection_tea':
+        case 'inspection_kitchen':
+            $quotation->checks = $request->input('checks');
+            break;
+
+        default:
+            return back()->with('error', 'Invalid model type.');
     }
+
+    $quotation->save();
+
+    return redirect()->route('admin.quotationshow')->with('success', 'Quotation updated successfully.');
+}
+
 
     private function getModelClass($model)
     {
@@ -389,7 +445,17 @@ class AdminDashboardController extends Controller
             'booking' => Booking_office::class,
             'prs' => PRS_office::class,
             'parcel' => Parcel_Office::class,
+            'goods_shed' => Goods_Shed_office::class,
+            'ticket' => Ticket_Examineroffice::class,
+            'nonfare' => NonFare_Revenue::class,
+            'inspection_passenger' => InspectionPassenger_items::class,
+            'station_cleanliness' => StationCleanliness::class,
+            'inspection_payuse' => InspectionPayUseToilets::class,
+            'inspection_tea' => INSPECTION_TEA::class,
+            'inspection_pantry' => InspectionPantryCar::class,
+            'inspection_kitchen' => INSPECTIONKITCHEN::class,
             default => abort(404),
+
         };
     }
 

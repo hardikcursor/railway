@@ -151,11 +151,11 @@
                                                 <td>{{ $Goods_Shed_offices->checks }}</td>
                                                 <td>
                                                     <div style="display: flex; align-items: center;">
-                                                        <a href="{{ route('admin.quotation.edit', ['model' => 'goods', 'id' => $Goods_Shed_offices->id]) }}"
+                                                        <a href="{{ route('admin.quotation.edit', ['model' => 'goods_shed', 'id' => $Goods_Shed_offices->id]) }}"
                                                             class="text-success" style="margin-right: 10px;">
                                                             <i class="fa-solid fa-pencil"></i>
                                                         </a>
-                                                        <a href="{{ route('admin.quotation.delete', ['model' => 'goods', 'id' => $Goods_Shed_offices->id]) }}"
+                                                        <a href="{{ route('admin.quotation.delete', ['model' => 'goods_shed', 'id' => $Goods_Shed_offices->id]) }}"
                                                             class="text-danger">
                                                             <i class="fa-solid fa-trash"></i>
                                                         </a>
@@ -251,14 +251,14 @@
                                         @foreach ($InspectionPassenger_items as $key => $InspectionPassenger_item)
                                             <tr>
                                                 <td>{{ $InspectionPassenger_items->firstItem() + $key }}</td>
-                                                <td>{{ $InspectionPassenger_item->Items }}</td>
+                                                <td>{{ $InspectionPassenger_item->checks }}</td>
                                                 <td>
                                                     <div style="display: flex; align-items: center;">
-                                                        <a href="{{ route('admin.quotation.edit', ['model' => 'inspection', 'id' => $InspectionPassenger_item->id]) }}"
+                                                        <a href="{{ route('admin.quotation.edit', ['model' => 'inspection_passenger', 'id' => $InspectionPassenger_item->id]) }}"
                                                             class="text-success" style="margin-right: 10px;">
                                                             <i class="fa-solid fa-pencil"></i>
                                                         </a>
-                                                        <a href="{{ route('admin.quotation.delete', ['model' => 'inspection', 'id' => $InspectionPassenger_item->id]) }}"
+                                                        <a href="{{ route('admin.quotation.delete', ['model' => 'inspection_passenger', 'id' => $InspectionPassenger_item->id]) }}"
                                                             class="text-danger">
                                                             <i class="fa-solid fa-trash"></i>
                                                         </a>
@@ -285,14 +285,14 @@
                                         @foreach ($StationCleanliness as $key => $StationCleanliness_item)
                                             <tr>
                                                 <td>{{ $StationCleanliness->firstItem() + $key }}</td>
-                                                <td>{{ $StationCleanliness_item->items }}</td>
+                                                <td>{{ $StationCleanliness_item->checks }}</td>
                                                 <td>
                                                     <div style="display: flex; align-items: center;">
-                                                        <a href="{{ route('admin.quotation.edit', ['model' => 'stationcleanliness', 'id' => $StationCleanliness_item->id]) }}"
+                                                        <a href="{{ route('admin.quotation.edit', ['model' => 'station_cleanliness', 'id' => $StationCleanliness_item->id]) }}"
                                                             class="text-success" style="margin-right: 10px;">
                                                             <i class="fa-solid fa-pencil"></i>
                                                         </a>
-                                                        <a href="{{ route('admin.quotation.delete', ['model' => 'stationcleanliness', 'id' => $StationCleanliness_item->id]) }}"
+                                                        <a href="{{ route('admin.quotation.delete', ['model' => 'station_cleanliness', 'id' => $StationCleanliness_item->id]) }}"
                                                             class="text-danger">
                                                             <i class="fa-solid fa-trash"></i>
                                                         </a>
@@ -306,8 +306,141 @@
                                             </td>
                                         </tr>
                                     </tbody>
-                                    
                                 @endif
+
+                                @if ($InspectionPayUseToilets->count())
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="3">
+                                                <h5 class="text-primary mb-2 mt-4">Inspection Pay Use Toilets Quotations</h5>
+                                            </td>
+                                        </tr>
+                                        @foreach ($InspectionPayUseToilets as $key => $InspectionPayUseToilets_item)
+                                            <tr>
+                                                <td>{{ $InspectionPayUseToilets->firstItem() + $key }}</td>
+                                                <td>{{ $InspectionPayUseToilets_item->checks }}</td>
+                                                <td>
+                                                    <div style="display: flex; align-items: center;">
+                                                        <a href="{{ route('admin.quotation.edit', ['model' => 'inspection_payuse', 'id' => $InspectionPayUseToilets_item->id]) }}"
+                                                            class="text-success" style="margin-right: 10px;">
+                                                            <i class="fa-solid fa-pencil"></i>
+                                                        </a>
+                                                        <a href="{{ route('admin.quotation.delete', ['model' => 'inspection_payuse', 'id' => $InspectionPayUseToilets_item->id]) }}"
+                                                            class="text-danger">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        <tr>
+                                            <td colspan="3">
+                                                {{ $InspectionPayUseToilets->appends(['booking_page' => request('booking_page'), 'prs_page' => request('prs_page'), 'parcel_page' => request('parcel_page'), 'goods_shed_page' => request('goods_shed_page'), 'nonfare_page' => request('nonfare_page'), 'inspection_passenger_items_page' => request('inspection_passenger_items_page'), 'inspection_payuse_page' => request('inspection_payuse_page')])->links() }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                @endif 
+
+                                
+                                @if ($INSPECTION_TEA->count())
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="3">
+                                                <h5 class="text-primary mb-2 mt-4">Inspection Tea Quotations</h5>
+                                            </td>
+                                        </tr>
+                                        @foreach ($INSPECTION_TEA as $key => $INSPECTION_TEA_item)
+                                            <tr>
+                                                <td>{{ $INSPECTION_TEA->firstItem() + $key }}</td>
+                                                <td>{{ $INSPECTION_TEA_item->checks }}</td>
+                                                <td>
+                                                    <div style="display: flex; align-items: center;">
+                                                        <a href="{{ route('admin.quotation.edit', ['model' => 'inspection_tea', 'id' => $INSPECTION_TEA_item->id]) }}"
+                                                            class="text-success" style="margin-right: 10px;">
+                                                            <i class="fa-solid fa-pencil"></i>
+                                                        </a>
+                                                        <a href="{{ route('admin.quotation.delete', ['model' => 'inspection_tea', 'id' => $INSPECTION_TEA_item->id]) }}"
+                                                            class="text-danger">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        <tr>
+                                            <td colspan="3">
+                                                {{ $INSPECTION_TEA->appends(['booking_page' => request('booking_page'), 'prs_page' => request('prs_page'), 'parcel_page' => request('parcel_page'), 'goods_shed_page' => request('goods_shed_page'), 'nonfare_page' => request('nonfare_page'), 'inspection_passenger_items_page' => request('inspection_passenger_items_page'), 'inspection_payuse_page' => request('inspection_payuse_page')])->links() }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                @endif 
+                                
+                                   @if ($InspectionPantryCar->count())
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="3">
+                                                <h5 class="text-primary mb-2 mt-4">Inspection Pantry Car Quotations</h5>
+                                            </td>
+                                        </tr>
+                                        @foreach ($InspectionPantryCar as $key => $InspectionPantryCar_item)
+                                            <tr>
+                                                <td>{{ $InspectionPantryCar->firstItem() + $key }}</td>
+                                                <td>{{ $InspectionPantryCar_item->checks }}</td>
+                                                <td>
+                                                    <div style="display: flex; align-items: center;">
+                                                        <a href="{{ route('admin.quotation.edit', ['model' => 'inspection_pantry', 'id' => $InspectionPantryCar_item->id]) }}"
+                                                            class="text-success" style="margin-right: 10px;">
+                                                            <i class="fa-solid fa-pencil"></i>
+                                                        </a>
+                                                        <a href="{{ route('admin.quotation.delete', ['model' => 'inspection_pantry', 'id' => $InspectionPantryCar_item->id]) }}"
+                                                            class="text-danger">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        <tr>
+                                            <td colspan="3">
+                                                {{ $InspectionPantryCar->appends(['booking_page' => request('booking_page'), 'prs_page' => request('prs_page'), 'parcel_page' => request('parcel_page'), 'goods_shed_page' => request('goods_shed_page'), 'nonfare_page' => request('nonfare_page'), 'inspection_passenger_items_page' => request('inspection_passenger_items_page'), 'inspection_payuse_page' => request('inspection_payuse_page'), 'inspection_tea_page' => request('inspection_tea_page')])->links() }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                   @endif 
+                                   
+                                    @if ($INSPECTIONKITCHEN->count())
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="3">
+                                                    <h5 class="text-primary mb-2 mt-4">Inspection Kitchen Quotations</h5>
+                                                </td>
+                                            </tr>
+                                            @foreach ($INSPECTIONKITCHEN as $key => $INSPECTIONKITCHEN_item)
+                                                <tr>
+                                                    <td>{{ $INSPECTIONKITCHEN->firstItem() + $key }}</td>
+                                                    <td>{{ $INSPECTIONKITCHEN_item->checks }}</td>
+                                                    <td>
+                                                        <div style="display: flex; align-items: center;">
+                                                            <a href="{{ route('admin.quotation.edit', ['model' => 'inspection_kitchen', 'id' => $INSPECTIONKITCHEN_item->id]) }}"
+                                                                class="text-success" style="margin-right: 10px;">
+                                                                <i class="fa-solid fa-pencil"></i>
+                                                            </a>
+                                                            <a href="{{ route('admin.quotation.delete', ['model' => 'inspection_kitchen', 'id' => $INSPECTIONKITCHEN_item->id]) }}"
+                                                                class="text-danger">
+                                                                <i class="fa-solid fa-trash"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                            <tr>
+                                                <td colspan="3">
+                                                    {{ $INSPECTIONKITCHEN->appends(['booking_page' => request('booking_page'), 'prs_page' => request('prs_page'), 'parcel_page' => request('parcel_page'), 'goods_shed_page' => request('goods_shed_page'), 'nonfare_page' => request('nonfare_page'), 'inspection_passenger_items_page' => request('inspection_passenger_items_page'), 'inspection_payuse_page' => request('inspection_payuse_page'), 'inspection_tea_page' => request('inspection_tea_page'), 'inspection_pantry_page' => request('inspection_pantry_page')])->links() }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                   @endif  
+                                    
                             </table>
                         </div>
                     </div>

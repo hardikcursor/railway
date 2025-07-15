@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('inspection_passenger_items', function (Blueprint $table) {
             $table->id();
-            $table->string('Items')->comment('Name of the Inspection Passenger Item');
+            $table->string('checks')->comment('Name of the Inspection Passenger Item');
             $table->timestamps();
         });
     }

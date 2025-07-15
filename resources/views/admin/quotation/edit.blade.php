@@ -13,7 +13,10 @@
                     @csrf
                     <div class="form-group">
                         <label for="checks">Quotation Text</label>
-                        <input type="text" class="form-control @error('checks') is-invalid @enderror" name="checks" value="{{ old('checks', $quotation->checks) }}">
+                        <input type="text"
+                               class="form-control @error('checks') is-invalid @enderror"
+                               name="checks"
+                               value="{{ old('checks', $quotation->checks ?? $quotation->items ?? $quotation->Particulars) }}">
                         @error('checks')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
