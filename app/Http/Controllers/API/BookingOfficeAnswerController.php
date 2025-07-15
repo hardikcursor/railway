@@ -24,6 +24,7 @@ class BookingOfficeAnswerController extends Controller
     {
         $request->validate([
             'booking_office_id' => 'required|exists:booking_offices,id',
+            'report_id'         => 'required|exists:reports,id',
             'answer'            => 'required|string',
             'remark'            => 'nullable|string',
         ]);
@@ -31,6 +32,7 @@ class BookingOfficeAnswerController extends Controller
         $answer                    = new Booking_office_answer();
         $answer->user_id           = Auth::id();
         $answer->booking_office_id = $request->booking_office_id;
+        $answer->report_id         = $request->report_id; 
         $answer->answer            = $request->answer;
         $answer->remark            = $request->remark;
         $answer->save();

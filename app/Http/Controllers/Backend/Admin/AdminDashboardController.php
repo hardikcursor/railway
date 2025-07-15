@@ -164,7 +164,9 @@ class AdminDashboardController extends Controller
     {
         $report = Report::findOrFail($id);
 
-        $bookingOfficeAnswers = Booking_office_answer::with('bookingOffice')->get();
+        $bookingOfficeAnswers = Booking_office_answer::with('bookingOffice')
+            ->where('report_id', $report->id) // ✅ Only those tied to the given report
+            ->get();
 
         $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingOfficeAnswers'));
 
@@ -304,7 +306,7 @@ class AdminDashboardController extends Controller
             'passenger_quotation' => 'required|string',
         ]);
 
-        $report        = new InspectionPassenger_items();
+        $report         = new InspectionPassenger_items();
         $report->checks = $request->passenger_quotation;
         $report->save();
 
@@ -319,7 +321,7 @@ class AdminDashboardController extends Controller
             'stationcleanliness_quotation' => 'required|string',
         ]);
 
-        $report        = new StationCleanliness();
+        $report         = new StationCleanliness();
         $report->checks = $request->stationcleanliness_quotation;
         $report->save();
 
@@ -334,7 +336,7 @@ class AdminDashboardController extends Controller
             'payuse_quotation' => 'required|string',
         ]);
 
-        $report              = new InspectionPayUseToilets();
+        $report         = new InspectionPayUseToilets();
         $report->checks = $request->payuse_quotation;
         $report->save();
 
@@ -349,7 +351,7 @@ class AdminDashboardController extends Controller
             'tea_quotation' => 'required|string',
         ]);
 
-        $report              = new INSPECTION_TEA();
+        $report         = new INSPECTION_TEA();
         $report->checks = $request->tea_quotation;
         $report->save();
 
@@ -364,7 +366,7 @@ class AdminDashboardController extends Controller
             'pantry_quotation' => 'required|string',
         ]);
 
-        $report        = new InspectionPantryCar();
+        $report         = new InspectionPantryCar();
         $report->checks = $request->pantry_quotation;
         $report->save();
 
@@ -379,7 +381,7 @@ class AdminDashboardController extends Controller
             'base_quotation' => 'required|string',
         ]);
 
-        $report              = new INSPECTIONKITCHEN();
+        $report         = new INSPECTIONKITCHEN();
         $report->checks = $request->base_quotation;
         $report->save();
 
@@ -394,50 +396,47 @@ class AdminDashboardController extends Controller
         return view('admin.quotation.edit', compact('quotation', 'model'));
     }
 
-   public function update(Request $request, $model, $id)
-{
-    $modelClass = $this->getModelClass($model);
-    $quotation  = $modelClass::findOrFail($id);
+    public function update(Request $request, $model, $id)
+    {
+        $modelClass = $this->getModelClass($model);
+        $quotation  = $modelClass::findOrFail($id);
 
-    // ✅ Validate as a string
-    $request->validate([
-        'checks' => 'required|string|max:1000',
-    ], [
-        'checks.required' => 'The checks field is required.',
-    ]);
+        $request->validate([
+            'checks' => 'required|string|max:1000',
+        ], [
+            'checks.required' => 'The checks field is required.',
+        ]);
 
-    // ✅ Update field based on model type
-    switch ($model) {
-        case 'booking':
-        case 'prs':
-        case 'parcel':
-        case 'goods_shed':
-        case 'ticket':
-        case 'nonfare':
-            $quotation->checks = $request->input('checks');
-            break;
+        switch ($model) {
+            case 'booking':
+            case 'prs':
+            case 'parcel':
+            case 'goods_shed':
+            case 'ticket':
+            case 'nonfare':
+                $quotation->checks = $request->input('checks');
+                break;
 
-        case 'inspection_passenger':
-        case 'station_cleanliness':
-        case 'inspection_pantry':
-            $quotation->checks = $request->input('checks');
-            break;
+            case 'inspection_passenger':
+            case 'station_cleanliness':
+            case 'inspection_pantry':
+                $quotation->checks = $request->input('checks');
+                break;
 
-        case 'inspection_payuse':
-        case 'inspection_tea':
-        case 'inspection_kitchen':
-            $quotation->checks = $request->input('checks');
-            break;
+            case 'inspection_payuse':
+            case 'inspection_tea':
+            case 'inspection_kitchen':
+                $quotation->checks = $request->input('checks');
+                break;
 
-        default:
-            return back()->with('error', 'Invalid model type.');
+            default:
+                return back()->with('error', 'Invalid model type.');
+        }
+
+        $quotation->save();
+
+        return redirect()->route('admin.quotationshow')->with('success', 'Quotation updated successfully.');
     }
-
-    $quotation->save();
-
-    return redirect()->route('admin.quotationshow')->with('success', 'Quotation updated successfully.');
-}
-
 
     private function getModelClass($model)
     {

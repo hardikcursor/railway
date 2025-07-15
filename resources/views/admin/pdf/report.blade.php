@@ -125,7 +125,7 @@
     <table>
         <tr>
             <th>Name</th>
-            <td>{{ $report->NameInspection }}</td>
+            <td>{{ $report->NameInspector }}</td>
         </tr>
         <tr>
             <th>Station</th>
