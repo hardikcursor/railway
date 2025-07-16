@@ -9,5 +9,10 @@ class Goods_Shed_office extends Model
 {
     use HasFactory;  
 
+
+     public function answers()
+    {
+        return $this->hasMany(Goods_office_answer::class);
+    }
     
 }
