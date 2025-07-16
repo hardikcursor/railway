@@ -12,7 +12,9 @@ use App\Models\InspectionPayUseToilets;
 use App\Models\INSPECTION_TEA;
 use App\Models\NonFare_Revenue;
 use App\Models\Parcel_Office;
+use App\Models\Parcel_answer;
 use App\Models\PRS_office;
+use App\Models\PRS_office_answer;
 use App\Models\Report;
 use App\Models\StationCleanliness;
 use App\Models\Ticket_Examineroffice;
@@ -165,10 +167,18 @@ class AdminDashboardController extends Controller
         $report = Report::findOrFail($id);
 
         $bookingOfficeAnswers = Booking_office_answer::with('bookingOffice')
-            ->where('report_id', $report->id) // ✅ Only those tied to the given report
+            ->where('report_id', $report->id) 
             ->get();
 
-        $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingOfficeAnswers'));
+        $PRS_office_answers = PRS_office_answer::with('PRS_office')
+            ->where('report_id', $report->id)
+            ->get();
+
+        $Parcel_answer = Parcel_answer::with('parcelOffice')
+            ->where('report_id', $report->id)
+            ->get();
+
+        $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingOfficeAnswers', 'PRS_office_answers', 'Parcel_answer'));
 
         return $pdf->download('report_' . $report->id . '.pdf');
     }

@@ -34,7 +34,9 @@ Route::prefix('booking-office-answers')->group(function () {
     // Route::get('/{id}', [BookingOfficeAnswerController::class, 'show']); 
     Route::get('/quotations', [BookingOfficeAnswerController::class, 'bookingquotionshow']);
     Route::get('/prs-quotations', [BookingOfficeAnswerController::class, 'prsgquotionshow']);
+    Route::post('/prsanswer', [BookingOfficeAnswerController::class, 'prsanswer'])->middleware('auth:sanctum');
     Route::get('/parcel-quotations', [BookingOfficeAnswerController::class, 'parcelgquotionshow']);
+    Route::post('/parcelanswer', [BookingOfficeAnswerController::class, 'ParcelOfficeAnswer'])->middleware('auth:sanctum');
     Route::get('/goodshed-quotations', [BookingOfficeAnswerController::class, 'goodshedoffice']);
     Route::get('/ticketexaminer-quotations', [BookingOfficeAnswerController::class, 'ticketexaminerquotionshow']);
     Route::get('/nonfare-quotations', [BookingOfficeAnswerController::class, 'nonfarequotionshow']);
