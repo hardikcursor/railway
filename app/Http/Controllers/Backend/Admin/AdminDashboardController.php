@@ -5,19 +5,22 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking_office;
 use App\Models\Booking_office_answer;
 use App\Models\Goods_Shed_office;
+use App\Models\Goods_office_answer;
 use App\Models\INSPECTIONKITCHEN;
 use App\Models\InspectionPantryCar;
 use App\Models\InspectionPassenger_items;
 use App\Models\InspectionPayUseToilets;
 use App\Models\INSPECTION_TEA;
 use App\Models\NonFare_Revenue;
-use App\Models\Parcel_Office;
+use App\Models\NonFare_Revenue_answer;
 use App\Models\Parcel_answer;
+use App\Models\Parcel_Office;
 use App\Models\PRS_office;
 use App\Models\PRS_office_answer;
 use App\Models\Report;
 use App\Models\StationCleanliness;
 use App\Models\Ticket_Examineroffice;
+use App\Models\Ticket_office_answer;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
@@ -167,7 +170,7 @@ class AdminDashboardController extends Controller
         $report = Report::findOrFail($id);
 
         $bookingOfficeAnswers = Booking_office_answer::with('bookingOffice')
-            ->where('report_id', $report->id) 
+            ->where('report_id', $report->id)
             ->get();
 
         $PRS_office_answers = PRS_office_answer::with('PRS_office')
@@ -178,7 +181,20 @@ class AdminDashboardController extends Controller
             ->where('report_id', $report->id)
             ->get();
 
-        $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingOfficeAnswers', 'PRS_office_answers', 'Parcel_answer'));
+        $Goods_office_answer = Goods_office_answer::with('goodsOffice')
+            ->where('report_id', $report->id)
+            ->get();
+
+        $Ticket_office_answer = Ticket_office_answer::with('ticketOffice')
+            ->where('report_id', $report->id)
+            ->get();
+
+        $NonFare_Revenue_answer = NonFare_Revenue_answer::with('nonFareRevenueOffice')
+            ->where('report_id', $report->id)
+            ->get();
+
+
+        $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingOfficeAnswers', 'PRS_office_answers', 'Parcel_answer', 'Goods_office_answer', 'Ticket_office_answer', 'NonFare_Revenue_answer'));
 
         return $pdf->download('report_' . $report->id . '.pdf');
     }

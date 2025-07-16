@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class NonFare_Revenue extends Model
 {
     use HasFactory;
+
+       public function answers()
+    {
+        return $this->hasMany(NonFare_Revenue_answer::class);
+    }
 }

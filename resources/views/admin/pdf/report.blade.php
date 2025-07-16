@@ -348,6 +348,140 @@
         @endforeach
     </table>
 
+    <h3>4. <u>Goods Shed/Office</u> :</h3>
+
+    <div style="font-size: 14px; line-height: 1.8;">
+
+        <div style="margin-bottom: 10px;">
+            <span style="display: inline-block; width: 30px;">I.</span>
+            <span style="display: inline-block; width: 180px;">Name of CGS:</span>
+            <span
+                style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $bookingOffice->name_of_cbs ?? '' }}</span>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <span style="display: inline-block; width: 30px;">II.</span>
+            <span style="display: inline-block; width: 180px;">No. of on duty staff:</span>
+            <span
+                style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $bookingOffice->duty_staff_no ?? '' }}</span>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; margin-bottom: 10px;">
+            <span style="display: inline-block; width: 30px;">III.</span>
+            <span style="display: inline-block; width: 180px;">Sanctioned Cadre:</span>
+            <span
+                style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $bookingOffice->sanctioned_cadre ?? '' }}</span>
+
+            <span style="display: inline-block; width: 100px;">Available:</span>
+            <span
+                style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $bookingOffice->available ?? '' }}</span>
+
+            <span style="display: inline-block; width: 130px;">Vacancy/Excess:</span>
+            <span
+                style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px;">{{ $bookingOffice->vacancy_excess ?? '' }}</span>
+        </div>
+
+
+    </div>
+
+    <table>
+        <tr>
+            <th style="width: 5%;">Sr.No</th>
+            <th style="width: 60%;">Checks</th>
+            <th style="width: 35%;">Remarks/Action taken</th>
+
+        </tr>
+        @foreach ($Goods_office_answer as $key => $answer)
+            <tr>
+                <td>{{ $key + 1 }}</td>
+                <td>{{ $answer->goodsOffice->checks ?? 'N/A' }}</td>
+                <td>
+                    {{ $answer->answer ?? '""' }} <br>
+                    <strong>Remark:</strong> {{ $answer->remark ?? '-' }}
+                </td>
+            </tr>
+        @endforeach
+    </table>
+
+
+
+    <h3>5. <u>Ticket Examiner office </u> :</h3>
+
+    <div style="font-size: 14px; line-height: 1.8;">
+
+        <div style="margin-bottom: 10px;">
+            <span style="display: inline-block; width: 30px;">I.</span>
+            <span style="display: inline-block; width: 180px;">Name of CTI:</span>
+            <span
+                style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $bookingOffice->name_of_cbs ?? '' }}</span>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <span style="display: inline-block; width: 30px;">II.</span>
+            <span style="display: inline-block; width: 180px;">No. of on duty staff:</span>
+            <span
+                style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $bookingOffice->duty_staff_no ?? '' }}</span>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; margin-bottom: 10px;">
+            <span style="display: inline-block; width: 30px;">III.</span>
+            <span style="display: inline-block; width: 180px;">Sanctioned Cadre:</span>
+            <span
+                style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $bookingOffice->sanctioned_cadre ?? '' }}</span>
+
+            <span style="display: inline-block; width: 100px;">Available:</span>
+            <span
+                style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $bookingOffice->available ?? '' }}</span>
+
+            <span style="display: inline-block; width: 130px;">Vacancy/Excess:</span>
+            <span
+                style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px;">{{ $bookingOffice->vacancy_excess ?? '' }}</span>
+        </div>
+
+
+    </div>
+
+    <table>
+        <tr>
+            <th style="width: 5%;">Sr.No</th>
+            <th style="width: 60%;">Checks</th>
+            <th style="width: 35%;">Remarks/Action taken</th>
+
+        </tr>
+        @foreach ($Ticket_office_answer as $key => $answer)
+            <tr>
+                <td>{{ $key + 1 }}</td>
+                <td>{{ $answer->ticketOffice->checks ?? 'N/A' }}</td>
+                <td>
+                    {{ $answer->answer ?? '""' }} <br>
+                    <strong>Remark:</strong> {{ $answer->remark ?? '-' }}
+                </td>
+            </tr>
+        @endforeach
+    </table>
+
+
+        <h3>6. <u>Non Fare Revenue at stations </u> :</h3>
+
+    <table>
+        <tr>
+            <th style="width: 5%;">Sr.No</th>
+            <th style="width: 60%;">Checks</th>
+            <th style="width: 35%;">Remarks/Action taken</th>
+
+        </tr>
+        @foreach ($NonFare_Revenue_answer as $key => $answer)
+            <tr>
+                <td>{{ $key + 1 }}</td>
+                <td>{{ $answer->nonFareRevenueOffice->checks ?? 'N/A' }}</td>
+                <td>
+                    {{ $answer->answer ?? '""' }} <br>
+                    <strong>Remark:</strong> {{ $answer->remark ?? '-' }}
+                </td>
+            </tr>
+        @endforeach
+    </table>
+
 </body>
 
 </html>

@@ -21,4 +21,6 @@ class NFR_Revenue extends Model
     'fee_paid_upto_month',
     'fee_paid_upto_rs',
 ];
+    use HasFactory;
+
 }
