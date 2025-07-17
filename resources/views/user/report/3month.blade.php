@@ -4,7 +4,7 @@
         <div class="page-content fade-in-up">
             <div class="ibox">
                 <div class="ibox-head">
-                    <div class="ibox-title">3 Month Records</div>
+                    <div class="ibox-title">Quarterly Records</div>
                 </div>
                 <div class="ibox-body">
                     <table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0"
@@ -19,7 +19,7 @@
                                 {{-- <th>Duration</th>
                                 <th>Send To Admin </th>
                                 <th>Download</th> --}}
-                                <th>Approve</th>
+                                {{-- <th>Approve</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -41,12 +41,12 @@
                                     </td> --}}
                                     {{-- <td><a class="btn btn-sm btn-primary"
                                             href="{{ route('reports.download', $report->id) }}">Download</a></td> --}}
-                                    <td>
+                                    {{-- <td>
                                         <form action="{{ route('admin.approval', $report->id) }}" method="POST">
                                             @csrf
                                             <button type="submit" class="btn btn-success">ok</button>
                                         </form>
-                                    </td>
+                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>

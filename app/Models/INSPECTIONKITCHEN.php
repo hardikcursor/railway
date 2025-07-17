@@ -7,5 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class INSPECTIONKITCHEN extends Model
 {
-    use HasFactory;
+    use HasFactory;  
+
+
+    public function answers()
+    {
+        return $this->hasMany(inspectionkitchen_answer::class);
+    }
 }

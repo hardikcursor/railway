@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class inspectionkitchen_answer extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['user_id', 'inspection_kitchen_id ', 'report_id', 'answer', 'yes_no', 'remark'];
+
+    protected $table = 'inspectionkitchen_answers';
+
+    public function inspectionKitchen()
+    {
+        return $this->belongsTo(INSPECTIONKITCHEN::class, 'inspection_kitchen_id');
+    }
 }

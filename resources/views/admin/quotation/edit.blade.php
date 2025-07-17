@@ -5,14 +5,14 @@
     <div class="page-content fade-in-up">
         <div class="ibox">
             <div class="ibox-head">
-                <div class="ibox-title">Edit Quotation ({{ ucfirst($model) }})</div>
+                <div class="ibox-title">Edit Quations ({{ ucfirst($model) }})</div>
             </div>
 
             <div class="ibox-body">
                 <form action="{{ route('admin.quotation.update', ['model' => $model, 'id' => $quotation->id]) }}" method="POST">
                     @csrf
                     <div class="form-group">
-                        <label for="checks">Quotation Text</label>
+                        <label for="checks">Quations Text</label>
                         <input type="text"
                                class="form-control @error('checks') is-invalid @enderror"
                                name="checks"

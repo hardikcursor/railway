@@ -75,7 +75,7 @@
                                 width="100%">
                                 <thead>
                                     <tr class="text-dark">
-                                        <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                                        <th scope="col">Sr.No</th>
                                         <th scope="col">Date</th>
                                         <th scope="col">Name of Inspector</th>
                                         <th scope="col">Station</th>
@@ -83,7 +83,7 @@
                                         <th scope="col">Duration</th>
                                         {{-- <th scope="col">Send To Admin </th> --}}
                                         {{-- <th>Download</th> --}}
-                                        <th>Approve</th>
+                                        {{-- <th>Approve</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -123,13 +123,13 @@
                                                     href="{{ route('reports.download', $report->id) }}">Download</a>
                                             </td> --}}
 
-                                            <td>
+                                            {{-- <td>
                                                 <form action="{{ route('admin.approval', $report->id) }}" method="POST"
                                                     class="d-inline">
                                                     @csrf
                                                     <button type="submit" class="btn btn-success">ok</button>
                                                 </form>
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                     @endforeach
                                 </tbody>

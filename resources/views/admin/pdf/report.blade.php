@@ -146,16 +146,23 @@
     </table>
 
     <h2>
-        @if (Str::contains(strtolower($report->Duration), '3 month'))
+        @php
+            $duration = strtolower($report->Duration);
+        @endphp
+
+        @if (Str::contains($duration, '6 month') || Str::contains($duration, 'half'))
+            Half Yearly Inspection Report
+        @elseif (Str::contains($duration, '3 month') || Str::contains($duration, 'quarter'))
             Quarterly Inspection Report
         @else
             Monthly Inspection Report
         @endif
     </h2>
 
+
     <p><strong>Name of Station:</strong> __________________ <strong>Date of Inspection:</strong> __________________</p>
 
-    <h3>1. <u>Booking Office</u> :</h3>
+    <h3 style="text-align: left;">1. <u>Booking Office</u> :</h3>
 
     <div style="font-size: 14px; line-height: 1.8;">
 
@@ -226,7 +233,7 @@
         @endforeach
     </table>
 
-    <h3>2. <u>PRS Office</u> :</h3>
+    <h3 style="text-align: left;">2. <u>PRS Office</u> :</h3>
 
     <div style="font-size: 14px; line-height: 1.8;">
 
@@ -293,7 +300,7 @@
         @endforeach
     </table>
 
-    <h3>3. <u>Parcel Office</u> :</h3>
+    <h3 style="text-align: left;">3. <u>Parcel Office</u> :</h3>
 
     <div style="font-size: 14px; line-height: 1.8;">
 
@@ -348,7 +355,7 @@
         @endforeach
     </table>
 
-    <h3>4. <u>Goods Shed/Office</u> :</h3>
+    <h3 style="text-align: left;">4. <u>Goods Shed/Office</u> :</h3>
 
     <div style="font-size: 14px; line-height: 1.8;">
 
@@ -405,7 +412,7 @@
 
 
 
-    <h3>5. <u>Ticket Examiner office </u> :</h3>
+    <h3 style="text-align: left;">5. <u>Ticket Examiner office </u> :</h3>
 
     <div style="font-size: 14px; line-height: 1.8;">
 
@@ -461,7 +468,7 @@
     </table>
 
 
-        <h3>6. <u>Non Fare Revenue at stations </u> :</h3>
+    <h3 style="text-align: left;">6. <u>Non Fare Revenue at stations </u> :</h3>
 
     <table>
         <tr>
@@ -481,6 +488,273 @@
             </tr>
         @endforeach
     </table>
+
+    <h3 style="text-align: left;">7. <u>Inspection of Passenger Amenities items </u> :</h3>
+
+
+    <table>
+        <thead>
+            <tr>
+                <th>Sr.No.</th>
+                <th>Items</th>
+                <th>Yes</th>
+                <th>No</th>
+                <th>Remarks/Action Taken</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($InspectionPassenger_items__answer as $key => $answer)
+                <tr>
+                    <td>{{ $key + 1 }}</td>
+                    <td>{{ $answer->inspectionPassengerItems->checks ?? 'N/A' }}</td>
+
+                    {{-- Yes Column --}}
+                    <td class="text-center">
+                        {{ $answer->yes_no == 1 ? 'Yes' : '' }}
+                    </td>
+
+                    {{-- No Column --}}
+                    <td class="text-center">
+                        {{ $answer->yes_no != 1 ? 'No' : '' }}
+                    </td>
+
+                    <td>{{ $answer->remark ?? 'N/A' }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+
+    {{-- <table border="1" cellspacing="0" cellpadding="5"
+        style="border-collapse: collapse; width: 100%; margin: 0; padding: 0;">
+        <thead>
+            <tr>
+                <th style="width: 25%;">Sr.No.</th>
+                <th style="width: 70%;">ITEMS</th>
+                <th style="width: 25%;">Remarks/Action taken</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Arrangements for housekeeping (details thereon)</td>
+                <td></td>
+            </tr>
+                @foreach ($StationCleanliness_answer as $index => $answer)
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>
+                            Availability of dust bins (separately Black, Blue & Green).<br>
+                            Mention number of dustbins individually.
+                        </td>
+                        <td style="padding: 0; margin: 0; vertical-align: top;">
+                            <table border="1" cellspacing="0" cellpadding="0"
+                                style="width: 100%; border-collapse: collapse; table-layout: fixed; margin: 0; padding: 0; line-height: 1;">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 33.33%; padding: 5px;">Black</th>
+                                        <th style="width: 33.33%; padding: 5px;">Blue</th>
+                                        <th style="width: 33.33%; padding: 5px;">Green</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="margin: 0; padding: 0;">
+                                        <td style="height: 30px; padding: 5px; margin: 0; line-height: 1;">
+                                            {{ $answer->black ?? '' }}
+                                        </td>
+                                        <td style="padding: 5px; margin: 0; line-height: 1;">
+                                            {{ $answer->blue ?? '' }}
+                                        </td>
+                                        <td style="padding: 5px; margin: 0; line-height: 1;">
+                                            {{ $answer->green ?? '' }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                @endforeach
+        </tbody>
+    </table> --}}
+
+
+
+    <div style="page-break-before: always;">
+        <h3 style="text-align: left;"> <u>9. Inspection of Pay & Use Toilets</u></h3>
+
+        <table border="1" cellspacing="0" cellpadding="5"
+            style="border-collapse: collapse; width: 100%; text-align: center;">
+            <thead>
+                <tr>
+                    <th rowspan="2">Sr.</th>
+                    <th rowspan="2">Location</th>
+                    <th colspan="2">No. of WC</th>
+                    <th colspan="2">No. of Urinals</th>
+                    <th rowspan="2">Divyang</th>
+                </tr>
+                <tr>
+                    <th>Gents</th>
+                    <th>Ladies</th>
+                    <th>Gents</th>
+                    <th>Ladies</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>During the inspection of the above toilet block on dated ......................... following observations
+            were made:</p>
+
+        <table border="1" cellspacing="0" cellpadding="5" style="border-collapse: collapse; width: 100%;">
+            <thead>
+                <tr>
+                    <th>Sr. No</th>
+                    <th>Particulars</th>
+                    <th>Remarks/Observations</th>
+                    <th>In case of minor deficiencies TDC</th>
+                    <th>In case of Major deficiencies Action Proposed</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($InspectionPayUseToilets_answer as $key => $answer)
+                    <tr>
+                        <td>{{ ++$key }}</td>
+                        <td>{{ $answer->inspectionPayUseToilets->checks ?? 'N/A' }}</td>
+                        <td>{{ $answer->Remar_Observations ?? 'N/A' }}</td>
+                        <td>{{ $answer->Minor_deficiencies ?? 'N/A' }}</td>
+                        <td>{{ $answer->Major_deficiencies_Proposed ?? 'N/A' }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
+    <h3 style="text-align: left;"> <u>10. INSPECTION OF TEA & LIGHT REFRESHMENT STALL</u></h3>
+
+    <table border="1" cellspacing="0" cellpadding="5"
+        style="border-collapse: collapse; width: 100%; text-align: left;">
+        <thead>
+            <tr>
+                <th style="width: 5%;">Sr.No</th>
+                <th style="width: 50%;">Particulars</th>
+                <th style="width: 15%;">Yes/No</th>
+                <th style="width: 30%;">Remarks/Action taken</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($inspection_tea_answer as $key => $answer)
+                <tr>
+                    <td>{{ ++$key }}</td>
+                    <td>{{ $answer->inspectionTea->checks ?? 'N/A' }}</td>
+                    <td class="text-center">
+                        {{ $answer->yes_no == 1 ? 'Yes' : 'No' }}
+                    </td>
+                    <td>{{ $answer->remark ?? 'N/A' }}</td>
+                </tr>
+            @endforeach
+
+        </tbody>
+    </table>
+
+    <h3 style="text-align: left;"><u>11. Inspection of Pantry Car</u></h3>
+
+    <div style="text-align: left; margin-left: 0; padding-left: 0;">
+        <h5><b>Date of Inspection :-</b> </h5>
+        <h5><b>Train No :-</b> </h5>
+        <h5><b>Train Name :-</b> </h5>
+        <h5><b>Name of Inspecting Official :-</b> </h5>
+        <h5><b>Designation :-</b> </h5>
+        <h5><b>Pantry Car No :-</b> </h5>
+        <h5><b>Name of Pantry Car Manager :-</b> </h5>
+        <h5><b>Contractor Name :-</b> </h5>
+        <h5><b>Name of IRCTC Supervisor :-</b> </h5>
+    </div>
+
+
+
+    <table border="1" cellspacing="0" cellpadding="5"
+        style="border-collapse: collapse; width: 100%; font-size: 14px; margin-top: 20px;">
+        <thead>
+            <tr>
+                <th style="width: 10%;">Sr. No</th>
+                <th style="width: 60%;">Items to be Check</th>
+                <th style="width: 30%;">Remarks/Action Taken</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Items -->
+            @foreach ($InspectionPantryCar_answer as $key => $answer)
+                <tr>
+                    <td>{{ ++$key }}</td>
+                    <td>{{ $answer->inspectionPantryCar->checks ?? 'N/A' }}</td>
+                    <td>{{ $answer->remark ?? 'N/A' }}</td>
+                </tr>
+            @endforeach
+
+            <!-- Empty space row for spacing before signatures -->
+            <tr>
+                <td colspan="3" style="height: 30px; border: none;"></td>
+            </tr>
+
+            <!-- Signature Row -->
+            <tr>
+                <td colspan="2" style="padding-top: 10px;">
+                    <strong>Official Signature:</strong><br><br>
+                    __________________________<br>
+                    Inspecting Official
+                </td>
+                <td style="text-align: right; padding-top: 10px;">
+                    <strong>Pantry Car Representative:</strong><br><br>
+                    __________________________<br>
+                    Pantry Car Manager
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+    <h3 style="text-align: left;"><u>12. INSPECTION OF BASE KITCHEN</u></h3>
+
+    <table border="1" cellspacing="0" cellpadding="5"
+        style="border-collapse: collapse; width: 100%; font-size: 14px;">
+        <thead>
+            <tr>
+                <th style="width: 10%;">Sr.no</th>
+                <th style="width: 60%;">Particulars</th>
+                <th style="width: 15%;">Yes/No</th>
+                <th style="width: 15%;">Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($inspectionkitchen_answer as $key => $answer)
+                <tr>
+                    <td>{{ ++$key }}</td>
+                    <td>{{ $answer->inspectionKitchen->checks ?? 'N/A' }}</td>
+                    <td class="text-center">
+                        {{ $answer->yes_no == 1 ? 'Yes' : 'No' }}
+                    </td>
+                    <td>{{ $answer->remark ?? 'N/A' }}</td>
+                </tr>
+            @endforeach
+
+        </tbody>
+    </table>
+
+
+
+
+
 
 </body>
 

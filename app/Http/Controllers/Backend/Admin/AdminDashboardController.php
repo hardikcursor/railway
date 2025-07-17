@@ -4,13 +4,18 @@ namespace App\Http\Controllers\Backend\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Booking_office;
 use App\Models\Booking_office_answer;
-use App\Models\Goods_Shed_office;
 use App\Models\Goods_office_answer;
+use App\Models\Goods_Shed_office;
 use App\Models\INSPECTIONKITCHEN;
+use App\Models\inspectionkitchen_answer;
 use App\Models\InspectionPantryCar;
+use App\Models\InspectionPantryCar_answer;
 use App\Models\InspectionPassenger_items;
+use App\Models\InspectionPassenger_items__answer;
 use App\Models\InspectionPayUseToilets;
+use App\Models\InspectionPayUseToilets_answer;
 use App\Models\INSPECTION_TEA;
+use App\Models\INSPECTION_TEA_answer;
 use App\Models\NonFare_Revenue;
 use App\Models\NonFare_Revenue_answer;
 use App\Models\Parcel_answer;
@@ -19,6 +24,7 @@ use App\Models\PRS_office;
 use App\Models\PRS_office_answer;
 use App\Models\Report;
 use App\Models\StationCleanliness;
+use App\Models\StationCleanliness_answer;
 use App\Models\Ticket_Examineroffice;
 use App\Models\Ticket_office_answer;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -193,8 +199,31 @@ class AdminDashboardController extends Controller
             ->where('report_id', $report->id)
             ->get();
 
+        $InspectionPassenger_items__answer = InspectionPassenger_items__answer::with('inspectionPassengerItems')
+            ->where('report_id', $report->id)
+            ->get();
 
-        $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingOfficeAnswers', 'PRS_office_answers', 'Parcel_answer', 'Goods_office_answer', 'Ticket_office_answer', 'NonFare_Revenue_answer'));
+        $StationCleanliness_answer = StationCleanliness_answer::with('stationCleanliness')
+            ->where('report_id', $report->id)
+            ->get();
+
+        $InspectionPayUseToilets_answer = InspectionPayUseToilets_answer::with('inspectionPayUseToilets')
+            ->where('report_id', $report->id)
+            ->get();
+
+        $inspection_tea_answer = inspection_tea_answer::with('inspectionTea')
+            ->where('report_id', $report->id)
+            ->get();
+
+        $InspectionPantryCar_answer = InspectionPantryCar_answer::with('inspectionPantryCar')
+            ->where('report_id', $report->id)
+            ->get();
+
+        $inspectionkitchen_answer = inspectionkitchen_answer::with('inspectionKitchen')
+            ->where('report_id', $report->id)
+            ->get();
+
+        $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingOfficeAnswers', 'PRS_office_answers', 'Parcel_answer', 'Goods_office_answer', 'Ticket_office_answer', 'NonFare_Revenue_answer', 'InspectionPassenger_items__answer', 'StationCleanliness_answer', 'InspectionPayUseToilets_answer', 'inspection_tea_answer', 'InspectionPantryCar_answer','inspectionkitchen_answer'));
 
         return $pdf->download('report_' . $report->id . '.pdf');
     }

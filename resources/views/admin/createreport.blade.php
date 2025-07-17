@@ -5,16 +5,16 @@
         <div class="page-content fade-in-up">
             <div class="ibox">
                 <div class="ibox-head d-flex justify-content-between align-items-center flex-wrap">
-                    <div class="ibox-title">Generate Report Quotation</div>
+                    <div class="ibox-title">Generate Report Quation</div>
                 </div>
 
                 <div class="ibox-body">
                     <!-- Success Message -->
                     <div id="success-message" class="alert alert-success" style="display: none;">
-                        Quotation report created successfully!
+                        Quation report created successfully!
                     </div>
 
-                    <form action="{{ route('admin.userstore') }}" method="POST" class="form-horizontal" id="form-sample-1" novalidate="novalidate">
+                    {{-- <form action="{{ route('admin.userstore') }}" method="POST" class="form-horizontal" id="form-sample-1" novalidate="novalidate">
                         @csrf
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Name of Inspection :</label>
@@ -76,7 +76,7 @@
                                 <button class="btn btn-info" type="submit">Submit</button>
                             </div>
                         </div>
-                    </form>
+                    </form> --}}
                     <!-- Select Box -->
                     <div class="form-group">
                         <label for="report_type">Select Report Type</label>
