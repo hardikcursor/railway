@@ -22,6 +22,7 @@ use App\Models\Parcel_answer;
 use App\Models\Parcel_Office;
 use App\Models\PRS_office;
 use App\Models\PRS_office_answer;
+use App\Models\Report;
 use App\Models\StationCleanliness;
 use App\Models\StationCleanliness_answer;
 use App\Models\Ticket_Examineroffice;
@@ -30,9 +31,60 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException; 
 
 class BookingOfficeAnswerController extends Controller
 {
+
+ public function inspectionstore(Request $request)
+    {
+        try {
+            // Validate the input
+            $validated = $request->validate([
+                'title'       => 'required|string|max:255',
+                'Inspector'   => 'required|string|max:255',
+                'author'      => 'required|string|max:255',
+                'description' => 'required|string',
+                'category'    => 'required|string',
+            ], [
+                'title.required'       => 'The name of inspection is required.',
+                'Inspector.required'   => 'The name of inspector is required.',
+                'author.required'      => 'The station is required.',
+                'description.required' => 'The type of inspection is required.',
+                'category.required'    => 'The duration is required.',
+            ]);
+
+            // Create report
+            $report = Report::create([
+                'NameInspection'   => $validated['title'],
+                'NameInspector'    => $validated['Inspector'],
+                'Station'          => $validated['author'],
+                'TypeofInspection' => $validated['description'],
+                'Duration'         => $validated['category'],
+                'status'           => 'pending',
+            ]);
+
+            return response()->json([
+                'status'  => true,
+                'message' => 'Report created successfully!',
+                'data'    => $report,
+            ], 201);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Validation failed.',
+                'errors'  => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Something went wrong!',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function store(Request $request)
     {
         $request->validate([

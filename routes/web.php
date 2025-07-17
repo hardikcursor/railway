@@ -36,7 +36,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/adminreports/{id}/download', [AdminDashboardController::class, 'downloadReport'])->name('admin.reports.download');
     Route::post('/record/{id}/approve', [AdminDashboardController::class, 'sendToApprove'])->name('admin.sendToApprove');
     Route::get('/admin/generate-report', [AdminDashboardController::class, 'generatereport'])->name('admin.generateReport');
-    Route::post('/record', [AdminDashboardController::class, 'store'])->name('admin.userstore');
     Route::get('/admin/quotationshow', [AdminDashboardController::class, 'quotationshow'])->name('admin.quotationshow');
     Route::get('/admin/quotation/delete/{model}/{id}', [AdminDashboardController::class, 'remove'])->name('admin.quotation.delete');
     Route::post('/user/savequotationreport', [AdminDashboardController::class, 'savequotationreport'])->name('admin.savequotationreport');

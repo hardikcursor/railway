@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\Api\BookingOfficeAnswerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\BookingOfficeAnswerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +20,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
 // Auth Routes
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/signin', [AuthController::class, 'login']);
@@ -31,7 +30,7 @@ Route::get('/user', [AuthController::class, 'getuser']);
 Route::prefix('booking-office-answers')->group(function () {
     Route::post('/bookinganswer', [BookingOfficeAnswerController::class, 'store'])->middleware('auth:sanctum');
     Route::get('/', [BookingOfficeAnswerController::class, 'bookinganswershow']);
-    // Route::get('/{id}', [BookingOfficeAnswerController::class, 'show']); 
+    // Route::get('/{id}', [BookingOfficeAnswerController::class, 'show']);
     Route::get('/quotations', [BookingOfficeAnswerController::class, 'bookingquotionshow']);
     Route::get('/prs-quotations', [BookingOfficeAnswerController::class, 'prsgquotionshow']);
     Route::post('/prsanswer', [BookingOfficeAnswerController::class, 'prsanswer'])->middleware('auth:sanctum');
@@ -55,6 +54,5 @@ Route::prefix('booking-office-answers')->group(function () {
     Route::post('/inspection-pantry-car-answer', [BookingOfficeAnswerController::class, 'inspectionOfPantryCarAnswer'])->middleware('auth:sanctum');
     Route::get('/inspection-base-kitchen', [BookingOfficeAnswerController::class, 'inspectionOfBaseKitchen']);
     Route::post('/inspection-base-kitchen-answer', [BookingOfficeAnswerController::class, 'inspectionBaseKitchenAnswer'])->middleware('auth:sanctum');
+    Route::post('/inspectionstore', [BookingOfficeAnswerController::class, 'inspectionstore']);
 });
-
-
