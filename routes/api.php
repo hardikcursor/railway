@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\Api\BookingOfficeAnswerController;
+use App\Http\Controllers\API\BookingOfficeAnswerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,7 +28,7 @@ Route::get('/user', [AuthController::class, 'getuser']);
 
 // Booking Office Answer Routes
 Route::prefix('booking-office-answers')->group(function () {
-    Route::post('/bookinganswer', [BookingOfficeAnswerController::class, 'store'])->middleware('auth:sanctum');
+    Route::post('/bookinganswer', [BookingOfficeAnswerController::class, 'store']);
     Route::get('/', [BookingOfficeAnswerController::class, 'bookinganswershow']);
     // Route::get('/{id}', [BookingOfficeAnswerController::class, 'show']);
     Route::get('/quotations', [BookingOfficeAnswerController::class, 'bookingquotionshow']);
@@ -55,4 +55,5 @@ Route::prefix('booking-office-answers')->group(function () {
     Route::get('/inspection-base-kitchen', [BookingOfficeAnswerController::class, 'inspectionOfBaseKitchen']);
     Route::post('/inspection-base-kitchen-answer', [BookingOfficeAnswerController::class, 'inspectionBaseKitchenAnswer'])->middleware('auth:sanctum');
     Route::post('/inspectionstore', [BookingOfficeAnswerController::class, 'inspectionstore']);
+
 });

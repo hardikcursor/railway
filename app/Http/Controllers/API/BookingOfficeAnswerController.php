@@ -6,8 +6,6 @@ use App\Models\Booking_office;
 use App\Models\Booking_office_answer;
 use App\Models\Goods_office_answer;
 use App\Models\Goods_Shed_office;
-use App\Models\INSPECTION_TEA;
-use App\Models\inspection_tea_answer;
 use App\Models\INSPECTIONKITCHEN;
 use App\Models\inspectionkitchen_answer;
 use App\Models\InspectionPantryCar;
@@ -16,6 +14,8 @@ use App\Models\InspectionPassenger_items;
 use App\Models\InspectionPassenger_items__answer;
 use App\Models\InspectionPayUseToilets;
 use App\Models\InspectionPayUseToilets_answer;
+use App\Models\INSPECTION_TEA;
+use App\Models\inspection_tea_answer;
 use App\Models\NonFare_Revenue;
 use App\Models\NonFare_Revenue_answer;
 use App\Models\Parcel_answer;
@@ -31,12 +31,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException; 
+use Illuminate\Validation\ValidationException;
 
 class BookingOfficeAnswerController extends Controller
 {
 
- public function inspectionstore(Request $request)
+    public function inspectionstore(Request $request)
     {
         try {
             // Validate the input
@@ -87,20 +87,29 @@ class BookingOfficeAnswerController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
+            'user_id'           => 'required|exists:users,id',
             'booking_office_id' => 'required|exists:booking_offices,id',
             'report_id'         => 'required|exists:reports,id',
             'answer'            => 'required|string',
             'remark'            => 'nullable|string',
         ]);
 
-        $answer                    = new Booking_office_answer();
-        $answer->user_id           = Auth::id();
-        $answer->booking_office_id = $request->booking_office_id;
-        $answer->report_id         = $request->report_id;
-        $answer->answer            = $request->answer;
-        $answer->remark            = $request->remark;
-        $answer->save();
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation errors',
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
+
+        $answer = Booking_office_answer::create([
+            'user_id'           => $request->user_id,
+            'booking_office_id' => $request->booking_office_id,
+            'report_id'         => $request->report_id,
+            'answer'            => $request->answer,
+            'remark'            => $request->remark,
+        ]);
 
         return response()->json([
             'success' => true,
@@ -665,18 +674,16 @@ class BookingOfficeAnswerController extends Controller
         ]);
     }
 
-
-
-     public function inspectionBaseKitchenAnswer(Request $request)
+    public function inspectionBaseKitchenAnswer(Request $request)
     {
         try {
 
             $validator = Validator::make($request->all(), [
                 'inspection_kitchen_id' => 'required|exists:i_n_s_p_e_c_t_i_o_n_k_i_t_c_h_e_n_s,id',
-                'report_id'         => 'required|exists:reports,id',
-                'yes_no'            => 'required|boolean',
-                'answer'            => 'required|string',
-                'remark'            => 'nullable|string',
+                'report_id'             => 'required|exists:reports,id',
+                'yes_no'                => 'required|boolean',
+                'answer'                => 'required|string',
+                'remark'                => 'nullable|string',
             ]);
 
             if ($validator->fails()) {
@@ -686,13 +693,13 @@ class BookingOfficeAnswerController extends Controller
                 ], 422);
             }
 
-            $answer                    = new inspectionkitchen_answer();
-            $answer->user_id           = Auth::id();
+            $answer                        = new inspectionkitchen_answer();
+            $answer->user_id               = Auth::id();
             $answer->inspection_kitchen_id = $request->inspection_kitchen_id;
-            $answer->report_id         = $request->report_id;
-            $answer->yes_no            = $request->yes_no;
-            $answer->answer            = $request->answer;
-            $answer->remark            = $request->remark;
+            $answer->report_id             = $request->report_id;
+            $answer->yes_no                = $request->yes_no;
+            $answer->answer                = $request->answer;
+            $answer->remark                = $request->remark;
             $answer->save();
 
             return response()->json([

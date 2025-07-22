@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-use function Laravel\Prompts\alert;
-
 class AuthController extends Controller
 {
     public function signup(Request $request)
@@ -20,13 +18,13 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
         if ($validator->passes()) {
-            $user           = new User;
-            $user->name     = $request->name;
-            $user->email    = $request->email;
-            $user->phone = $request->phone;
-            $user->designation = $request->designation;
-            $user->incharge_name = $request->incharge_name;            
-            $user->password = Hash::make($request->password);
+            $user                = new User;
+            $user->name          = $request->name;
+            $user->email         = $request->email;
+            $user->phone         = $request->phone;
+            $user->designation   = $request->designation;
+            $user->incharge_name = $request->incharge_name;
+            $user->password      = Hash::make($request->password);
             $user->save();
 
             return response()->json([
@@ -66,7 +64,7 @@ class AuthController extends Controller
             ], 401);
         }
 
-        // Check credentials
+    
         if (! Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             return response()->json([
                 'status'  => false,
@@ -75,11 +73,9 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'status'     => true,
-            'message'    => 'User login successfully',
-            'token'      => $user->createToken('API TOKEN')->plainTextToken,
-            'token_type' => 'bearer',
-            'user'       => $user,
+            'status'  => true,
+            'message' => 'Login successful',
+            'user'    => $user,
         ], 200);
     }
 
@@ -106,3 +102,12 @@ class AuthController extends Controller
         ]);
     }
 }
+
+
+
+// {
+//     "booking_office_id": 1,
+//     "report_id": 1,
+//     "answer": "Sample answer",
+//     "remark": "Optional note"
+// }

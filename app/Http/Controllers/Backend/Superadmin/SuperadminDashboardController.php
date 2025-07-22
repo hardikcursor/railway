@@ -13,7 +13,7 @@ class SuperadminDashboardController extends Controller
 {
     public function index()
     {
-        $reports           = Report::paginate(10);
+        $reports           = Report::get();
         $totalInspections  = Report::count();
         $approvedReports   = Report::where('status', 'approved')->count();
         $pendingCount      = Report::where('status', 'pending')->count();
