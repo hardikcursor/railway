@@ -76,7 +76,7 @@
                 <li>
                     <a href="{{ route('admin.quotationshow') }}">
                         <i class="sidebar-item-icon fa-solid fa-file-pen"></i>
-                        <span class="nav-label">Change Quotation</span>
+                        <span class="nav-label">Change Quations</span>
                     </a>
                 </li>
             @endrole
@@ -85,8 +85,8 @@
             @role('admin')
                 <li>
                     <a href="{{ route('admin.generateReport') }}">
-                        <i class="sidebar-item-icon fa fa-user"></i>
-                        <span class="nav-label">Generate Report</span>
+                        <i class="sidebar-item-icon fa-solid fa-user-pen"></i>
+                        <span class="nav-label">Generate Quation</span>
                     </a>
                 </li>
             @endrole

@@ -9,7 +9,7 @@ class inspectionkitchen_answer extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'inspection_kitchen_id ', 'report_id', 'answer', 'yes_no', 'remark'];
+    protected $fillable = ['user_id', 'inspection_kitchen_id', 'report_id', 'answer', 'yes_no', 'remark'];
 
     protected $table = 'inspectionkitchen_answers';
 
