@@ -710,9 +710,6 @@ class BookingOfficeAnswerController extends Controller
     public function inspectionBaseKitchenAnswer(Request $request)
     {
         try {
-
-            // If it's a JSON string, decode it
-
             $userId        = $request->input('user_id');
             $inspection_id = $request->input('inspection_id');
             $allResponses  = $request->input('all_resp');
