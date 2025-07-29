@@ -306,7 +306,7 @@
                                 <thead>
                                     <tr class="text-dark">
                                         <th scope="col">Sr.No</th>
-                                        <th scope="col">Quotation</th>
+                                        <th scope="col">Question</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -314,7 +314,7 @@
                                     <tbody>
                                         <tr>
                                             <td colspan="3">
-                                                <h5 class="text-primary mb-2 mt-4">Booking Office Quations</h5>
+                                                <h5 class="text-primary mb-2 mt-4">Booking Office Questions</h5>
                                             </td>
                                         </tr>
                                         @foreach ($quotation as $key => $quotations)
@@ -348,7 +348,7 @@
                                     <tbody>
                                         <tr>
                                             <td colspan="3">
-                                                <h5 class="text-primary mb-2 mt-4">PRS Office Quations</h5>
+                                                <h5 class="text-primary mb-2 mt-4">PRS Office Questions</h5>
                                             </td>
                                         </tr>
                                         @foreach ($PRS_office as $key => $PRS_offices)
@@ -383,7 +383,7 @@
                                     <tbody>
                                         <tr>
                                             <td colspan="3">
-                                                <h5 class="text-primary mb-2 mt-4">Parcel Office Quations</h5>
+                                                <h5 class="text-primary mb-2 mt-4">Parcel Office Questions</h5>
                                             </td>
                                         </tr>
                                         @foreach ($Parcel_Office as $key => $Parcel_Offices)
@@ -417,7 +417,7 @@
                                     <tbody>
                                         <tr>
                                             <td colspan="3">
-                                                <h5 class="text-primary mb-2 mt-4">Goods Shed Office Quations</h5>
+                                                <h5 class="text-primary mb-2 mt-4">Goods Shed Office Questions</h5>
                                             </td>
                                         </tr>
                                         @foreach ($Goods_Shed_office as $key => $Goods_Shed_offices)
@@ -450,7 +450,7 @@
                                     <tbody>
                                         <tr>
                                             <td colspan="3">
-                                                <h5 class="text-primary mb-2 mt-4">Ticket Examiner Quations</h5>
+                                                <h5 class="text-primary mb-2 mt-4">Ticket Examiner Questions</h5>
                                             </td>
                                         </tr>
                                         @foreach ($Ticket_Examineroffice as $key => $Ticket_Examiners)
@@ -484,7 +484,7 @@
                                     <tbody>
                                         <tr>
                                             <td colspan="3">
-                                                <h5 class="text-primary mb-2 mt-4">Non-Fare Revenue Quations</h5>
+                                                <h5 class="text-primary mb-2 mt-4">Non-Fare Revenue Questions</h5>
                                             </td>
                                         </tr>
                                         @foreach ($NonFare_Revenue as $key => $NonFare_Revenue_quotation)
@@ -517,7 +517,7 @@
                                     <tbody>
                                         <tr>
                                             <td colspan="3">
-                                                <h5 class="text-primary mb-2 mt-4">Inspection Passenger Items Quations</h5>
+                                                <h5 class="text-primary mb-2 mt-4">Inspection Passenger Items Questions</h5>
                                             </td>
                                         </tr>
                                         @foreach ($InspectionPassenger_items as $key => $InspectionPassenger_item)
@@ -550,7 +550,7 @@
                                     <tbody>
                                         <tr>
                                             <td colspan="3">
-                                                <h5 class="text-primary mb-2 mt-4">Station Cleanliness Quations</h5>
+                                                <h5 class="text-primary mb-2 mt-4">Station Cleanliness Questions</h5>
                                             </td>
                                         </tr>
                                         @foreach ($StationCleanliness as $key => $StationCleanliness_item)
@@ -583,7 +583,7 @@
                                     <tbody>
                                         <tr>
                                             <td colspan="3">
-                                                <h5 class="text-primary mb-2 mt-4">Inspection Pay Use Toilets Quations</h5>
+                                                <h5 class="text-primary mb-2 mt-4">Inspection Pay Use Toilets Questions</h5>
                                             </td>
                                         </tr>
                                         @foreach ($InspectionPayUseToilets as $key => $InspectionPayUseToilets_item)
@@ -617,7 +617,7 @@
                                     <tbody>
                                         <tr>
                                             <td colspan="3">
-                                                <h5 class="text-primary mb-2 mt-4">Inspection Tea Quations</h5>
+                                                <h5 class="text-primary mb-2 mt-4">Inspection Tea Questions</h5>
                                             </td>
                                         </tr>
                                         @foreach ($INSPECTION_TEA as $key => $INSPECTION_TEA_item)
@@ -650,7 +650,7 @@
                                     <tbody>
                                         <tr>
                                             <td colspan="3">
-                                                <h5 class="text-primary mb-2 mt-4">Inspection Pantry Car Quations</h5>
+                                                <h5 class="text-primary mb-2 mt-4">Inspection Pantry Car Questions</h5>
                                             </td>
                                         </tr>
                                         @foreach ($InspectionPantryCar as $key => $InspectionPantryCar_item)
@@ -683,7 +683,7 @@
                                     <tbody>
                                         <tr>
                                             <td colspan="3">
-                                                <h5 class="text-primary mb-2 mt-4">Inspection Kitchen Quations</h5>
+                                                <h5 class="text-primary mb-2 mt-4">Inspection Kitchen Questions</h5>
                                             </td>
                                         </tr>
                                         @foreach ($INSPECTIONKITCHEN as $key => $INSPECTIONKITCHEN_item)

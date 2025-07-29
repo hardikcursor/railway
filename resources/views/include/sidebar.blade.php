@@ -20,6 +20,9 @@
             if (Auth::check()) {
                 if (Auth::user()->hasRole('super-admin')) {
                     $dashboardRoute = route('superadmin.dashboard');
+                    $oneMonthPage = route('superadmin.report.onemonth');
+                    $threeMonthPage = route('superadmin.report.thirdmonth');
+                    $sixMonthPage = route('superadmin.report.sixmonth');
                 } elseif (Auth::user()->hasRole('admin')) {
                     $dashboardRoute = route('admin.dashboard');
                     $oneMonthPage = route('admin.report.onemonth');
@@ -76,7 +79,7 @@
                 <li>
                     <a href="{{ route('admin.quotationshow') }}">
                         <i class="sidebar-item-icon fa-solid fa-file-pen"></i>
-                        <span class="nav-label">Add/Edit Quations</span>
+                        <span class="nav-label">Add/Edit Questions</span>
                     </a>
                 </li>
             @endrole

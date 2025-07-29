@@ -5,7 +5,7 @@
     <div class="page-content fade-in-up">
         <div class="ibox">
             <div class="ibox-head">
-                <div class="ibox-title">Edit Quations ({{ ucfirst($model) }})</div>
+                <div class="ibox-title">Edit Question ({{ ucfirst($model) }})</div>
             </div>
 
             <div class="ibox-body">
@@ -21,7 +21,7 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <button type="submit" class="btn btn-primary mt-2">Update Quotation</button>
+                    <button type="submit" class="btn btn-primary mt-2">Update Question</button>
                     <a href="{{ route('admin.quotationshow') }}" class="btn btn-secondary mt-2">Cancel</a>
                 </form>
             </div>
