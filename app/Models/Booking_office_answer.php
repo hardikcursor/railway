@@ -11,6 +11,6 @@ class Booking_office_answer extends Model
     
     public function bookingOffice()
     {
-        return $this->belongsTo(Booking_office::class);
+        return $this->belongsTo(Booking_office::class,'q_id');
     }
 }

@@ -4,30 +4,20 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Booking_office;
 use App\Models\Booking_office_answer;
-use App\Models\Goods_office_answer;
 use App\Models\Goods_Shed_office;
 use App\Models\INSPECTIONKITCHEN;
-use App\Models\inspectionkitchen_answer;
 use App\Models\InspectionPantryCar;
-use App\Models\InspectionPantryCar_answer;
 use App\Models\InspectionPassenger_items;
-use App\Models\InspectionPassenger_items__answer;
 use App\Models\InspectionPayUseToilets;
-use App\Models\InspectionPayUseToilets_answer;
 use App\Models\INSPECTION_TEA;
-use App\Models\inspection_tea_answer;
 use App\Models\NonFare_Revenue;
-use App\Models\NonFare_Revenue_answer;
-use App\Models\Parcel_answer;
 use App\Models\Parcel_Office;
 use App\Models\PRS_office;
-use App\Models\PRS_office_answer;
 use App\Models\Report;
 use App\Models\StationCleanliness;
-use App\Models\StationCleanliness_answer;
 use App\Models\Ticket_Examineroffice;
-use App\Models\Ticket_office_answer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -40,26 +30,23 @@ class BookingOfficeAnswerController extends Controller
         try {
             // Validate the input
             $validated = $request->validate([
-                'title'       => 'required|string|max:255',
-                'Inspector'   => 'required|string|max:255',
-                'author'      => 'required|string|max:255',
-                'description' => 'required|string',
-                'category'    => 'required|string',
+                'NameInspector'    => 'required|string|max:255',
+                'Station'          => 'required|string|max:255',
+                'TypeofInspection' => 'required|string',
+                'Duration'         => 'required|string',
             ], [
-                'title.required'       => 'The name of inspection is required.',
-                'Inspector.required'   => 'The name of inspector is required.',
-                'author.required'      => 'The station is required.',
-                'description.required' => 'The type of inspection is required.',
-                'category.required'    => 'The duration is required.',
+                'NameInspector.required'    => 'The name of inspector is required.',
+                'Station.required'          => 'The station is required.',
+                'TypeofInspection.required' => 'The type of inspection is required.',
+                'Duration.required'         => 'The duration is required.',
             ]);
 
             // Create report
             $report = Report::create([
-                'NameInspection'   => $validated['title'],
-                'NameInspector'    => $validated['Inspector'],
-                'Station'          => $validated['author'],
-                'TypeofInspection' => $validated['description'],
-                'Duration'         => $validated['category'],
+                'NameInspector'    => $validated['NameInspector'],
+                'Station'          => $validated['Station'],
+                'TypeofInspection' => $validated['TypeofInspection'],
+                'Duration'         => $validated['Duration'],
                 'status'           => 'pending',
             ]);
 
@@ -84,37 +71,59 @@ class BookingOfficeAnswerController extends Controller
         }
     }
 
+//   public function store(Request $request)
+// {
+//     $validator = Validator::make($request->all(), [
+//         'user_id'           => 'required|exists:users,id',
+//         'booking_office_id' => 'required|exists:booking_offices,id',
+//         'report_id'         => 'required|exists:reports,id',
+//         'answer'            => 'required|string',
+//         'remark'            => 'nullable|string',
+//     ]);
+
+//     if ($validator->fails()) {
+//         return response()->json([
+//             'success' => false,
+//             'message' => 'Validation errors',
+//             'errors'  => $validator->errors(),
+//         ], 422);
+//     }
+
+//     // Save all fields as one JSON blob
+//     $answer = Booking_office_answer::create([
+//         'data' => $request->all(),
+//     ]);
+
+//     return response()->json([
+//         'success' => true,
+//         'message' => 'Answer saved successfully!',
+//         'data'    => $answer,
+//     ]);
+// }
+
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'user_id'           => 'required|exists:users,id',
-            'booking_office_id' => 'required|exists:booking_offices,id',
-            'report_id'         => 'required|exists:reports,id',
-            'answer'            => 'required|string',
-            'remark'            => 'nullable|string',
-        ]);
+        $userId        = $request->input('user_id');
+        $inspection_id = $request->input('inspection_id');
+        $allResponses  = $request->input('all_resp');
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation errors',
-                'errors'  => $validator->errors(),
-            ], 422);
+        if (is_string($allResponses)) {
+            $allResponses = json_decode($allResponses, true);
         }
 
-        $answer = Booking_office_answer::create([
-            'user_id'           => $request->user_id,
-            'booking_office_id' => $request->booking_office_id,
-            'report_id'         => $request->report_id,
-            'answer'            => $request->answer,
-            'remark'            => $request->remark,
-        ]);
+        foreach ($allResponses as $response) {
+            DB::table('booking_office_answers')->insert([
+                'user_id'             => $userId,
+                'inspection_id'       => $inspection_id,
+                'booking_question_id' => $response['booking_question_id'],
+                'answer'              => $response['answer'],
+                'remark'              => $response['remark'],
+                'created_at'          => now(),
+                'updated_at'          => now(),
+            ]);
+        }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Answer saved successfully!',
-            'data'    => $answer,
-        ]);
+        return response()->json(['message' => 'Responses saved successfully']);
     }
 
     public function bookinganswershow()
@@ -168,36 +177,65 @@ class BookingOfficeAnswerController extends Controller
         ]);
     }
 
+    // public function prsanswer(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'user_id'       => 'required|exists:users,id',
+    //         'prs_office_id' => 'required|exists:p_r_s_offices,id',
+    //         'report_id'     => 'required|exists:reports,id',
+    //         'answer'        => 'required|string',
+    //         'remark'        => 'nullable|string',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Validation errors',
+    //             'errors'  => $validator->errors(),
+    //         ], 422);
+    //     }
+
+    //     $answer = PRS_office_answer::create([
+    //         'user_id'       => $request->user_id,
+    //         'prs_office_id' => $request->prs_office_id,
+    //         'report_id'     => $request->report_id,
+    //         'answer'        => $request->answer,
+    //         'remark'        => $request->remark,
+    //     ]);
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Answer saved successfully!',
+    //         'data'    => $answer,
+    //     ]);
+    // }
+
     public function prsanswer(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'user_id'       => 'required|exists:users,id',
-            'prs_office_id' => 'required|exists:p_r_s_offices,id',
-            'report_id'     => 'required|exists:reports,id',
-            'answer'        => 'required|string',
-            'remark'        => 'nullable|string',
-        ]);
+        $userId        = $request->input('user_id');
+        $inspection_id = $request->input('inspection_id');
+        $allResponses  = $request->input('all_resp');
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation errors',
-                'errors'  => $validator->errors(),
-            ], 422);
+        if (is_string($allResponses)) {
+            $allResponses = json_decode($allResponses, true);
         }
 
-        $answer = PRS_office_answer::create([
-            'user_id'       => $request->user_id,
-            'prs_office_id' => $request->prs_office_id,
-            'report_id'     => $request->report_id,
-            'answer'        => $request->answer,
-            'remark'        => $request->remark,
-        ]);
+        foreach ($allResponses as $response) {
+            DB::table('p_r_s_office_answers')->insert([
+                'user_id'         => $userId,
+                'inspection_id'   => $inspection_id,
+                'prs_question_id' => $response['prs_question_id'],
+                'answer'          => $response['answer'],
+                'remark'          => $response['remark'],
+                'created_at'      => now(),
+                'updated_at'      => now(),
+            ]);
+        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Answer saved successfully!',
-            'data'    => $answer,
+            'message' => 'All answers saved successfully!',
+
         ]);
     }
 
@@ -214,34 +252,29 @@ class BookingOfficeAnswerController extends Controller
     public function ParcelOfficeAnswer(Request $request)
     {
 
-        $validator = Validator::make($request->all(), [
-            'user_id'          => 'required|exists:users,id',
-            'parcel_office_id' => 'required|exists:parcel__offices,id',
-            'report_id'        => 'required|exists:reports,id',
-            'answer'           => 'required|string',
-            'remark'           => 'nullable|string',
-        ]);
+        $userId        = $request->input('user_id');
+        $inspection_id = $request->input('inspection_id');
+        $allResponses  = $request->input('all_resp');
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation errors',
-                'errors'  => $validator->errors(),
-            ], 422);
+        if (is_string($allResponses)) {
+            $allResponses = json_decode($allResponses, true);
         }
 
-        $answer = Parcel_answer::create([
-            'user_id'          => $request->user_id,
-            'parcel_office_id' => $request->parcel_office_id,
-            'report_id'        => $request->report_id,
-            'answer'           => $request->answer,
-            'remark'           => $request->remark,
-        ]);
+        foreach ($allResponses as $response) {
+            DB::table('parcel_answers')->insert([
+                'user_id'            => $userId,
+                'inspection_id'      => $inspection_id,
+                'parcel_question_id' => $response['parcel_question_id'],
+                'answer'             => $response['answer'],
+                'remark'             => $response['remark'],
+                'created_at'         => now(),
+                'updated_at'         => now(),
+            ]);
+        }
 
         return response()->json([
             'success' => true,
             'message' => 'Answer saved successfully!',
-            'data'    => $answer,
         ]);
     }
 
@@ -258,34 +291,43 @@ class BookingOfficeAnswerController extends Controller
     public function goodsShedOfficeAnswer(Request $request)
     {
         try {
-            // Validation
             $validator = Validator::make($request->all(), [
-                'user_id'         => 'required|exists:users,id',
-                'goods_office_id' => 'required|exists:goods__shed_offices,id',
-                'report_id'       => 'required|exists:reports,id',
-                'answer'          => 'required|string',
-                'remark'          => 'nullable|string',
+                'user_id'                      => 'required|exists:users,id',
+                'inspection_id'                => 'required|exists:reports,id',
+                'all_resp'                     => 'required|array',
+                'all_resp.*.goods_question_id' => 'required|exists:goods__shed_offices,id',
+                'all_resp.*.answer'            => 'required|string',
+                'all_resp.*.remark'            => 'nullable|string',
             ]);
-
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
                     'errors'  => $validator->errors(),
                 ], 422);
             }
+            $userId        = $request->input('user_id');
+            $inspection_id = $request->input('inspection_id');
+            $allResponses  = $request->input('all_resp');
 
-            $answer = Goods_office_answer::create([
-                'user_id'         => $request->user_id,
-                'goods_office_id' => $request->goods_office_id,
-                'report_id'       => $request->report_id,
-                'answer'          => $request->answer,
-                'remark'          => $request->remark,
-            ]);
+            if (is_string($allResponses)) {
+                $allResponses = json_decode($allResponses, true);
+            }
+
+            foreach ($allResponses as $response) {
+                DB::table('goods_office_answers')->insert([
+                    'user_id'           => $userId,
+                    'inspection_id'     => $inspection_id,
+                    'goods_question_id' => $response['goods_question_id'],
+                    'answer'            => $response['answer'],
+                    'remark'            => $response['remark'],
+                    'created_at'        => now(),
+                    'updated_at'        => now(),
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
                 'message' => 'Answer saved successfully!',
-                'data'    => $answer,
             ]);
         } catch (\Exception $e) {
             Log::error('Goods Shed Answer Error: ' . $e->getMessage());
@@ -312,32 +354,29 @@ class BookingOfficeAnswerController extends Controller
     {
         try {
 
-            $validator = Validator::make($request->all(), [
-                'user_id'          => 'required|exists:users,id',
-                'ticket_office_id' => 'required|exists:ticket__examineroffices,id',
-                'report_id'        => 'required|exists:reports,id',
-                'answer'           => 'required|string',
-                'remark'           => 'nullable|string',
-            ]);
+            $userId        = $request->input('user_id');
+            $inspection_id = $request->input('inspection_id');
+            $allResponses  = $request->input('all_resp');
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'errors'  => $validator->errors(),
-                ], 422);
+            if (is_string($allResponses)) {
+                $allResponses = json_decode($allResponses, true);
             }
-            $answer = Ticket_office_answer::create([
-                'user_id'          => $request->user_id,
-                'ticket_office_id' => $request->ticket_office_id,
-                'report_id'        => $request->report_id,
-                'answer'           => $request->answer,
-                'remark'           => $request->remark,
-            ]);
+
+            foreach ($allResponses as $response) {
+                DB::table('ticket_office_answers')->insert([
+                    'user_id'            => $userId,
+                    'inspection_id'      => $inspection_id,
+                    'ticket_question_id' => $response['ticket_question_id'],
+                    'answer'             => $response['answer'],
+                    'remark'             => $response['remark'],
+                    'created_at'         => now(),
+                    'updated_at'         => now(),
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
                 'message' => 'Answer saved successfully!',
-                'data'    => $answer,
             ]);
         } catch (\Exception $e) {
             Log::error(' ticketexaminer Answer Error: ' . $e->getMessage());
@@ -364,33 +403,29 @@ class BookingOfficeAnswerController extends Controller
     {
         try {
 
-            $validator = Validator::make($request->all(), [
-                'user_id'     => 'required|exists:users,id',
-                'non_fare_id' => 'required|exists:non_fare__revenues,id',
-                'report_id'   => 'required|exists:reports,id',
-                'answer'      => 'required|string',
-                'remark'      => 'nullable|string',
-            ]);
+            $userId        = $request->input('user_id');
+            $inspection_id = $request->input('inspection_id');
+            $allResponses  = $request->input('all_resp');
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'errors'  => $validator->errors(),
-                ], 422);
+            if (is_string($allResponses)) {
+                $allResponses = json_decode($allResponses, true);
             }
 
-            $answer = NonFare_Revenue_answer::create([
-                'user_id'     => $request->user_id,
-                'non_fare_id' => $request->non_fare_id,
-                'report_id'   => $request->report_id,
-                'answer'      => $request->answer,
-                'remark'      => $request->remark,
-            ]);
+            foreach ($allResponses as $response) {
+                DB::table('non_fare__revenue_answers')->insert([
+                    'user_id'             => $userId,
+                    'inspection_id'       => $inspection_id,
+                    'nonfare_question_id' => $response['nonfare_question_id'],
+                    'answer'              => $response['answer'],
+                    'remark'              => $response['remark'],
+                    'created_at'          => now(),
+                    'updated_at'          => now(),
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
                 'message' => 'Answer saved successfully!',
-                'data'    => $answer,
             ]);
         } catch (\Exception $e) {
             Log::error('Non Fare Revenue Answer Error: ' . $e->getMessage());
@@ -417,32 +452,29 @@ class BookingOfficeAnswerController extends Controller
     {
         try {
 
-            $validator = Validator::make($request->all(), [
-                'user_id'       => 'required|exists:users,id',
-                'inspection_id' => 'required|exists:inspection_passenger_items,id',
-                'report_id'     => 'required|exists:reports,id',
-                'yes_no'        => 'required|boolean',
-                'remark'        => 'nullable|string',
-            ]);
+            $userId        = $request->input('user_id');
+            $inspection_id = $request->input('inspection_id');
+            $allResponses  = $request->input('all_resp');
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'errors'  => $validator->errors(),
-                ], 422);
+            if (is_string($allResponses)) {
+                $allResponses = json_decode($allResponses, true);
             }
-            $answer = InspectionPassenger_items__answer::create([
-                'user_id'       => $request->user_id,
-                'inspection_id' => $request->inspection_id,
-                'report_id'     => $request->report_id,
-                'yes_no'        => $request->yes_no,
-                'remark'        => $request->remark,
-            ]);
+
+            foreach ($allResponses as $response) {
+                DB::table('inspection_passenger_items__answers')->insert([
+                    'user_id'                => $userId,
+                    'inspection_id'          => $inspection_id,
+                    'inspection_question_id' => $response['inspection_question_id'],
+                    'yes_no'                 => $response['yes_no'],
+                    'remark'                 => $response['remark'],
+                    'created_at'             => now(),
+                    'updated_at'             => now(),
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
                 'message' => 'Answer saved successfully!',
-                'data'    => $answer,
             ]);
         } catch (\Exception $e) {
             Log::error('Inspection Passenger Items Answer Error: ' . $e->getMessage());
@@ -469,37 +501,32 @@ class BookingOfficeAnswerController extends Controller
     {
         try {
 
-            $validator = Validator::make($request->all(), [
-                'user_id'          => 'required|exists:users,id',
-                'station_clean_id' => 'required|exists:station_cleanlinesses,id',
-                'report_id'        => 'required|exists:reports,id',
-                'answer'           => 'required|string',
-                'Black'            => 'nullable|string',
-                'Blue'             => 'nullable|string',
-                'Green'            => 'nullable|string',
-                'remark'           => 'nullable|string',
-            ]);
+            $userId        = $request->input('user_id');
+            $inspection_id = $request->input('inspection_id');
+            $allResponses  = $request->input('all_resp');
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'errors'  => $validator->errors(),
-                ], 422);
+            if (is_string($allResponses)) {
+                $allResponses = json_decode($allResponses, true);
             }
 
-            $answer = StationCleanliness_answer::create([
-                'user_id'          => $request->user_id,
-                'station_clean_id' => $request->station_clean_id,
-                'report_id'        => $request->report_id,
-                'yes_no'           => $request->yes_no,
-                'answer'           => $request->answer,
-                'remark'           => $request->remark,
-            ]);
+            foreach ($allResponses as $response) {
+                DB::table('station_cleanliness_answers')->insert([
+                    'user_id'                  => $userId,
+                    'inspection_id'            => $inspection_id,
+                    'stationclean_question_id' => $response['stationclean_question_id'],
+                    'answer'                   => $response['answer'],
+                    'Black'                    => $response['Black'],
+                    'Blue'                     => $response['Blue'],
+                    'Green'                    => $response['Green'],
+                    'remark'                   => $response['remark'],
+                    'created_at'               => now(),
+                    'updated_at'               => now(),
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
                 'message' => 'Answer saved successfully!',
-                'data'    => $answer,
             ]);
         } catch (\Exception $e) {
             Log::error('Station Cleanliness Answer Error: ' . $e->getMessage());
@@ -527,37 +554,31 @@ class BookingOfficeAnswerController extends Controller
     {
         try {
 
-            $validator = Validator::make($request->all(), [
-                'user_id'                     => 'required|exists:users,id',
-                'inspection_pay_id'           => 'required|exists:inspection_pay_use_toilets,id',
-                'report_id'                   => 'required|exists:reports,id',
-                'Remar_Observations'          => 'required|string',
-                'Minor_deficiencies'          => 'required|string',
-                'Major_deficiencies_Proposed' => 'required|string',
-                'remark'                      => 'nullable|string',
-            ]);
+            $userId        = $request->input('user_id');
+            $inspection_id = $request->input('inspection_id');
+            $allResponses  = $request->input('all_resp');
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'errors'  => $validator->errors(),
-                ], 422);
+            if (is_string($allResponses)) {
+                $allResponses = json_decode($allResponses, true);
             }
 
-            $answer = InspectionPayUseToilets_answer::create([
-                'user_id'                     => $request->user_id,
-                'inspection_pay_id'           => $request->inspection_pay_id,
-                'report_id'                   => $request->report_id,
-                'Remar_Observations'          => $request->Remar_Observations,
-                'Minor_deficiencies'          => $request->Minor_deficiencies,
-                'Major_deficiencies_Proposed' => $request->Major_deficiencies_Proposed,
-                'remark'                      => $request->remark,
-            ]);
+            foreach ($allResponses as $response) {
+                DB::table('inspection_pay_use_toilets_answers')->insert([
+                    'user_id'                     => $userId,
+                    'inspection_id'               => $inspection_id,
+                    'inspection_pay_question_id'  => $response['inspection_pay_question_id'],
+                    'Remar_Observations'          => $response['Remar_Observations'],
+                    'Minor_deficiencies'          => $response['Minor_deficiencies'],
+                    'Major_deficiencies_Proposed' => $response['Major_deficiencies_Proposed'],
+                    'remark'                      => $response['remark'],
+                    'created_at'                  => now(),
+                    'updated_at'                  => now(),
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
                 'message' => 'Answer saved successfully!',
-                'data'    => $answer,
             ]);
         } catch (\Exception $e) {
             Log::error('Inspection Pay and Use Toilets Answer Error: ' . $e->getMessage());
@@ -585,29 +606,27 @@ class BookingOfficeAnswerController extends Controller
     {
         try {
 
-            $validator = Validator::make($request->all(), [
-                'user_id'           => 'required|exists:users,id',
-                'inspection_tea_id' => 'required|exists:i_n_s_p_e_c_t_i_o_n__t_e_a_s,id',
-                'report_id'         => 'required|exists:reports,id',
-                'yes_no'            => 'required|boolean',
-                'answer'            => 'required|string',
-                'remark'            => 'nullable|string',
-            ]);
+            $userId        = $request->input('user_id');
+            $inspection_id = $request->input('inspection_id');
+            $allResponses  = $request->input('all_resp');
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'errors'  => $validator->errors(),
-                ], 422);
+            if (is_string($allResponses)) {
+                $allResponses = json_decode($allResponses, true);
             }
-            $answer = inspection_tea_answer::create([
-                'user_id'           => $request->user_id,
-                'inspection_tea_id' => $request->inspection_tea_id,
-                'report_id'         => $request->report_id,
-                'yes_no'            => $request->yes_no,
-                'answer'            => $request->answer,
-                'remark'            => $request->remark,
-            ]);
+
+            $answer = [];
+            foreach ($allResponses as $response) {
+                $answer[] = DB::table('inspection_tea_answers')->insert([
+                    'user_id'                   => $userId,
+                    'inspection_id'             => $inspection_id,
+                    'inspectiontea_question_id' => $response['inspectiontea_question_id'],
+                    'yes_no'                    => $response['yes_no'],
+                    'answer'                    => $response['answer'],
+                    'remark'                    => $response['remark'],
+                    'created_at'                => now(),
+                    'updated_at'                => now(),
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
@@ -640,28 +659,26 @@ class BookingOfficeAnswerController extends Controller
     {
         try {
 
-            $validator = Validator::make($request->all(), [
-                'user_id'              => 'required|exists:users,id',
-                'inspection_pantry_id' => 'required|exists:inspection_pantry_cars,id',
-                'report_id'            => 'required|exists:reports,id',
-                'answer'               => 'required|string',
-                'remark'               => 'nullable|string',
-            ]);
+            $userId        = $request->input('user_id');
+            $inspection_id = $request->input('inspection_id');
+            $allResponses  = $request->input('all_resp');
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'errors'  => $validator->errors(),
-                ], 422);
+            if (is_string($allResponses)) {
+                $allResponses = json_decode($allResponses, true);
             }
 
-            $answer = InspectionPantryCar_answer::create([
-                'user_id'              => $request->user_id,
-                'inspection_pantry_id' => $request->inspection_pantry_id,
-                'report_id'            => $request->report_id,
-                'answer'               => $request->answer,
-                'remark'               => $request->remark,
-            ]);
+            $answer = [];
+            foreach ($allResponses as $response) {
+                $answer[] = DB::table('inspection_pantry_car_answers')->insert([
+                    'user_id'                       => $userId,
+                    'inspection_id'                 => $inspection_id,
+                    'inspection_pantry_question_id' => $response['inspection_pantry_question_id'],
+                    'answer'                        => $response['answer'],
+                    'remark'                        => $response['remark'],
+                    'created_at'                    => now(),
+                    'updated_at'                    => now(),
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
@@ -694,35 +711,35 @@ class BookingOfficeAnswerController extends Controller
     {
         try {
 
-            $validator = Validator::make($request->all(), [
-                'user_id'               => 'required|exists:users,id',
-                'inspection_kitchen_id' => 'required|exists:i_n_s_p_e_c_t_i_o_n_k_i_t_c_h_e_n_s,id',
-                'report_id'             => 'required|exists:reports,id',
-                'yes_no'                => 'required|boolean',
-                'answer'                => 'required|string',
-                'remark'                => 'nullable|string',
-            ]);
+            // If it's a JSON string, decode it
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'errors'  => $validator->errors(),
-                ], 422);
+            $userId        = $request->input('user_id');
+            $inspection_id = $request->input('inspection_id');
+            $allResponses  = $request->input('all_resp');
+
+            if (is_string($allResponses)) {
+                $allResponses = json_decode($allResponses, true);
             }
 
-            $answer = inspectionkitchen_answer::create([
-                'user_id'               => $request->user_id,
-                'inspection_kitchen_id' => $request->inspection_kitchen_id,
-                'report_id'             => $request->report_id,
-                'yes_no'                => $request->yes_no,
-                'answer'                => $request->answer,
-                'remark'                => $request->remark,
-            ]);
+            $inserted = [];
+            foreach ($allResponses as $response) {
+
+                $inserted[] = DB::table('inspectionkitchen_answers')->insert([
+                    'user_id'                       => $userId,
+                    'inspection_id'                 => $inspection_id,
+                    'inspectionkitchen_question_id' => $response['inspectionkitchen_question_id'],
+                    'yes_no'                        => $response['yes_no'] ?? null,
+                    'answer'                        => $response['answer'] ?? null,
+                    'remark'                        => $response['remark'] ?? null,
+                    'created_at'                    => now(),
+                    'updated_at'                    => now(),
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
-                'message' => 'Answer saved successfully!',
-                'data'    => $answer,
+                'message' => 'Answers saved successfully!',
+                'data'    => $inserted,
             ]);
         } catch (\Exception $e) {
             Log::error('Inspection Kitchen Answer Error: ' . $e->getMessage());

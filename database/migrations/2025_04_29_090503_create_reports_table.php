@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->string('NameInspection');
             $table->string('NameInspector');
             $table->string('Station');
             $table->string('TypeofInspection');

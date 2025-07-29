@@ -13,14 +13,25 @@ return new class extends Migration
     {
         Schema::create('inspection_pantry_car_answers', function (Blueprint $table) {
             $table->id();
+
             $table->unsignedBigInteger('user_id')->comment('Foreign key to users table');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('report_id')->comment('Foreign key to reports table');
-            $table->foreign('report_id')->references('id')->on('reports')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('inspection_pantry_id')->comment('Foreign key to inspection_pantry_cars table');
-            $table->foreign('inspection_pantry_id')->references('id')->on('inspection_pantry_cars')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('user_id', 'fk_ipca_user_id')
+                ->references('id')->on('users')
+                ->onDelete('cascade')->onUpdate('cascade');
+
+            $table->unsignedBigInteger('inspection_id')->comment('Foreign key to reports table');
+            $table->foreign('inspection_id', 'fk_ipca_inspection_id')
+                ->references('id')->on('reports')
+                ->onDelete('cascade')->onUpdate('cascade');
+
+            $table->unsignedBigInteger('inspection_pantry_question_id')->comment('Foreign key to inspection_pantry_cars table');
+            $table->foreign('inspection_pantry_question_id', 'fk_ipca_question_id')
+                ->references('id')->on('inspection_pantry_cars')
+                ->onDelete('cascade')->onUpdate('cascade');
+
             $table->longText('answer')->comment('Answers provided by the booking office');
-            $table->longText('remark')->nullable()->comment('remark provided by the booking office');
+            $table->longText('remark')->nullable()->comment('Remark provided by the booking office');
+
             $table->timestamps();
         });
     }

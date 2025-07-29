@@ -16,7 +16,6 @@ class ReportFactory extends Factory
     public function definition(): array
     {
         return [
-            'NameInspection'   => $this->faker->sentence(3),
             'NameInspector'    => $this->faker->name(),
             'Station'          => $this->faker->randomElement([
                 'Surat', 'Vadodara', 'Ahmedabad', 'Mumbai Central', 'Howrah', 'Chennai Central',

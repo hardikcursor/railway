@@ -179,51 +179,7 @@ class AdminDashboardController extends Controller
             ->where('report_id', $report->id)
             ->get();
 
-        $PRS_office_answers = PRS_office_answer::with('PRS_office')
-            ->where('report_id', $report->id)
-            ->get();
-
-        $Parcel_answer = Parcel_answer::with('parcelOffice')
-            ->where('report_id', $report->id)
-            ->get();
-
-        $Goods_office_answer = Goods_office_answer::with('goodsOffice')
-            ->where('report_id', $report->id)
-            ->get();
-
-        $Ticket_office_answer = Ticket_office_answer::with('ticketOffice')
-            ->where('report_id', $report->id)
-            ->get();
-
-        $NonFare_Revenue_answer = NonFare_Revenue_answer::with('nonFareRevenueOffice')
-            ->where('report_id', $report->id)
-            ->get();
-
-        $InspectionPassenger_items__answer = InspectionPassenger_items__answer::with('inspectionPassengerItems')
-            ->where('report_id', $report->id)
-            ->get();
-
-        $StationCleanliness_answer = StationCleanliness_answer::with('stationCleanliness')
-            ->where('report_id', $report->id)
-            ->get();
-
-        $InspectionPayUseToilets_answer = InspectionPayUseToilets_answer::with('inspectionPayUseToilets')
-            ->where('report_id', $report->id)
-            ->get();
-
-        $inspection_tea_answer = inspection_tea_answer::with('inspectionTea')
-            ->where('report_id', $report->id)
-            ->get();
-
-        $InspectionPantryCar_answer = InspectionPantryCar_answer::with('inspectionPantryCar')
-            ->where('report_id', $report->id)
-            ->get();
-
-        $inspectionkitchen_answer = inspectionkitchen_answer::with('inspectionKitchen')
-            ->where('report_id', $report->id)
-            ->get();
-
-        $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingOfficeAnswers', 'PRS_office_answers', 'Parcel_answer', 'Goods_office_answer', 'Ticket_office_answer', 'NonFare_Revenue_answer', 'InspectionPassenger_items__answer', 'StationCleanliness_answer', 'InspectionPayUseToilets_answer', 'inspection_tea_answer', 'InspectionPantryCar_answer','inspectionkitchen_answer'));
+        $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingOfficeAnswers'));
 
         return $pdf->download('report_' . $report->id . '.pdf');
     }

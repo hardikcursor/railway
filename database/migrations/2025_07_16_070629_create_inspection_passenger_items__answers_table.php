@@ -13,14 +13,25 @@ return new class extends Migration
     {
         Schema::create('inspection_passenger_items__answers', function (Blueprint $table) {
             $table->id();
+
             $table->unsignedBigInteger('user_id')->comment('Foreign key to users');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('report_id')->comment('Foreign key to reports');
-            $table->foreign('report_id')->references('id')->on('reports')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('inspection_id')->comment('Foreign key to inspection_passenger_items ');
-            $table->foreign('inspection_id')->references('id')->on('inspection_passenger_items')->onDelete('cascade')->onUpdate('cascade');
-            $table->boolean('yes_no')->comment('Answers provided by the yes =1, no =0');
-            $table->longText('remark')->nullable()->comment('remark provided by the inspection officer');
+            $table->foreign('user_id', 'fk_ipia_user_id')
+                ->references('id')->on('users')
+                ->onDelete('cascade')->onUpdate('cascade');
+
+            $table->unsignedBigInteger('inspection_id')->comment('Foreign key to reports');
+            $table->foreign('inspection_id', 'fk_ipia_inspection_id')
+                ->references('id')->on('reports')
+                ->onDelete('cascade')->onUpdate('cascade');
+
+            $table->unsignedBigInteger('inspection_question_id')->comment('Foreign key to inspection_passenger_items');
+            $table->foreign('inspection_question_id', 'fk_ipia_question_id')
+                ->references('id')->on('inspection_passenger_items')
+                ->onDelete('cascade')->onUpdate('cascade');
+
+            $table->boolean('yes_no')->comment('Answers provided: yes = 1, no = 0');
+            $table->longText('remark')->nullable()->comment('Remark provided by inspection officer');
+
             $table->timestamps();
         });
     }

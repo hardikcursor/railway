@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->comment('Foreign key to users table');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('report_id')->comment('Foreign key to reports table');
-            $table->foreign('report_id')->references('id')->on('reports')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('goods_office_id')->comment('Foreign key to goods__shed_offices table');
-            $table->foreign('goods_office_id')->references('id')->on('goods__shed_offices')->onDelete('cascade')->onUpdate('cascade');
-            $table->longText('answer')->comment('Answers provided by the booking office');
-            $table->longText('remark')->nullable()->comment('remark provided by the booking office');
+            $table->unsignedBigInteger('inspection_id')->comment('Foreign key to reports table');
+            $table->foreign('inspection_id')->references('id')->on('reports')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('goods_question_id')->comment('Foreign key to goods__shed_offices table');
+            $table->foreign('goods_question_id')->references('id')->on('goods__shed_offices')->onDelete('cascade')->onUpdate('cascade');
+            $table->longText('answer');
+            $table->longText('remark')->nullable();
             $table->timestamps();
         });
     }

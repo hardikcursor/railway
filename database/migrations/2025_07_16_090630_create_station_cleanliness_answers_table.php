@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->comment('Foreign key to users');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('report_id')->comment('Foreign key to reports');
-            $table->foreign('report_id')->references('id')->on('reports')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('station_clean_id')->comment('Foreign key to station_cleanlinesses');
-            $table->foreign('station_clean_id')->references('id')->on('station_cleanlinesses')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('inspection_id')->comment('Foreign key to reports');
+            $table->foreign('inspection_id')->references('id')->on('reports')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('stationclean_question_id')->comment('Foreign key to station_cleanlinesses');
+            $table->foreign('stationclean_question_id')->references('id')->on('station_cleanlinesses')->onDelete('cascade')->onUpdate('cascade');
             $table->longText('answer')->comment('Answers provided by the booking office');
             $table->string('Black')->nullable();
             $table->string('Blue')->nullable();

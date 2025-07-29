@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->comment('Foreign key to users table');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('report_id')->comment('Foreign key to reports table');
-            $table->foreign('report_id')->references('id')->on('reports')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('parcel_office_id')->comment('Foreign key to parcel_offices table');
-            $table->foreign('parcel_office_id')->references('id')->on('parcel__offices')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('inspection_id')->comment('Foreign key to reports table');
+            $table->foreign('inspection_id')->references('id')->on('reports')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('parcel_question_id')->comment('Foreign key to parcel_offices table');
+            $table->foreign('parcel_question_id')->references('id')->on('parcel__offices')->onDelete('cascade')->onUpdate('cascade');
             $table->longText('answer')->comment('Answers provided by the booking office');
             $table->longText('remark')->nullable()->comment('remark provided by the booking office');
             $table->timestamps();

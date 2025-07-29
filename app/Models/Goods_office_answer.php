@@ -8,7 +8,7 @@ class Goods_office_answer extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'goods_office_id', 'report_id','answer', 'remark'];
+    protected $fillable = ['user_id', 'goods_question_id', 'inspection_id','answer', 'remark'];
 
     protected $table = 'goods_office_answers';
 

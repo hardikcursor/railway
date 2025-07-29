@@ -13,7 +13,7 @@
                     <div id="success-message" class="alert alert-success" style="display: none;">
                         Quation report created successfully!
                     </div>
-{{-- 
+                    {{-- 
                     <form action="" method="POST" class="form-horizontal" id="form-sample-1" novalidate="novalidate">
                         @csrf
                         <div class="form-group row">

@@ -8,7 +8,7 @@
                     <div class="ibox bg-success color-white widget-stat">
                         <div class="ibox-body">
                             <h2 class="m-b-5 font-strong">{{ $totalInspections }}</h2>
-                            <div class="m-b-5">TOTAL INSPECTION</div><i class="ti-shopping-cart widget-stat-icon"></i>
+                            <div class="m-b-5">TOTAL INSPECTION</div>
                             <div></div>
                         </div>
                     </div>
@@ -17,7 +17,7 @@
                     <div class="ibox bg-info color-white widget-stat">
                         <div class="ibox-body">
                             <h2 class="m-b-5 font-strong">{{ $pendingCount }}</h2>
-                            <div class="m-b-5">PENDING INTRUCTIONS</div><i class="ti-bar-chart widget-stat-icon"></i>
+                            <div class="m-b-5">PENDING INTRUCTIONS</div>
                             <div></div>
                         </div>
                     </div>
@@ -26,7 +26,7 @@
                     <div class="ibox bg-warning color-white widget-stat">
                         <div class="ibox-body">
                             <h2 class="m-b-5 font-strong">{{ $forwardCount }}</h2>
-                            <div class="m-b-5">FORWARD CONCERNED</div><i class="fa fa-money widget-stat-icon"></i>
+                            <div class="m-b-5">FORWARD CONCERNED</div>
                             <div></div>
                         </div>
                     </div>
@@ -35,7 +35,7 @@
                     <div class="ibox bg-danger color-white widget-stat">
                         <div class="ibox-body">
                             <h2 class="m-b-5 font-strong">{{ $replyPendingCount }}</h2>
-                            <div class="m-b-5">TOTAL PENDING</div><i class="ti-user widget-stat-icon"></i>
+                            <div class="m-b-5">TOTAL PENDING</div>
                             <div></div>
                         </div>
                     </div>

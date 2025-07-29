@@ -76,20 +76,20 @@
                 <li>
                     <a href="{{ route('admin.quotationshow') }}">
                         <i class="sidebar-item-icon fa-solid fa-file-pen"></i>
-                        <span class="nav-label">Change Quations</span>
+                        <span class="nav-label">Add/Edit Quations</span>
                     </a>
                 </li>
             @endrole
 
 
-            @role('admin')
+            {{-- @role('admin')
                 <li>
                     <a href="{{ route('admin.generateReport') }}">
                         <i class="sidebar-item-icon fa-solid fa-user-pen"></i>
                         <span class="nav-label">Generate Quation</span>
                     </a>
                 </li>
-            @endrole
+            @endrole --}}
 
         </ul>
     </div>

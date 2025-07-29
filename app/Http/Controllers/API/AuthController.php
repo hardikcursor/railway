@@ -103,11 +103,3 @@ class AuthController extends Controller
     }
 }
 
-
-
-// {
-//     "booking_office_id": 1,
-//     "report_id": 1,
-//     "answer": "Sample answer",
-//     "remark": "Optional note"
-// }
