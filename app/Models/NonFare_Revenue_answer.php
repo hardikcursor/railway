@@ -9,12 +9,12 @@ class NonFare_Revenue_answer extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id','non_fare_id', 'report_id', 'answer', 'remark'];
+    protected $fillable = ['user_id','nonfare_question_id', 'inspection_id', 'answer', 'remark'];
 
     protected $table = 'non_fare__revenue_answers';
 
     public function nonFareRevenueOffice()
     {
-        return $this->belongsTo(NonFare_Revenue::class, 'non_fare_id');
+        return $this->belongsTo(NonFare_Revenue::class, 'nonfare_question_id', 'id');
     }
 }

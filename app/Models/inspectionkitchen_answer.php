@@ -9,12 +9,12 @@ class inspectionkitchen_answer extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'inspectionkitchen_question_id', 'report_id', 'answer', 'yes_no', 'remark'];
+    protected $fillable = ['user_id', 'inspectionkitchen_question_id', 'inspection_id', 'answer', 'yes_no', 'remark'];
 
     protected $table = 'inspectionkitchen_answers';
 
     public function inspectionKitchen()
     {
-        return $this->belongsTo(INSPECTIONKITCHEN::class, 'inspection_kitchen_id');
+        return $this->belongsTo(INSPECTIONKITCHEN::class, 'inspectionkitchen_question_id', 'id');
     }
 }

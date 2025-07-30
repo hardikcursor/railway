@@ -109,7 +109,7 @@
                                 @enderror
                             </span>
                         </div>
-                        <button type="submit" class="btn btn-success mt-2">Generate Booking Office Report</button>
+                        <button type="submit" class="btn btn-success">Generate Booking Office Report</button>
                     </form>
 
                     <!-- PRS Office Form -->
@@ -124,7 +124,7 @@
                                 @enderror
                             </span>
                         </div>
-                        <button type="submit" class="btn btn-success mt-2">Generate PRS Office Report</button>
+                        <button type="submit" class="btn btn-success mb-3">Generate PRS Office Report</button>
                     </form>
 
                     <!-- Parcel Office Form -->

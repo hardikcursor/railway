@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Ticket_office_answer extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'ticket_office_id', 'report_id', 'answer', 'remark'];
+    protected $fillable = ['user_id', 'ticket_question_id', 'inspection_id', 'answer', 'remark'];
 
     protected $table = 'ticket_office_answers';
     public function ticketOffice()
     {
-        return $this->belongsTo(Ticket_Examineroffice::class);
+        return $this->belongsTo(Ticket_Examineroffice::class, 'ticket_question_id', 'id');
     }
 }

@@ -218,23 +218,26 @@
 
         </div>
 
-        <table>
-            <tr>
-                <th style="width: 5%;">Sr.No</th>
-                <th style="width: 60%;">Checks</th>
-                <th style="width: 35%;">Remarks/Action taken</th>
-
-            </tr>
-            @foreach ($bookingOfficeAnswers as $key => $answer)
+        <table border="1" cellspacing="0" cellpadding="6" width="100%">
+            <thead>
                 <tr>
-                    <td>{{ $key + 1 }}</td>
-                    <td>{{ $answer->bookingOffice->checks ?? 'N/A' }}</td>
-                    <td>
-                        {{ $answer->answer ?? '""' }} <br>
-                        <strong>Remark:</strong> {{ $answer->remark ?? '""' }}
-                    </td>
+                    <th style="width: 5%;">Sr.No</th>
+                    <th style="width: 60%;">Checks</th>
+                    <th style="width: 35%;">Remarks/Action Taken</th>
                 </tr>
-            @endforeach
+            </thead>
+            <tbody>
+                @foreach ($bookingOfficeAnswers as $key => $answer)
+                    <tr>
+                        <td>{{ $key + 1 }}</td>
+                        <td>{{ $answer->bookingOffice->checks ?? 'N/A' }}</td>
+                        <td>
+                            {{ $answer->answer }}<br>
+                            <strong>Remark:</strong> {{ $answer->remark ?? 'N/A' }}
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
         </table>
     @endif
 
@@ -309,8 +312,6 @@
             @endforeach
         </table>
     @endif
-
-
     @if ($Parcel_answer->isEmpty())
         {{-- No Parcel Office data available --}}
     @else
@@ -493,9 +494,6 @@
         </table>
     @endif
 
-
-
-
     @if ($NonFare_Revenue_answer->isEmpty())
     @else
         <div style="page-break-before: always;"></div>
@@ -563,22 +561,25 @@
         </table>
     @endif
 
-
-    {{-- <table border="1" cellspacing="0" cellpadding="5"
-        style="border-collapse: collapse; width: 100%; margin: 0; padding: 0;">
-        <thead>
-            <tr>
-                <th style="width: 25%;">Sr.No.</th>
-                <th style="width: 70%;">ITEMS</th>
-                <th style="width: 25%;">Remarks/Action taken</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>1</td>
-                <td>Arrangements for housekeeping (details thereon)</td>
-                <td></td>
-            </tr>
+    @if ($StationCleanliness_answer->isEmpty())
+    @else
+        <div style="page-break-before: always;"></div>
+        <h3 style="text-align: left;">8. <u>Station Cleanliness</u> :</h3>
+        <table border="1" cellspacing="0" cellpadding="5"
+            style="border-collapse: collapse; width: 100%; margin: 0; padding: 0;">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Sr.No.</th>
+                    <th style="width: 70%;">ITEMS</th>
+                    <th style="width: 25%;">Remarks/Action taken</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Arrangements for housekeeping (details thereon)</td>
+                    <td></td>
+                </tr>
                 @foreach ($StationCleanliness_answer as $index => $answer)
                     <tr>
                         <td>{{ $index + 1 }}</td>
@@ -613,8 +614,10 @@
                         </td>
                     </tr>
                 @endforeach
-        </tbody>
-    </table> --}}
+            </tbody>
+        </table>
+
+    @endif
 
     @if ($InspectionPayUseToilets_answer->isEmpty())
     @else
@@ -652,7 +655,8 @@
                 </tbody>
             </table>
 
-            <p>During the inspection of the above toilet block on dated ......................... following observations
+            <p>During the inspection of the above toilet block on dated ......................... following
+                observations
                 were made:</p>
 
             <table border="1" cellspacing="0" cellpadding="5" style="border-collapse: collapse; width: 100%;">
@@ -807,6 +811,8 @@
             </tbody>
         </table>
     @endif
+
+
 
 
 

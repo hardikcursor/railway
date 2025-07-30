@@ -10,6 +10,6 @@ class PRS_office extends Model
 
     public function answers()
     {
-        return $this->hasMany(PRS_office_answer::class);
+        return $this->hasMany(PRS_office_answer::class, 'prs_question_id', 'id');
     }
 }

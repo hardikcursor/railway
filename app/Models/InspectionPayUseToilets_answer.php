@@ -9,12 +9,12 @@ class InspectionPayUseToilets_answer extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'inspection_pay_id', 'report_id', 'Remar_Observations','Minor_deficiencies','Major_deficiencies_Proposed','remark'];
+    protected $fillable = ['user_id', 'inspection_pay_question_id', 'inspection_id', 'Remar_Observations','Minor_deficiencies','Major_deficiencies_Proposed','remark'];
 
     protected $table = 'inspection_pay_use_toilets_answers';
 
     public function inspectionPayUseToilets()
     {
-        return $this->belongsTo(InspectionPayUseToilets::class, 'inspection_pay_id');
+        return $this->belongsTo(InspectionPayUseToilets::class, 'inspection_pay_question_id', 'id');
     }
 }

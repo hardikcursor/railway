@@ -14,6 +14,6 @@ class Goods_office_answer extends Model
 
     public function goodsOffice()
     {
-        return $this->belongsTo(Goods_Shed_office::class);
+        return $this->belongsTo(Goods_Shed_office::class, 'goods_question_id', 'id');
     }
 }
