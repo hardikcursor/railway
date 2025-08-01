@@ -15,7 +15,7 @@ use App\Models\InspectionPassenger_items__answer;
 use App\Models\InspectionPayUseToilets;
 use App\Models\InspectionPayUseToilets_answer;
 use App\Models\INSPECTION_TEA;
-use App\Models\INSPECTION_TEA_answer;
+use App\Models\inspection_tea_answer;
 use App\Models\NonFare_Revenue;
 use App\Models\NonFare_Revenue_answer;
 use App\Models\Parcel_answer;
@@ -29,6 +29,7 @@ use App\Models\Ticket_Examineroffice;
 use App\Models\Ticket_office_answer;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+
 
 class AdminDashboardController extends Controller
 {
@@ -171,7 +172,7 @@ class AdminDashboardController extends Controller
         return redirect()->back()->with('info', 'Report was already sent/processed.');
     }
 
-      public function downloadReport($id)
+    public function downloadReport($id)
     {
         $report = Report::findOrFail($id);
 
@@ -223,7 +224,7 @@ class AdminDashboardController extends Controller
             ->where('inspection_id', $report->id)
             ->get();
 
-        $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingOfficeAnswers', 'PRS_office_answers', 'Parcel_answer', 'Goods_office_answer', 'Ticket_office_answer', 'NonFare_Revenue_answer', 'InspectionPassenger_items__answer', 'StationCleanliness_answer', 'InspectionPayUseToilets_answer', 'inspection_tea_answer', 'InspectionPantryCar_answer','inspectionkitchen_answer'));
+        $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingOfficeAnswers', 'PRS_office_answers', 'Parcel_answer', 'Goods_office_answer', 'Ticket_office_answer', 'NonFare_Revenue_answer', 'InspectionPassenger_items__answer', 'StationCleanliness_answer', 'InspectionPayUseToilets_answer', 'inspection_tea_answer', 'InspectionPantryCar_answer', 'inspectionkitchen_answer'));
 
         return $pdf->download('report_' . $report->id . '.pdf');
     }
@@ -513,4 +514,7 @@ class AdminDashboardController extends Controller
         };
     }
 
+  
+
+   
 }

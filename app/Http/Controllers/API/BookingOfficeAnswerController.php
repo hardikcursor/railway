@@ -291,20 +291,6 @@ class BookingOfficeAnswerController extends Controller
     public function goodsShedOfficeAnswer(Request $request)
     {
         try {
-            $validator = Validator::make($request->all(), [
-                'user_id'                      => 'required|exists:users,id',
-                'inspection_id'                => 'required|exists:reports,id',
-                'all_resp'                     => 'required|array',
-                'all_resp.*.goods_question_id' => 'required|exists:goods__shed_offices,id',
-                'all_resp.*.answer'            => 'required|string',
-                'all_resp.*.remark'            => 'nullable|string',
-            ]);
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'errors'  => $validator->errors(),
-                ], 422);
-            }
             $userId        = $request->input('user_id');
             $inspection_id = $request->input('inspection_id');
             $allResponses  = $request->input('all_resp');

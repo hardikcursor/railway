@@ -10,6 +10,15 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('guest')->group(function () {
     Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'dologin'])->name('dologin');
+
+        // Show forgot password form
+Route::get('forget-password', [AuthController::class, 'showForgetPasswordForm'])->name('forget.password.get');
+
+Route::post('forget-password', [AuthController::class, 'submitForgetPasswordForm'])->name('forget.password.post'); 
+
+Route::get('reset-password/{token}', [AuthController::class, 'showResetPasswordForm'])->name('reset.password.get');
+
+Route::post('reset-password', [AuthController::class, 'submitResetPasswordForm'])->name('reset.password.post');
 });
 
 Route::middleware('auth')->group(function () {
@@ -53,6 +62,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/quotation/edit/{model}/{id}', [AdminDashboardController::class, 'edit'])->name('admin.quotation.edit');
     Route::post('/quotation/update/{model}/{id}', [AdminDashboardController::class, 'update'])->name('admin.quotation.update');
 
+
+
+
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {
@@ -91,3 +103,4 @@ Route::get('/redirect-dashboard', function () {
     }
     return redirect()->route('login');
 })->name('redirect.dashboard');
+

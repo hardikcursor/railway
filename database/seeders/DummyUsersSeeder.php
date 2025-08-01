@@ -18,7 +18,7 @@ class DummyUsersSeeder extends Seeder
             [
                 'id'       => 4,
                 'name'     => 'ajay',
-                'email'    => 'ajay@gmail.com',
+                'email'    => 'cursorsoft776@gmail.com',
                 'phone'    => '1234567890',
                 'designation' => 'Booking Office',
                 'incharge_name' => 'Ajay Kumar',
