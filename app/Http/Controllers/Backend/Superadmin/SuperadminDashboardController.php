@@ -3,21 +3,29 @@ namespace App\Http\Controllers\Backend\Superadmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking_office_answer;
+use App\Models\Booking_office_form;
 use App\Models\Goods_office_answer;
+use App\Models\Goods_Shed_office_form;
+use App\Models\inspection_tea_answer;
 use App\Models\inspectionkitchen_answer;
 use App\Models\InspectionPantryCar_answer;
+use App\Models\InspectionPantryCar_form;
 use App\Models\InspectionPassenger_items__answer;
 use App\Models\InspectionPayUseToilets_answer;
-use App\Models\inspection_tea_answer;
+use App\Models\InspectionPayUseToilets_location_form;
 use App\Models\NonFare_Revenue_answer;
 use App\Models\Parcel_answer;
+use App\Models\Parcel_Office_form;
 use App\Models\PRS_office_answer;
+use App\Models\PRS_office_form;
 use App\Models\Report;
 use App\Models\StationCleanliness_answer;
+use App\Models\Ticket_Examineroffice_form;
 use App\Models\Ticket_office_answer;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class SuperadminDashboardController extends Controller
@@ -77,20 +85,34 @@ class SuperadminDashboardController extends Controller
     {
         $report = Report::findOrFail($id);
 
+        $bookingofficedetail = Booking_office_form::where('inspection_id', $id)
+            ->get();
         $bookingOfficeAnswers = Booking_office_answer::with('bookingOffice')
             ->where('inspection_id', $report->id)
+            ->get();
+
+        $PRSofficedetail = PRS_office_form::where('inspection_id', $id)
             ->get();
 
         $PRS_office_answers = PRS_office_answer::with('PRS_office')
             ->where('inspection_id', $report->id)
             ->get();
 
+        $Parcelofficedetail = Parcel_Office_form::where('inspection_id', $id)
+            ->get();
+
         $Parcel_answer = Parcel_answer::with('parcelOffice')
             ->where('inspection_id', $report->id)
             ->get();
 
+        $Goods_officedetail = Goods_Shed_office_form::where('inspection_id', $id)
+            ->get();
+
         $Goods_office_answer = Goods_office_answer::with('goodsOffice')
             ->where('inspection_id', $report->id)
+            ->get();
+
+        $Ticketofficedetail = Ticket_Examineroffice_form::where('inspection_id', $id)
             ->get();
 
         $Ticket_office_answer = Ticket_office_answer::with('ticketOffice')
@@ -109,12 +131,18 @@ class SuperadminDashboardController extends Controller
             ->where('inspection_id', $report->id)
             ->get();
 
+        $InspectionPayUseToilets_detail = InspectionPayUseToilets_location_form::where('inspection_id', $id)
+            ->get();
+            
         $InspectionPayUseToilets_answer = InspectionPayUseToilets_answer::with('inspectionPayUseToilets')
             ->where('inspection_id', $report->id)
             ->get();
 
         $inspection_tea_answer = inspection_tea_answer::with('inspectionTea')
             ->where('inspection_id', $report->id)
+            ->get();
+
+        $InspectionPantryCar_detail = InspectionPantryCar_form::where('inspection_id', $id)
             ->get();
 
         $InspectionPantryCar_answer = InspectionPantryCar_answer::with('inspectionPantryCar')
@@ -125,7 +153,7 @@ class SuperadminDashboardController extends Controller
             ->where('inspection_id', $report->id)
             ->get();
 
-        $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingOfficeAnswers', 'PRS_office_answers', 'Parcel_answer', 'Goods_office_answer', 'Ticket_office_answer', 'NonFare_Revenue_answer', 'InspectionPassenger_items__answer', 'StationCleanliness_answer', 'InspectionPayUseToilets_answer', 'inspection_tea_answer', 'InspectionPantryCar_answer','inspectionkitchen_answer'));
+        $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingofficedetail', 'bookingOfficeAnswers', 'PRSofficedetail', 'PRS_office_answers', 'Parcelofficedetail', 'Parcel_answer', 'Goods_officedetail', 'Goods_office_answer', 'Ticketofficedetail', 'Ticket_office_answer', 'NonFare_Revenue_answer', 'InspectionPassenger_items__answer', 'StationCleanliness_answer', 'InspectionPayUseToilets_detail', 'InspectionPayUseToilets_answer', 'inspection_tea_answer', 'InspectionPantryCar_detail', 'InspectionPantryCar_answer', 'inspectionkitchen_answer'));
 
         return $pdf->download('report_' . $report->id . '.pdf');
     }

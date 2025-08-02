@@ -168,66 +168,41 @@
         <h3 style="text-align: left;">1. <u>Booking Office</u> :</h3>
 
         @foreach ($bookingofficedetail as $detail)
-            <div style="font-size: 14px; line-height: 1.8; margin-bottom: 30px;">
+            <div style="font-size: 14px; line-height: 1.8; margin-bottom: 30px; text-align: left;">
                 <div style="margin-bottom: 10px;">
-                    <span style="text-align: left; width: 30px;">I.</span>
-                    <span style="text-align: left; width: 180px;">Name of CBS:</span>
-                    <span style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">
-                        {{ $detail->cbs_name ?? '' }}
-                    </span>
+                    <strong>I. Name of CBS:</strong> {{ $detail->cbs_name ?? '' }}
                 </div>
 
                 <div style="margin-bottom: 10px;">
-                    <span style="text-align: left; width: 30px;">II.</span>
-                    <span style="text-align: left; width: 180px;">No. of on duty staff:</span>
-                    <span style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">
-                        {{ $detail->no_of_duty_staff ?? '' }}
-                    </span>
+                    <strong>II. No. of on duty staff:</strong> {{ $detail->no_of_duty_staff ?? '' }}
                 </div>
 
-                <div style="display: flex; flex-wrap: wrap; margin-bottom: 10px;">
-                    <span style="text-align: left; width: 30px;">III.</span>
-                    <span style="text-align: left; width: 180px;">Sanctioned Cadre:</span>
-                    <span
-                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">
-                        {{ $detail->Sanctioned_Cadre ?? '' }}
-                    </span>
-
-                    <span style="display: inline-block; width: 100px;">Available:</span>
-                    <span
-                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">
-                        {{ $detail->Available ?? '' }}
-                    </span>
-
-                    <span style="display: inline-block;text-align: left; width: 130px;">Vacancy/Excess:</span>
-                    <span style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px;">
-                        {{ $detail->Vacancy ?? '' }}
-                    </span>
+                <div style="margin-bottom: 10px;">
+                    <strong>III. Sanctioned Cadre:</strong> {{ $detail->Sanctioned_Cadre ?? '' }}
                 </div>
 
-                <div style="display: flex; flex-wrap: wrap;">
-                    <span style="display: inline-block; width: 30px;">IV.</span>
-                    <span style="display: inline-block; width: 180px;">No. of Counters:</span>
-                    <span
-                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 60px; margin-right: 15px;">
-                        {{ $detail->No_of_Counters ?? '' }}
-                    </span>
-                    <span>(1) UTS:</span>
-                    <span
-                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 60px; margin-right: 15px;">
-                        {{ $detail->UTS ?? '' }}
-                    </span>
+                <div style="margin-bottom: 10px;">
+                    <strong>Available:</strong> {{ $detail->Available ?? '' }}
+                </div>
 
-                    <span>(2) PRS:</span>
-                    <span
-                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 60px; margin-right: 15px;">
-                        {{ $detail->PRS_counter ?? '' }}
-                    </span>
+                <div style="margin-bottom: 10px;">
+                    <strong>Vacancy/Excess:</strong> {{ $detail->Vacancy ?? '' }}
+                </div>
 
-                    <span>(3) UTS-cum-PRS:</span>
-                    <span style="display: inline-block; border-bottom: 1px solid #000; min-width:80px;">
-                        {{ $detail->UTS_PRS_counter ?? '' }}
-                    </span>
+                <div style="margin-bottom: 10px;">
+                    <strong>IV. No. of Counters:</strong> {{ $detail->No_of_Counters ?? '' }}
+                </div>
+
+                <div style="margin-bottom: 10px;">
+                    <strong>(1) UTS:</strong> {{ $detail->UTS ?? '' }}
+                </div>
+
+                <div style="margin-bottom: 10px;">
+                    <strong>(2) PRS:</strong> {{ $detail->PRS_counter ?? '' }}
+                </div>
+
+                <div style="margin-bottom: 10px;">
+                    <strong>(3) UTS-cum-PRS:</strong> {{ $detail->UTS_PRS_counter ?? '' }}
                 </div>
             </div>
         @endforeach
@@ -267,15 +242,13 @@
                 <div style="margin-bottom: 10px;">
                     <span style="display: inline-block; width: 30px;">I.</span>
                     <span style="display: inline-block; width: 180px;">Name of CBS:</span>
-                    <span
-                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $detail->crs_name ?? '' }}</span>
+                    <span>{{ $detail->crs_name ?? '' }}</span>
                 </div>
 
                 <div style="margin-bottom: 10px;">
                     <span style="display: inline-block; width: 30px;">II.</span>
                     <span style="display: inline-block; width: 180px;">No. of on duty staff:</span>
-                    <span
-                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $detail->no_of_duty_staff ?? '' }}</span>
+                    <span>{{ $detail->no_of_duty_staff ?? '' }}</span>
                 </div>
 
                 <div style="display: flex; flex-wrap: wrap; margin-bottom: 10px;">
@@ -335,15 +308,13 @@
                 <div style="margin-bottom: 10px;">
                     <span style="display: inline-block; width: 30px;">I.</span>
                     <span style="display: inline-block; width: 180px;">Name of CBS:</span>
-                    <span
-                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $detail->cbs_name ?? '' }}</span>
+                    <span>{{ $detail->cbs_name ?? '' }}</span>
                 </div>
 
                 <div style="margin-bottom: 10px;">
                     <span style="display: inline-block; width: 30px;">II.</span>
                     <span style="display: inline-block; width: 180px;">No. of on duty staff:</span>
-                    <span
-                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $detail->no_of_duty_staff ?? '' }}</span>
+                    <span>{{ $detail->no_of_duty_staff ?? '' }}</span>
                 </div>
 
                 <div style="display: flex; flex-wrap: wrap; margin-bottom: 10px;">
@@ -400,30 +371,25 @@
                 <div style="margin-bottom: 10px;">
                     <span style="display: inline-block; width: 30px;">I.</span>
                     <span style="display: inline-block; width: 180px;">Name of CGS:</span>
-                    <span
-                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $detail->cgs_name ?? '' }}</span>
+                    <span>{{ $detail->cgs_name ?? '' }}</span>
                 </div>
 
                 <div style="margin-bottom: 10px;">
                     <span style="display: inline-block; width: 30px;">II.</span>
                     <span style="display: inline-block; width: 180px;">No. of on duty staff:</span>
-                    <span
-                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $detail->no_of_duty_staff ?? '' }}</span>
+                    <span>{{ $detail->no_of_duty_staff ?? '' }}</span>
                 </div>
 
                 <div style="display: flex; flex-wrap: wrap; margin-bottom: 10px;">
                     <span style="display: inline-block; width: 30px;">III.</span>
                     <span style="display: inline-block; width: 180px;">Sanctioned Cadre:</span>
-                    <span
-                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $detail->Sanctioned_Cadre ?? '' }}</span>
+                    <span>{{ $detail->Sanctioned_Cadre ?? '' }}</span>
 
                     <span style="display: inline-block; width: 100px;">Available:</span>
-                    <span
-                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $detail->Available ?? '' }}</span>
+                    <span>{{ $detail->Available ?? '' }}</span>
 
                     <span style="display: inline-block; width: 130px;">Vacancy/Excess:</span>
-                    <span
-                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px;">{{ $detail->Vacancy_Excess ?? '' }}</span>
+                    <span>{{ $detail->Vacancy_Excess ?? '' }}</span>
                 </div>
 
             </div>
@@ -668,20 +634,26 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
+                    @foreach ($InspectionPayUseToilets_detail as $index => $item)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $item->location }}</td>
+                            <td>{{ $item->Gents }}</td>
+                            <td>{{ $item->Ladies }}</td>
+                            <td>{{ $item->Gents_Urinals }}</td>
+                            <td>{{ $item->Ladies_Urinals }}</td>
+                            <td>{{ $item->Divyang }}</td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
 
-            <p>During the inspection of the above toilet block on dated ......................... following observations
-                were made:</p>
+
+            <p style="text-align: left;">
+                During the inspection of the above toilet block on dated ......................... following
+                observations were made:
+            </p>
+
 
             <table border="1" cellspacing="0" cellpadding="5" style="border-collapse: collapse; width: 100%;">
                 <thead>
@@ -838,6 +810,8 @@
             </tbody>
         </table>
     @endif
+
+    <p>Please point out any other irregularities noticed during your inspection : </p>
 
 
 

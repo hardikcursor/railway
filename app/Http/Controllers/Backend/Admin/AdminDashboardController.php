@@ -10,13 +10,14 @@ use App\Models\Goods_Shed_office;
 use App\Models\Goods_Shed_office_form;
 use App\Models\INSPECTIONKITCHEN;
 use App\Models\inspectionkitchen_answer;
-use App\Models\InspectionPantryCar_form;
 use App\Models\InspectionPantryCar;
 use App\Models\InspectionPantryCar_answer;
+use App\Models\InspectionPantryCar_form;
 use App\Models\InspectionPassenger_items;
 use App\Models\InspectionPassenger_items__answer;
 use App\Models\InspectionPayUseToilets;
 use App\Models\InspectionPayUseToilets_answer;
+use App\Models\InspectionPayUseToilets_location_form;
 use App\Models\INSPECTION_TEA;
 use App\Models\inspection_tea_answer;
 use App\Models\NonFare_Revenue;
@@ -228,6 +229,9 @@ class AdminDashboardController extends Controller
             ->where('inspection_id', $report->id)
             ->get();
 
+        $InspectionPayUseToilets_detail = InspectionPayUseToilets_location_form::where('inspection_id', $id)
+            ->get();
+            
         $InspectionPayUseToilets_answer = InspectionPayUseToilets_answer::with('inspectionPayUseToilets')
             ->where('inspection_id', $report->id)
             ->get();
@@ -247,7 +251,7 @@ class AdminDashboardController extends Controller
             ->where('inspection_id', $report->id)
             ->get();
 
-        $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingofficedetail', 'bookingOfficeAnswers', 'PRSofficedetail', 'PRS_office_answers', 'Parcelofficedetail', 'Parcel_answer', 'Goods_officedetail', 'Goods_office_answer', 'Ticketofficedetail', 'Ticket_office_answer', 'NonFare_Revenue_answer', 'InspectionPassenger_items__answer', 'StationCleanliness_answer', 'InspectionPayUseToilets_answer', 'inspection_tea_answer', 'InspectionPantryCar_detail', 'InspectionPantryCar_answer', 'inspectionkitchen_answer'));
+        $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingofficedetail', 'bookingOfficeAnswers', 'PRSofficedetail', 'PRS_office_answers', 'Parcelofficedetail', 'Parcel_answer', 'Goods_officedetail', 'Goods_office_answer', 'Ticketofficedetail', 'Ticket_office_answer', 'NonFare_Revenue_answer', 'InspectionPassenger_items__answer', 'StationCleanliness_answer', 'InspectionPayUseToilets_detail', 'InspectionPayUseToilets_answer', 'inspection_tea_answer', 'InspectionPantryCar_detail', 'InspectionPantryCar_answer', 'inspectionkitchen_answer'));
 
         return $pdf->download('report_' . $report->id . '.pdf');
     }

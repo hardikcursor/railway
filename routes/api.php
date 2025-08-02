@@ -51,6 +51,7 @@ Route::prefix('booking-office-answers')->group(function () {
     Route::post('/inspection-answer', [BookingOfficeAnswerController::class, 'inspectionOfPassengerAnswer']);
     Route::get('/station-cleanliness', [BookingOfficeAnswerController::class, 'stationCleanlinessProforma']);
     Route::post('/station-cleanliness-answer', [BookingOfficeAnswerController::class, 'stationCleanlinessAnswer']);
+    Route::post('/inspection-pay-use-toilets-details', [BookingOfficeAnswerController::class, 'storeToiletLocation']);
     Route::get('/inspection-pay-use-toilets', [BookingOfficeAnswerController::class, 'inspectionOfPayAndUseToilets']);
     Route::post('/inspection-pay-use-toilets-answer', [BookingOfficeAnswerController::class, 'inspectionOfPayAndUseToiletsAnswer']);
     Route::get('/inspection-tea-and-light-refreshment-stall', [BookingOfficeAnswerController::class, 'inspectionOfTeaAndLightRefreshmentStall']);

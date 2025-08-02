@@ -3,7 +3,7 @@
     <div class="content-wrapper">
         <!-- START PAGE CONTENT-->
         <div class="page-content fade-in-up">
-           <div class="row">
+            <div class="row">
                 <div class="col-lg-3 col-md-6">
                     <div class="ibox bg-success color-white widget-stat">
                         <div class="ibox-body">
@@ -67,7 +67,7 @@
                 </div>
             </div> --}}
 
- 
+
 
             <!-- Latest Records Table -->
             <div class="row">
@@ -113,11 +113,12 @@
                                             <td>{{ $report->TypeofInspection }}</td>
                                             <td>{{ $report->Duration }}</td>
                                             <td>
-                                           <a class="btn btn-sm btn-primary" href="{{ route('superadmin.reports.download', $report->id) }}">Download</a>
+                                                <a class="btn btn-sm btn-primary"
+                                                    href="{{ route('superadmin.reports.download', $report->id) }}">Download</a>
                                             </td>
                                             <td>
-                                                <form action="{{ route('superadmin.approval', $report->id) }}" method="POST"
-                                                    class="d-inline">
+                                                <form action="{{ route('superadmin.approval', $report->id) }}"
+                                                    method="POST" class="d-inline">
                                                     @csrf
                                                     <button type="submit" class="btn btn-success">Checked</button>
                                                 </form>
@@ -134,6 +135,70 @@
             </div>
         </div>
     </div>
+    <button id="openChatBtn" style="position: fixed; bottom: 20px; right: 20px; padding: 10px 20px;">💬 Chat</button>
+
+    <!-- Overlay (hidden by default) -->
+    <div id="chatOverlay"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.3); z-index: 999;">
+    </div>
+
+    <!-- Chat Box -->
+    <div id="chatBox"
+        style="display: none; position: fixed; bottom: 70px; right: 20px; width: 300px; height: 400px;
+    background: #fff; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    z-index: 1000;">
+        <div
+            style="background: #007bff; color: white; padding: 10px; border-top-left-radius: 8px; border-top-right-radius: 8px;">
+            Chat with us
+            <button id="closeChatBtn" style="float: right; background: none; color: white; border: none;">✖</button>
+        </div>
+
+        <div id="chatMessages" style="padding: 10px; height: 300px; overflow-y: auto; border-bottom: 1px solid #ccc;">
+            <p>Hello! How can we help you?</p>
+        </div>
+
+        <div style="display: flex; padding: 10px;">
+            <input type="text" id="chatInput" placeholder="Type your message..."
+                style="flex: 1; padding: 5px; margin-right: 5px;">
+            <button id="sendChatBtn"
+                style="background-color: #007bff; color: white; border: none; padding: 6px 10px; border-radius: 4px;">Send</button>
+        </div>
+    </div>
+
+    <!-- Chat Box JavaScript -->
+    <script>
+        const openChatBtn = document.getElementById("openChatBtn");
+        const closeChatBtn = document.getElementById("closeChatBtn");
+        const chatBox = document.getElementById("chatBox");
+        const chatOverlay = document.getElementById("chatOverlay");
+        const sendChatBtn = document.getElementById("sendChatBtn");
+        const chatMessages = document.getElementById("chatMessages");
+        const chatInput = document.getElementById("chatInput");
+
+        openChatBtn.addEventListener("click", function() {
+            chatBox.style.display = "block";
+            chatOverlay.style.display = "block";
+            document.body.style.overflow = "hidden"; // disable scroll
+        });
+
+        closeChatBtn.addEventListener("click", function() {
+            chatBox.style.display = "none";
+            chatOverlay.style.display = "none";
+            document.body.style.overflow = ""; // enable scroll
+        });
+
+        sendChatBtn.addEventListener("click", function() {
+            const message = chatInput.value.trim();
+            if (message !== "") {
+                const newMsg = document.createElement("p");
+                newMsg.textContent = "You: " + message;
+                chatMessages.appendChild(newMsg);
+                chatInput.value = "";
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        });
+    </script>
 
     <!-- Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>

@@ -13,6 +13,7 @@ use App\Models\InspectionPantryCar;
 use App\Models\InspectionPantryCar_form;
 use App\Models\InspectionPassenger_items;
 use App\Models\InspectionPayUseToilets;
+use App\Models\InspectionPayUseToilets_location_form;
 use App\Models\NonFare_Revenue;
 use App\Models\Parcel_Office;
 use App\Models\Parcel_Office_form;
@@ -621,6 +622,26 @@ class BookingOfficeAnswerController extends Controller
         }
     }
 
+    public function storeToiletLocation(Request $request)
+    {
+         $request->validate([
+            'inspection_id'  => 'required|exists:reports,id',
+            'location'       => 'required|string',
+            'Gents'          => 'required|string',
+            'Ladies'         => 'required|string',
+            'Gents_Urinals'  => 'required|string',
+            'Ladies_Urinals' => 'required|string',
+            'Divyang'        => 'required|string',
+        ]);
+
+        $form = InspectionPayUseToilets_location_form::create($request->all());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Toilet location data saved successfully!',
+            'data'    => $form,
+        ], 201);
+    }
     public function inspectionOfPayAndUseToilets()
     {
 
@@ -729,15 +750,15 @@ class BookingOfficeAnswerController extends Controller
     public function inspectionOfPantryCarDetail(Request $request)
     {
         $request->validate([
-            'inspection_id'    => 'required|exists:reports,id',
-            'train_no'         => 'required|string',
-            'train_name'       => 'required|string',
+            'inspection_id'       => 'required|exists:reports,id',
+            'train_no'            => 'required|string',
+            'train_name'          => 'required|string',
             'inspecting_official' => 'required|string',
-            'designation'        => 'required|string',
-            'pantry_car_no'   => 'required|string',
-            'pantry_car_manager'   => 'required|string',
-            'contractor_name' => 'required|string',
-            'irctc_supervisor' => 'required|string',
+            'designation'         => 'required|string',
+            'pantry_car_no'       => 'required|string',
+            'pantry_car_manager'  => 'required|string',
+            'contractor_name'     => 'required|string',
+            'irctc_supervisor'    => 'required|string',
         ]);
 
         $data = InspectionPantryCar_form::create($request->all());
