@@ -14,6 +14,7 @@ class Report extends Model
         'Station',
         'TypeofInspection',
         'Duration',
+        'date',
         'status',
     ];
 }

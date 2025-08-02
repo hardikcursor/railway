@@ -96,7 +96,7 @@
                 <form id="daily_form" class="report-form" style="display: none;"> @csrf
                     <input type="hidden" name="report_type" value="BookingOffice">
                     <div class="form-group">
-                        <label>Enter Booking Office Report Details</label>
+                        <label>Enter Add Question</label>
                         <input type="text" name="daily_quotation" class="form-control">
                         <span>
                             @error('daily_quotation')
@@ -104,14 +104,14 @@
                             @enderror
                         </span>
                     </div>
-                    <button type="submit" class="btn btn-success mt-2 mb-3">Generate Booking Office Report</button>
+                    <button type="submit" class="btn btn-success mt-2 mb-3">Submit Question</button>
                 </form>
 
                 <!-- PRS Office Form -->
                 <form id="prs_form" class="report-form" style="display: none;"> @csrf
                     <input type="hidden" name="report_type" value="PRSOffice">
                     <div class="form-group">
-                        <label>Enter PRS Office Report Details</label>
+                        <label>Enter Add Question</label>
                         <input type="text" name="prs_quotation" class="form-control">
                         <span>
                             @error('prs_quotation')
@@ -126,7 +126,7 @@
                 <form id="parcel_form" class="report-form" style="display: none;"> @csrf
                     <input type="hidden" name="report_type" value="ParcelOffice">
                     <div class="form-group">
-                        <label>Enter Parcel Office Report Details</label>
+                        <label>Enter Add Question</label>
                         <input type="text" name="parcel_quotation" class="form-control">
                         <span>
                             @error('parcel_quotation')
@@ -134,14 +134,14 @@
                             @enderror
                         </span>
                     </div>
-                    <button type="submit" class="btn btn-success mt-2">Generate Parcel Office Report</button>
+                    <button type="submit" class="btn btn-success mt-2">Submit Question</button>
                 </form>
 
                 <!-- Goods Shed/Office Form -->
                 <form id="goods_form" class="report-form" style="display: none;"> @csrf
                     <input type="hidden" name="report_type" value="GoodsShedOffice">
                     <div class="form-group">
-                        <label>Enter Goods Shed/Office Report Details</label>
+                        <label>Enter Add Question</label>
                         <input type="text" name="goods_quotation" class="form-control">
                         <span>
                             @error('goods_quotation')
@@ -149,14 +149,14 @@
                             @enderror
                         </span>
                     </div>
-                    <button type="submit" class="btn btn-success mt-2">Generate Goods Shed/Office Report</button>
+                    <button type="submit" class="btn btn-success mt-2">Submit Question</button>
                 </form>
 
                 <!-- Ticket Examiner Office Form -->
                 <form id="ticket_form" class="report-form" style="display: none;"> @csrf
                     <input type="hidden" name="report_type" value="TicketExaminerOffice">
                     <div class="form-group">
-                        <label>Enter Ticket Examiner Office Report Details</label>
+                        <label>Enter Add Question</label>
                         <input type="text" name="ticket_quotation" class="form-control">
                         <span>
                             @error('ticket_quotation')
@@ -164,15 +164,14 @@
                             @enderror
                         </span>
                     </div>
-                    <button type="submit" class="btn btn-success mt-2">Generate Ticket Examiner Office
-                        Report</button>
+                    <button type="submit" class="btn btn-success mt-2">Submit Question</button>
                 </form>
 
                 <!-- Non Fare Revenue at Stations Form -->
                 <form id="nonfare_form" class="report-form" style="display: none;"> @csrf
                     <input type="hidden" name="report_type" value="NonFareRevenue">
                     <div class="form-group">
-                        <label>Enter Non Fare Revenue at Stations Report Details</label>
+                        <label>Enter Add Question</label>
                         <input type="text" name="nonfare_quotation" class="form-control">
                         <span>
                             @error('nonfare_quotation')
@@ -180,14 +179,14 @@
                             @enderror
                         </span>
                     </div>
-                    <button type="submit" class="btn btn-success mt-2">Generate Non Fare Revenue Report</button>
+                    <button type="submit" class="btn btn-success mt-2">Submit Question</button>
                 </form>
 
                 <!-- Inspection of Passenger Amenities Items Form -->
                 <form id="passenger_form" class="report-form" style="display: none;"> @csrf
                     <input type="hidden" name="report_type" value="PassengerAmenities">
                     <div class="form-group">
-                        <label>Enter Inspection of Passenger Amenities Items Report Details</label>
+                        <label>Enter Add Question</label>
                         <input type="text" name="passenger_quotation" class="form-control">
                         <span>
                             @error('passenger_quotation')
@@ -195,14 +194,14 @@
                             @enderror
                         </span>
                     </div>
-                    <button type="submit" class="btn btn-success mt-2">Generate Passenger Amenities Report</button>
+                    <button type="submit" class="btn btn-success mt-2">Submit Question</button>
                 </form>
 
                 <!-- Station Cleanliness Proforma Form -->
                 <form id="stationcleanliness_form" class="report-form" style="display: none;"> @csrf
                     <input type="hidden" name="report_type" value="StationCleanliness">
                     <div class="form-group">
-                        <label>Enter Station Cleanliness Proforma Report Details</label>
+                        <label>Enter Add Question</label>
                         <input type="text" name="stationcleanliness_quotation" class="form-control">
                         <span>
                             @error('stationcleanliness_quotation')
@@ -210,15 +209,14 @@
                             @enderror
                         </span>
                     </div>
-                    <button type="submit" class="btn btn-success mt-2">Generate Station Cleanliness Proforma
-                        Report</button>
+                    <button type="submit" class="btn btn-success mt-2">Submit Question</button>
                 </form>
 
                 <!-- Inspection of Pay & Use Toilets Form -->
                 <form id="payuse_form" class="report-form" style="display: none;"> @csrf
                     <input type="hidden" name="report_type" value="PayUseToilet">
                     <div class="form-group">
-                        <label>Enter Inspection of Pay & Use Toilets Report Details</label>
+                        <label>Enter Add Question</label>
                         <input type="text" name="payuse_quotation" class="form-control">
                         <span>
                             @error('payuse_quotation')
@@ -226,8 +224,7 @@
                             @enderror
                         </span>
                     </div>
-                    <button type="submit" class="btn btn-success mt-2">Generate Inspection of Pay & Use Toilets
-                        Report</button>
+                    <button type="submit" class="btn btn-success mt-2">Submit Question</button>
                 </form>
 
 
@@ -235,7 +232,7 @@
                 <form id="tea_form" class="report-form" style="display: none;"> @csrf
                     <input type="hidden" name="report_type" value="TeaRefreshment">
                     <div class="form-group">
-                        <label>Enter Inspection of Tea & Light Refreshment Stall</label>
+                        <label>Enter Add Question</label>
                         <input type="text" name="tea_quotation" class="form-control">
                         <span>
                             @error('tea_quotation')
@@ -243,15 +240,14 @@
                             @enderror
                         </span>
                     </div>
-                    <button type="submit" class="btn btn-success mt-2">Generate Tea & Light Refreshment
-                        Report</button>
+                    <button type="submit" class="btn btn-success mt-2">Submit Question</button>
                 </form>
 
                 <!-- Pantry Car Form -->
                 <form id="pantry_form" class="report-form" style="display: none;"> @csrf
                     <input type="hidden" name="report_type" value="PantryCar">
                     <div class="form-group">
-                        <label>Enter Inspection of Pantry Car</label>
+                        <label>Enter Add Question</label>
                         <input type="text" name="pantry_quotation" class="form-control">
                         <span>
                             @error('pantry_quotation')
@@ -259,14 +255,14 @@
                             @enderror
                         </span>
                     </div>
-                    <button type="submit" class="btn btn-success mt-2">Generate Pantry Car Report</button>
+                    <button type="submit" class="btn btn-success mt-2">Submit Question</button>
                 </form>
 
                 <!-- Base Kitchen Form -->
                 <form id="base_form" class="report-form" style="display: none;"> @csrf
                     <input type="hidden" name="report_type" value="BaseKitchen">
                     <div class="form-group">
-                        <label>Enter Inspection of Base Kitchen</label>
+                        <label>Enter Add Question</label>
                         <input type="text" name="base_quotation" class="form-control">
                         <span>
                             @error('base_quotation')
@@ -274,7 +270,7 @@
                             @enderror
                         </span>
                     </div>
-                    <button type="submit" class="btn btn-success mt-2">Generate Base Kitchen Report</button>
+                    <button type="submit" class="btn btn-success mt-2">Submit Question</button>
                 </form>
 
             </div>

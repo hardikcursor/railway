@@ -114,7 +114,7 @@
         <img src="{{ public_path('Backend/assets/img/logo.png') }}" alt="Western Railway Logo">
         <h3>Commercial Inspection Report</h3>
         <h4>( ADI DIVISION )</h4>
-        <div class="month">Month: ......................</div>
+        <div class="month">Date: {{ $report->created_at->format('d-m-Y') }}</div>
     </div>
 
     <!-- Page Break -->
@@ -160,12 +160,11 @@
     </h2>
 
 
-    <p><strong>Name of Station:</strong> __________________ <strong>Date of Inspection:</strong> __________________</p>
+      <p><strong>Date of Inspection:</strong> {{ $report->date }}</p>
 
     @if ($bookingOfficeAnswers->isEmpty())
         {{-- No Booking Office data available --}}
     @else
-        <div style="page-break-before: always;"></div>
         <h3 style="text-align: left;">1. <u>Booking Office</u> :</h3>
 
         <div style="font-size: 14px; line-height: 1.8;">

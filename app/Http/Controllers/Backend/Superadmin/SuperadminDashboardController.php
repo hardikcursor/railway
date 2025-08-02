@@ -24,7 +24,7 @@ class SuperadminDashboardController extends Controller
 {
     public function index()
     {
-        $reports           = Report::get();
+        $reports           = Report::orderBy('created_at', 'desc')->get();
         $totalInspections  = Report::count();
         $approvedReports   = Report::where('status', 'approved')->count();
         $pendingCount      = Report::where('status', 'pending')->count();
@@ -41,19 +41,19 @@ class SuperadminDashboardController extends Controller
 
       public function onemonth()
     {
-        $reports = Report::where('duration', '1 Month')->get();
+        $reports = Report::where('duration', 'Monthly')->orderBy('created_at', 'desc')->get();
         return view('superadmin.report.1month', compact('reports'));
     }
 
     public function secondmonth()
     {
-        $reports = Report::where('duration', '3 Month')->get();
+        $reports = Report::where('duration', 'Quarterly')->orderBy('created_at', 'desc')->get();
         return view('superadmin.report.3month', compact('reports'));
     }
 
     public function thirdmonth()
     {
-        $reports = Report::where('duration', '6 Month')->get();
+        $reports = Report::where('duration', 'Half Yearly')->orderBy('created_at', 'desc')->get();
         return view('superadmin.report.6month', compact('reports'));
     }
 

@@ -114,7 +114,7 @@
         <img src="{{ public_path('Backend/assets/img/logo.png') }}" alt="Western Railway Logo">
         <h3>Commercial Inspection Report</h3>
         <h4>( ADI DIVISION )</h4>
-        <div class="month">Month: ......................</div>
+        <div class="month">Date: {{ $report->created_at->format('d-m-Y') }}</div>
     </div>
 
     <!-- Page Break -->
@@ -160,63 +160,78 @@
     </h2>
 
 
-    <p><strong>Name of Station:</strong> __________________ <strong>Date of Inspection:</strong> __________________</p>
+    <p><strong>Date of Inspection:</strong> {{ $report->date }}</p>
 
     @if ($bookingOfficeAnswers->isEmpty())
         {{-- No Booking Office data available --}}
     @else
-        <div style="page-break-before: always;"></div>
         <h3 style="text-align: left;">1. <u>Booking Office</u> :</h3>
 
-        <div style="font-size: 14px; line-height: 1.8;">
+        @foreach ($bookingofficedetail as $detail)
+            <div style="font-size: 14px; line-height: 1.8; margin-bottom: 30px;">
+                <div style="margin-bottom: 10px;">
+                    <span style="text-align: left; width: 30px;">I.</span>
+                    <span style="text-align: left; width: 180px;">Name of CBS:</span>
+                    <span style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">
+                        {{ $detail->cbs_name ?? '' }}
+                    </span>
+                </div>
 
-            <div style="margin-bottom: 10px;">
-                <span style="text-align: left; width: 30px;">I.</span>
-                <span style="text-align: left; width: 180px;">Name of CBS:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $bookingOffice->name_of_cbs ?? '' }}</span>
+                <div style="margin-bottom: 10px;">
+                    <span style="text-align: left; width: 30px;">II.</span>
+                    <span style="text-align: left; width: 180px;">No. of on duty staff:</span>
+                    <span style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">
+                        {{ $detail->no_of_duty_staff ?? '' }}
+                    </span>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap; margin-bottom: 10px;">
+                    <span style="text-align: left; width: 30px;">III.</span>
+                    <span style="text-align: left; width: 180px;">Sanctioned Cadre:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">
+                        {{ $detail->Sanctioned_Cadre ?? '' }}
+                    </span>
+
+                    <span style="display: inline-block; width: 100px;">Available:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">
+                        {{ $detail->Available ?? '' }}
+                    </span>
+
+                    <span style="display: inline-block;text-align: left; width: 130px;">Vacancy/Excess:</span>
+                    <span style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px;">
+                        {{ $detail->Vacancy ?? '' }}
+                    </span>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap;">
+                    <span style="display: inline-block; width: 30px;">IV.</span>
+                    <span style="display: inline-block; width: 180px;">No. of Counters:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 60px; margin-right: 15px;">
+                        {{ $detail->No_of_Counters ?? '' }}
+                    </span>
+                    <span>(1) UTS:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 60px; margin-right: 15px;">
+                        {{ $detail->UTS ?? '' }}
+                    </span>
+
+                    <span>(2) PRS:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 60px; margin-right: 15px;">
+                        {{ $detail->PRS_counter ?? '' }}
+                    </span>
+
+                    <span>(3) UTS-cum-PRS:</span>
+                    <span style="display: inline-block; border-bottom: 1px solid #000; min-width:80px;">
+                        {{ $detail->UTS_PRS_counter ?? '' }}
+                    </span>
+                </div>
             </div>
+        @endforeach
 
-            <div style="margin-bottom: 10px;">
-                <span style="text-align: left; width: 30px;">II.</span>
-                <span style="text-align: left; width: 180px;">No. of on duty staff:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $bookingOffice->duty_staff_no ?? '' }}</span>
-            </div>
-
-            <div style="display: flex; flex-wrap: wrap; margin-bottom: 10px;">
-                <span style="text-align: left; width: 30px;">III.</span>
-                <span style="text-align: left; width: 180px;">Sanctioned Cadre:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $bookingOffice->sanctioned_cadre ?? '' }}</span>
-
-                <span style="display: inline-block; width: 100px;">Available:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $bookingOffice->available ?? '' }}</span>
-
-                <span style="display: inline-block;text-align: left; width: 130px;">Vacancy/Excess:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px;">{{ $bookingOffice->vacancy_excess ?? '' }}</span>
-            </div>
-
-            <div style="display: flex; flex-wrap: wrap;">
-                <span style="display: inline-block; width: 30px;">IV.</span>
-                <span style="display: inline-block; width: 180px;">No. of Counters:</span>
-
-                <span>(1) UTS:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 60px; margin-right: 15px;">{{ $bookingOffice->uts_counter ?? '' }}</span>
-
-                <span>(2) PRS:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 60px; margin-right: 15px;">{{ $bookingOffice->prs_counter ?? '' }}</span>
-
-                <span>(3) UTS-cum-PRS:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 80px;">{{ $bookingOffice->uts_prs_counter ?? '' }}</span>
-            </div>
-
-        </div>
 
         <table border="1" cellspacing="0" cellpadding="6" width="100%">
             <thead>
@@ -232,7 +247,7 @@
                         <td>{{ $key + 1 }}</td>
                         <td>{{ $answer->bookingOffice->checks ?? 'N/A' }}</td>
                         <td>
-                            {{ $answer->answer }}<br>
+                            <strong>Action Taken: </strong> {{ $answer->answer }}<br>
                             <strong>Remark:</strong> {{ $answer->remark ?? 'N/A' }}
                         </td>
                     </tr>
@@ -246,52 +261,47 @@
     @else
         <div style="page-break-before: always;"></div>
         <h3 style="text-align: left;">2. <u>PRS Office</u> :</h3>
+        @foreach ($PRSofficedetail as $detail)
+            <div style="font-size: 14px; line-height: 1.8;">
 
-        <div style="font-size: 14px; line-height: 1.8;">
+                <div style="margin-bottom: 10px;">
+                    <span style="display: inline-block; width: 30px;">I.</span>
+                    <span style="display: inline-block; width: 180px;">Name of CBS:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $detail->crs_name ?? '' }}</span>
+                </div>
 
-            <div style="margin-bottom: 10px;">
-                <span style="display: inline-block; width: 30px;">I.</span>
-                <span style="display: inline-block; width: 180px;">Name of CBS:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $bookingOffice->name_of_cbs ?? '' }}</span>
+                <div style="margin-bottom: 10px;">
+                    <span style="display: inline-block; width: 30px;">II.</span>
+                    <span style="display: inline-block; width: 180px;">No. of on duty staff:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $detail->no_of_duty_staff ?? '' }}</span>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap; margin-bottom: 10px;">
+                    <span style="display: inline-block; width: 30px;">III.</span>
+                    <span style="display: inline-block; width: 180px;">Sanctioned Cadre:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $detail->Sanctioned_Cadre ?? '' }}</span>
+
+                    <span style="display: inline-block; width: 100px;">Available:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $detail->Available ?? '' }}</span>
+
+                    <span style="display: inline-block; width: 130px;">Vacancy/Excess:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px;">{{ $detail->Vacancy ?? '' }}</span>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap;">
+                    <span style="display: inline-block; width: 30px;">IV.</span>
+                    <span style="display: inline-block; width: 180px;">No. of Counters:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 60px; margin-right: 15px;">{{ $detail->No_of_Counters ?? '' }}</span>
+                </div>
+
             </div>
-
-            <div style="margin-bottom: 10px;">
-                <span style="display: inline-block; width: 30px;">II.</span>
-                <span style="display: inline-block; width: 180px;">No. of on duty staff:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $bookingOffice->duty_staff_no ?? '' }}</span>
-            </div>
-
-            <div style="display: flex; flex-wrap: wrap; margin-bottom: 10px;">
-                <span style="display: inline-block; width: 30px;">III.</span>
-                <span style="display: inline-block; width: 180px;">Sanctioned Cadre:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $bookingOffice->sanctioned_cadre ?? '' }}</span>
-
-                <span style="display: inline-block; width: 100px;">Available:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $bookingOffice->available ?? '' }}</span>
-
-                <span style="display: inline-block; width: 130px;">Vacancy/Excess:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px;">{{ $bookingOffice->vacancy_excess ?? '' }}</span>
-            </div>
-
-            <div style="display: flex; flex-wrap: wrap;">
-                <span style="display: inline-block; width: 30px;">IV.</span>
-                <span style="display: inline-block; width: 180px;">No. of Counters:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 60px; margin-right: 15px;">{{ $bookingOffice->uts_counter ?? '' }}</span>
-
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 60px; margin-right: 15px;">{{ $bookingOffice->prs_counter ?? '' }}</span>
-
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 80px;">{{ $bookingOffice->uts_prs_counter ?? '' }}</span>
-            </div>
-
-        </div>
+        @endforeach
 
         <table>
             <tr>
@@ -319,36 +329,40 @@
 
         <h3 style="text-align: left;">3. <u>Parcel Office</u> :</h3>
 
-        <div style="font-size: 14px; line-height: 1.8;">
+        @foreach ($Parcelofficedetail as $detail)
+            <div style="font-size: 14px; line-height: 1.8;">
 
-            <div style="margin-bottom: 10px;">
-                <span style="display: inline-block; width: 30px;">I.</span>
-                <span style="display: inline-block; width: 180px;">Name of CBS:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $bookingOffice->name_of_cbs ?? '' }}</span>
+                <div style="margin-bottom: 10px;">
+                    <span style="display: inline-block; width: 30px;">I.</span>
+                    <span style="display: inline-block; width: 180px;">Name of CBS:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $detail->cbs_name ?? '' }}</span>
+                </div>
+
+                <div style="margin-bottom: 10px;">
+                    <span style="display: inline-block; width: 30px;">II.</span>
+                    <span style="display: inline-block; width: 180px;">No. of on duty staff:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $detail->no_of_duty_staff ?? '' }}</span>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap; margin-bottom: 10px;">
+                    <span style="display: inline-block; width: 30px;">III.</span>
+                    <span style="display: inline-block; width: 180px;">Sanctioned Cadre:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $detail->Sanctioned_Cadre ?? '' }}</span>
+
+                    <span style="display: inline-block; width: 100px;">Available:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $detail->Available ?? '' }}</span>
+
+                    <span style="display: inline-block; width: 130px;">Vacancy/Excess:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px;">{{ $detail->Vacancy_Excess ?? '' }}</span>
+                </div>
+
             </div>
-
-            <div style="margin-bottom: 10px;">
-                <span style="display: inline-block; width: 30px;">II.</span>
-                <span style="display: inline-block; width: 180px;">No. of on duty staff:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $bookingOffice->duty_staff_no ?? '' }}</span>
-            </div>
-
-            <div style="display: flex; flex-wrap: wrap; margin-bottom: 10px;">
-                <span style="display: inline-block; width: 30px;">III.</span>
-                <span style="display: inline-block; width: 180px;">Sanctioned Cadre:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $bookingOffice->sanctioned_cadre ?? '' }}</span>
-
-                <span style="display: inline-block; width: 100px;">Available:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $bookingOffice->available ?? '' }}</span>
-
-                <span style="display: inline-block; width: 130px;">Vacancy/Excess:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px;">{{ $bookingOffice->vacancy_excess ?? '' }}</span>
-            </div>
+        @endforeach
 
 
         </div>
@@ -380,39 +394,40 @@
 
         <h3 style="text-align: left;">4. <u>Goods Shed/Office</u> :</h3>
 
-        <div style="font-size: 14px; line-height: 1.8;">
+        @foreach ($Goods_officedetail as $detail)
+            <div style="font-size: 14px; line-height: 1.8;">
 
-            <div style="margin-bottom: 10px;">
-                <span style="display: inline-block; width: 30px;">I.</span>
-                <span style="display: inline-block; width: 180px;">Name of CGS:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $bookingOffice->name_of_cbs ?? '' }}</span>
+                <div style="margin-bottom: 10px;">
+                    <span style="display: inline-block; width: 30px;">I.</span>
+                    <span style="display: inline-block; width: 180px;">Name of CGS:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $detail->cgs_name ?? '' }}</span>
+                </div>
+
+                <div style="margin-bottom: 10px;">
+                    <span style="display: inline-block; width: 30px;">II.</span>
+                    <span style="display: inline-block; width: 180px;">No. of on duty staff:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $detail->no_of_duty_staff ?? '' }}</span>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap; margin-bottom: 10px;">
+                    <span style="display: inline-block; width: 30px;">III.</span>
+                    <span style="display: inline-block; width: 180px;">Sanctioned Cadre:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $detail->Sanctioned_Cadre ?? '' }}</span>
+
+                    <span style="display: inline-block; width: 100px;">Available:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $detail->Available ?? '' }}</span>
+
+                    <span style="display: inline-block; width: 130px;">Vacancy/Excess:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px;">{{ $detail->Vacancy_Excess ?? '' }}</span>
+                </div>
+
             </div>
-
-            <div style="margin-bottom: 10px;">
-                <span style="display: inline-block; width: 30px;">II.</span>
-                <span style="display: inline-block; width: 180px;">No. of on duty staff:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $bookingOffice->duty_staff_no ?? '' }}</span>
-            </div>
-
-            <div style="display: flex; flex-wrap: wrap; margin-bottom: 10px;">
-                <span style="display: inline-block; width: 30px;">III.</span>
-                <span style="display: inline-block; width: 180px;">Sanctioned Cadre:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $bookingOffice->sanctioned_cadre ?? '' }}</span>
-
-                <span style="display: inline-block; width: 100px;">Available:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $bookingOffice->available ?? '' }}</span>
-
-                <span style="display: inline-block; width: 130px;">Vacancy/Excess:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px;">{{ $bookingOffice->vacancy_excess ?? '' }}</span>
-            </div>
-
-
-        </div>
+        @endforeach
 
         <table>
             <tr>
@@ -440,39 +455,40 @@
         <div style="page-break-before: always;"></div>
         <h3 style="text-align: left;">5. <u>Ticket Examiner office </u> :</h3>
 
-        <div style="font-size: 14px; line-height: 1.8;">
+        @foreach ($Ticketofficedetail as $detail)
+            <div style="font-size: 14px; line-height: 1.8;">
 
-            <div style="margin-bottom: 10px;">
-                <span style="display: inline-block; width: 30px;">I.</span>
-                <span style="display: inline-block; width: 180px;">Name of CTI:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $bookingOffice->name_of_cbs ?? '' }}</span>
+                <div style="margin-bottom: 10px;">
+                    <span style="display: inline-block; width: 30px;">I.</span>
+                    <span style="display: inline-block; width: 180px;">Name of CTI:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $detail->cti_name ?? '' }}</span>
+                </div>
+
+                <div style="margin-bottom: 10px;">
+                    <span style="display: inline-block; width: 30px;">II.</span>
+                    <span style="display: inline-block; width: 180px;">No. of on duty staff:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $detail->no_of_duty_staff ?? '' }}</span>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap; margin-bottom: 10px;">
+                    <span style="display: inline-block; width: 30px;">III.</span>
+                    <span style="display: inline-block; width: 180px;">Sanctioned Cadre:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $detail->Sanctioned_Cadre ?? '' }}</span>
+
+                    <span style="display: inline-block; width: 100px;">Available:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $detail->Available ?? '' }}</span>
+
+                    <span style="display: inline-block; width: 130px;">Vacancy/Excess:</span>
+                    <span
+                        style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px;">{{ $detail->Vacancy_Excess ?? '' }}</span>
+                </div>
+
             </div>
-
-            <div style="margin-bottom: 10px;">
-                <span style="display: inline-block; width: 30px;">II.</span>
-                <span style="display: inline-block; width: 180px;">No. of on duty staff:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">{{ $bookingOffice->duty_staff_no ?? '' }}</span>
-            </div>
-
-            <div style="display: flex; flex-wrap: wrap; margin-bottom: 10px;">
-                <span style="display: inline-block; width: 30px;">III.</span>
-                <span style="display: inline-block; width: 180px;">Sanctioned Cadre:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $bookingOffice->sanctioned_cadre ?? '' }}</span>
-
-                <span style="display: inline-block; width: 100px;">Available:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">{{ $bookingOffice->available ?? '' }}</span>
-
-                <span style="display: inline-block; width: 130px;">Vacancy/Excess:</span>
-                <span
-                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px;">{{ $bookingOffice->vacancy_excess ?? '' }}</span>
-            </div>
-
-
-        </div>
+        @endforeach
 
         <table>
             <tr>
@@ -734,17 +750,20 @@
 
         <h3 style="text-align: left;"><u>11. Inspection of Pantry Car</u></h3>
 
-        <div style="text-align: left; margin-left: 0; padding-left: 0;">
-            <h5><b>Date of Inspection :-</b> </h5>
-            <h5><b>Train No :-</b> </h5>
-            <h5><b>Train Name :-</b> </h5>
-            <h5><b>Name of Inspecting Official :-</b> </h5>
-            <h5><b>Designation :-</b> </h5>
-            <h5><b>Pantry Car No :-</b> </h5>
-            <h5><b>Name of Pantry Car Manager :-</b> </h5>
-            <h5><b>Contractor Name :-</b> </h5>
-            <h5><b>Name of IRCTC Supervisor :-</b> </h5>
-        </div>
+        @foreach ($InspectionPantryCar_detail as $item)
+            <div style="text-align: left; margin-left: 0; padding-left: 0;">
+                <h5><b>Date of Inspection :-</b> {{ $item->date_of_inspection }}</h5>
+                <h5><b>Train No :-</b> {{ $item->train_no }}</h5>
+                <h5><b>Train Name :-</b> {{ $item->train_name }}</h5>
+                <h5><b>Name of Inspecting Official :-</b> {{ $item->inspecting_official }}</h5>
+                <h5><b>Designation :-</b> {{ $item->designation }}</h5>
+                <h5><b>Pantry Car No :-</b> {{ $item->pantry_car_no }}</h5>
+                <h5><b>Name of Pantry Car Manager :-</b> {{ $item->pantry_car_manager }}</h5>
+                <h5><b>Contractor Name :-</b> {{ $item->contractor_name }}</h5>
+                <h5><b>Name of IRCTC Supervisor :-</b> {{ $item->irctc_supervisor }}</h5>
+            </div>
+        @endforeach
+
 
         <table border="1" cellspacing="0" cellpadding="5"
             style="border-collapse: collapse; width: 100%; font-size: 14px; margin-top: 20px;">
@@ -765,26 +784,26 @@
                     </tr>
                 @endforeach
 
-                <!-- Empty space row for spacing before signatures -->
+                <!-- Empty space row -->
                 <tr>
                     <td colspan="3" style="height: 30px; border: none;"></td>
                 </tr>
 
-                <!-- Signature Row -->
+                <!-- Signature Section -->
                 <tr>
-                    <td colspan="2" style="padding-top: 10px;">
-                        <strong>Official Signature:</strong><br><br>
-                        __________________________<br>
-                        Inspecting Official
+                    <td colspan="2" style="padding: 10px; text-align: left;"><strong>(IRCTC Supervisor)</strong>
                     </td>
-                    <td style="text-align: right; padding-top: 10px;">
-                        <strong>Pantry Car Representative:</strong><br><br>
-                        __________________________<br>
-                        Pantry Car Manager
-                    </td>
+                    <td style="padding: 10px; text-align: right;"><strong>(Pantry Car Manager)</strong></td>
                 </tr>
+                <tr>
+                    <td colspan="2" style="padding: 50px 10px 10px 10px;"><strong>Date</strong></td>
+                    <td style="padding: 50px 10px 10px 10px; text-align: right;"><strong>(Officer/CMIs
+                            Signature)</strong></td>
+                </tr>
+
             </tbody>
         </table>
+
     @endif
 
 

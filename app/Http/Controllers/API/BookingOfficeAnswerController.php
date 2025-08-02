@@ -4,22 +4,29 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Booking_office;
 use App\Models\Booking_office_answer;
+use App\Models\Booking_office_form;
 use App\Models\Goods_Shed_office;
+use App\Models\Goods_Shed_office_form;
+use App\Models\INSPECTION_TEA;
 use App\Models\INSPECTIONKITCHEN;
 use App\Models\InspectionPantryCar;
+use App\Models\InspectionPantryCar_form;
 use App\Models\InspectionPassenger_items;
 use App\Models\InspectionPayUseToilets;
-use App\Models\INSPECTION_TEA;
 use App\Models\NonFare_Revenue;
 use App\Models\Parcel_Office;
+use App\Models\Parcel_Office_form;
 use App\Models\PRS_office;
+use App\Models\PRS_office_answer;
+use App\Models\PRS_office_form;
 use App\Models\Report;
 use App\Models\StationCleanliness;
 use App\Models\Ticket_Examineroffice;
+use App\Models\Ticket_Examineroffice_form;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class BookingOfficeAnswerController extends Controller
@@ -34,11 +41,14 @@ class BookingOfficeAnswerController extends Controller
                 'Station'          => 'required|string|max:255',
                 'TypeofInspection' => 'required|string',
                 'Duration'         => 'required|string',
+                'date'             => 'required|date',
             ], [
                 'NameInspector.required'    => 'The name of inspector is required.',
                 'Station.required'          => 'The station is required.',
                 'TypeofInspection.required' => 'The type of inspection is required.',
                 'Duration.required'         => 'The duration is required.',
+                'date.required'             => 'The date is required.',
+                'date.date'                 => 'The date must be a valid date.',
             ]);
 
             // Create report
@@ -47,6 +57,7 @@ class BookingOfficeAnswerController extends Controller
                 'Station'          => $validated['Station'],
                 'TypeofInspection' => $validated['TypeofInspection'],
                 'Duration'         => $validated['Duration'],
+                'date'             => $validated['date'],
                 'status'           => 'pending',
             ]);
 
@@ -100,6 +111,28 @@ class BookingOfficeAnswerController extends Controller
 //         'data'    => $answer,
 //     ]);
 // }
+
+    public function BookingOfficeDetail(Request $request)
+    {
+        $request->validate([
+            'inspection_id'    => 'required|exists:reports,id',
+            'cbs_name'         => 'required|string',
+            'no_of_duty_staff' => 'required|string',
+            'Sanctioned_Cadre' => 'required|string',
+            'Available'        => 'required|string',
+            'Vacancy'          => 'required|string',
+            'No_of_Counters'   => 'required|string',
+            'UTS'              => 'required|string',
+            'UTS-cum-PRS'      => 'required|string',
+        ]);
+
+        $data = Booking_office_form::create($request->all());
+
+        return response()->json([
+            'message' => 'Booking office detail saved successfully',
+            'data'    => $data,
+        ]);
+    }
 
     public function store(Request $request)
     {
@@ -155,18 +188,27 @@ class BookingOfficeAnswerController extends Controller
         ]);
     }
 
-    //  public function show($id)
-    // {
-    //     $answer = Booking_office_answer::with('bookingOffice')->findOrFail($id);
-
-    //     return response()->json([
-    //         'success' => true,
-    //         'data' => $answer,
-    //     ]);
-    // }
-
     // This function retrieves all PRS quotations
 
+    public function PrsOfficeDetail(Request $request)
+    {
+        $request->validate([
+            'inspection_id'    => 'required|exists:reports,id',
+            'crs_name'         => 'required|string',
+            'no_of_duty_staff' => 'required|string',
+            'Sanctioned_Cadre' => 'required|string',
+            'Available'        => 'required|string',
+            'Vacancy'          => 'required|string',
+            'No_of_Counters'   => 'required|string',
+        ]);
+
+        $data = PRS_office_form::create($request->all());
+
+        return response()->json([
+            'message' => 'PRS Office detail saved successfully',
+            'data'    => $data,
+        ]);
+    }
     public function prsgquotionshow()
     {
         $quotations = PRS_office::get();
@@ -239,6 +281,24 @@ class BookingOfficeAnswerController extends Controller
         ]);
     }
 
+    public function ParcelOfficeDetail(Request $request)
+    {
+        $request->validate([
+            'inspection_id'    => 'required|exists:reports,id',
+            'cbs_name'         => 'required|string',
+            'no_of_duty_staff' => 'required|string',
+            'Sanctioned_Cadre' => 'required|string',
+            'Available'        => 'required|string',
+            'Vacancy_Excess'   => 'required|string',
+        ]);
+
+        $data = Parcel_Office_form::create($request->all());
+
+        return response()->json([
+            'message' => 'Parcel office detail saved successfully',
+            'data'    => $data,
+        ]);
+    }
     public function parcelgquotionshow()
     {
         $quotations = Parcel_Office::get();
@@ -278,6 +338,24 @@ class BookingOfficeAnswerController extends Controller
         ]);
     }
 
+    public function goodshedofficeDetail(Request $request)
+    {
+        $request->validate([
+            'inspection_id'    => 'required|exists:reports,id',
+            'cgs_name'         => 'required|string',
+            'no_of_duty_staff' => 'required|string',
+            'Sanctioned_Cadre' => 'required|string',
+            'Available'        => 'required|string',
+            'Vacancy_Excess'   => 'required|string',
+        ]);
+
+        $data = Goods_Shed_office_form::create($request->all());
+
+        return response()->json([
+            'message' => 'Goods shed office detail saved successfully',
+            'data'    => $data,
+        ]);
+    }
     public function goodshedoffice()
     {
         $quotations = Goods_Shed_office::get();
@@ -326,6 +404,24 @@ class BookingOfficeAnswerController extends Controller
         }
     }
 
+    public function ticketexaminerDetail(Request $request)
+    {
+        $request->validate([
+            'inspection_id'    => 'required|exists:reports,id',
+            'cti_name'         => 'required|string',
+            'no_of_duty_staff' => 'required|string',
+            'Sanctioned_Cadre' => 'required|string',
+            'Available'        => 'required|string',
+            'Vacancy_Excess'   => 'required|string',
+        ]);
+
+        $data = Ticket_Examineroffice_form::create($request->all());
+
+        return response()->json([
+            'message' => 'Ticket examiner office detail saved successfully',
+            'data'    => $data,
+        ]);
+    }
     public function ticketexaminerquotionshow()
     {
         $quotations = Ticket_Examineroffice::get();
@@ -628,6 +724,28 @@ class BookingOfficeAnswerController extends Controller
                 'error'   => $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function inspectionOfPantryCarDetail(Request $request)
+    {
+        $request->validate([
+            'inspection_id'    => 'required|exists:reports,id',
+            'train_no'         => 'required|string',
+            'train_name'       => 'required|string',
+            'inspecting_official' => 'required|string',
+            'designation'        => 'required|string',
+            'pantry_car_no'   => 'required|string',
+            'pantry_car_manager'   => 'required|string',
+            'contractor_name' => 'required|string',
+            'irctc_supervisor' => 'required|string',
+        ]);
+
+        $data = InspectionPantryCar_form::create($request->all());
+
+        return response()->json([
+            'message' => 'Pantry car detail saved successfully',
+            'data'    => $data,
+        ]);
     }
 
     public function inspectionOfPantryCar()

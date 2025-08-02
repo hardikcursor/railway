@@ -101,7 +101,7 @@
                     <form id="daily_form" class="report-form" style="display: none;"> @csrf
                         <input type="hidden" name="report_type" value="BookingOffice">
                         <div class="form-group">
-                            <label>Enter Booking Office Report Details</label>
+                            <label>Enter Booking Office Add Question</label>
                             <input type="text" name="daily_quotation" class="form-control">
                             <span>
                                 @error('daily_quotation')
@@ -109,7 +109,7 @@
                                 @enderror
                             </span>
                         </div>
-                        <button type="submit" class="btn btn-success">Generate Booking Office Report</button>
+                        <button type="submit" class="btn btn-success">Submit Question</button>
                     </form>
 
                     <!-- PRS Office Form -->

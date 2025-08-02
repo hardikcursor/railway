@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('Station');
             $table->string('TypeofInspection');
             $table->string('Duration');
+            $table->date('date');
             $table->enum('status', ['pending', 'sent', 'approved'])->default('pending');
             $table->timestamps();
         });

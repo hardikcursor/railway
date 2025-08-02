@@ -16,9 +16,9 @@
                                 <th scope="col">Name of Inspector</th>
                                 <th scope="col">Station</th>
                                 <th scope="col">Type of Inspection</th>
-                                <th scope="col">Send To Admin </th>
-                                <th>Download</th>
-                                <th>Approve</th>
+                                <th scope="col">Send To Officer </th>
+                                <th>Download Report</th>
+                                <th>Checked</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -36,13 +36,13 @@
                                             <button type="submit" class="btn btn-primary"><i
                                                     class="fa-solid fa-share"></i></button>
                                         </form>
-                                    </td> 
-                                     <td><a class="btn btn-sm btn-primary"
+                                    </td>
+                                    <td><a class="btn btn-sm btn-primary"
                                             href="{{ route('admin.reports.download', $report->id) }}">Download</a></td>
                                     <td>
                                         <form action="{{ route('admin.sendToApprove', $report->id) }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="btn btn-success">ok</button>
+                                            <button type="submit" class="btn btn-success">Checked</button>
                                         </form>
                                     </td>
                                 </tr>

@@ -16,9 +16,9 @@
                                 <th>Name of Inspector</th>
                                 <th>Station</th>
                                 <th>Type of Inspection</th>
-                                <th>Send To Admin </th>
-                                <th>Download</th>
-                                <th>Approve</th>
+                                <th>Send To Officer </th>
+                                <th>Download Report</th>
+                                <th>Checked</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -42,7 +42,7 @@
                                     <td>
                                         <form action="{{ route('admin.sendToApprove', $report->id) }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="btn btn-success">ok</button>
+                                            <button type="submit" class="btn btn-success">Checked</button>
                                         </form>
                                     </td>
                                 </tr>

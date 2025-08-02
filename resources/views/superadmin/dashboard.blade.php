@@ -90,8 +90,8 @@
                                         <th scope="col">Station</th>
                                         <th scope="col">Type of Inspection</th>
                                         <th scope="col">Duration</th>
-                                        <th>Download</th>
-                                        <th>Approve</th>
+                                        <th>Download Report</th>
+                                        <th>Checked</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -119,7 +119,7 @@
                                                 <form action="{{ route('superadmin.approval', $report->id) }}" method="POST"
                                                     class="d-inline">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-success">ok</button>
+                                                    <button type="submit" class="btn btn-success">Checked</button>
                                                 </form>
                                             </td>
                                         </tr>

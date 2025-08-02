@@ -28,16 +28,21 @@ Route::get('/user', [AuthController::class, 'getuser']);
 
 // Booking Office Answer Routes
 Route::prefix('booking-office-answers')->group(function () {
+    Route::post('/booking-office-details', [BookingOfficeAnswerController::class, 'BookingOfficeDetail']);
     Route::post('/bookinganswer', [BookingOfficeAnswerController::class, 'store']);
     Route::get('/', [BookingOfficeAnswerController::class, 'bookinganswershow']);
     // Route::get('/{id}', [BookingOfficeAnswerController::class, 'show']);
     Route::get('/quotations', [BookingOfficeAnswerController::class, 'bookingquotionshow']);
+    Route::post('/prs-office-details', [BookingOfficeAnswerController::class, 'PrsOfficeDetail']);
     Route::get('/prs-quotations', [BookingOfficeAnswerController::class, 'prsgquotionshow']);
     Route::post('/prsanswer', [BookingOfficeAnswerController::class, 'prsanswer']);
+    Route::post('/parcel-office-details', [BookingOfficeAnswerController::class, 'ParcelOfficeDetail']);
     Route::get('/parcel-quotations', [BookingOfficeAnswerController::class, 'parcelgquotionshow']);
     Route::post('/parcelanswer', [BookingOfficeAnswerController::class, 'ParcelOfficeAnswer']);
+    Route::post('/goodshed-office-details', [BookingOfficeAnswerController::class, 'goodshedofficeDetail']);
     Route::get('/goodshed-quotations', [BookingOfficeAnswerController::class, 'goodshedoffice']);
     Route::post('/goods-shed-office-answer', [BookingOfficeAnswerController::class, 'goodsShedOfficeAnswer']);
+    Route::post('/ticketexaminer-office-details', [BookingOfficeAnswerController::class, 'ticketexaminerDetail']);
     Route::get('/ticketexaminer-quotations', [BookingOfficeAnswerController::class, 'ticketexaminerquotionshow']);
     Route::post('/ticketexaminer-answer', [BookingOfficeAnswerController::class, 'ticketexaminerquotionAnswer']);
     Route::get('/nonfare-quotations', [BookingOfficeAnswerController::class, 'nonfarequotionshow']);
@@ -50,6 +55,7 @@ Route::prefix('booking-office-answers')->group(function () {
     Route::post('/inspection-pay-use-toilets-answer', [BookingOfficeAnswerController::class, 'inspectionOfPayAndUseToiletsAnswer']);
     Route::get('/inspection-tea-and-light-refreshment-stall', [BookingOfficeAnswerController::class, 'inspectionOfTeaAndLightRefreshmentStall']);
     Route::post('/inspection-tea-answer', [BookingOfficeAnswerController::class, 'inspectionTeaAnswer']);
+    Route::post('/inspection-pantry-car-details', [BookingOfficeAnswerController::class, 'inspectionOfPantryCarDetail']);
     Route::get('/inspection-pantry-car', [BookingOfficeAnswerController::class, 'inspectionOfPantryCar']);
     Route::post('/inspection-pantry-car-answer', [BookingOfficeAnswerController::class, 'inspectionOfPantryCarAnswer']);
     Route::get('/inspection-base-kitchen', [BookingOfficeAnswerController::class, 'inspectionOfBaseKitchen']);
