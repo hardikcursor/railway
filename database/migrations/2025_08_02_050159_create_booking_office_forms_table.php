@@ -22,7 +22,8 @@ return new class extends Migration
             $table->string('Vacancy');
             $table->string('No_of_Counters');
             $table->string('UTS');
-            $table->string('UTS-cum-PRS');
+            $table->string('PRS');
+            $table->string('UTS_PRS');
             $table->timestamps();
         });
     }

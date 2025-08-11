@@ -7,24 +7,22 @@ use App\Models\Booking_office_answer;
 use App\Models\Booking_office_form;
 use App\Models\Goods_Shed_office;
 use App\Models\Goods_Shed_office_form;
-use App\Models\INSPECTION_TEA;
 use App\Models\INSPECTIONKITCHEN;
 use App\Models\InspectionPantryCar;
 use App\Models\InspectionPantryCar_form;
 use App\Models\InspectionPassenger_items;
 use App\Models\InspectionPayUseToilets;
 use App\Models\InspectionPayUseToilets_location_form;
+use App\Models\INSPECTION_TEA;
 use App\Models\NonFare_Revenue;
 use App\Models\Parcel_Office;
 use App\Models\Parcel_Office_form;
 use App\Models\PRS_office;
-use App\Models\PRS_office_answer;
 use App\Models\PRS_office_form;
 use App\Models\Report;
 use App\Models\StationCleanliness;
 use App\Models\Ticket_Examineroffice;
 use App\Models\Ticket_Examineroffice_form;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -115,19 +113,19 @@ class BookingOfficeAnswerController extends Controller
 
     public function BookingOfficeDetail(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'inspection_id'    => 'required|exists:reports,id',
             'cbs_name'         => 'required|string',
             'no_of_duty_staff' => 'required|string',
             'Sanctioned_Cadre' => 'required|string',
             'Available'        => 'required|string',
             'Vacancy'          => 'required|string',
-            'No_of_Counters'   => 'required|string',
             'UTS'              => 'required|string',
-            'UTS-cum-PRS'      => 'required|string',
+            'PRS'              => 'required|string',
+            'UTS_PRS'          => 'required|string',
         ]);
 
-        $data = Booking_office_form::create($request->all());
+        $data = Booking_office_form::create($validated);
 
         return response()->json([
             'message' => 'Booking office detail saved successfully',
@@ -135,23 +133,75 @@ class BookingOfficeAnswerController extends Controller
         ]);
     }
 
+    // public function store(Request $request)
+    // {
+    //     $userId        = $request->input('user_id');
+    //     $inspection_id = $request->input('inspection_id');
+    //     $allResponses  = $request->input('all_resp');
+
+    //     if (is_string($allResponses)) {
+    //         $allResponses = json_decode($allResponses, true);
+    //     }
+
+    //     foreach ($allResponses as $response) {
+    //         DB::table('booking_office_answers')->insert([
+    //             'user_id'             => $userId,
+    //             'inspection_id'       => $inspection_id,
+    //             'booking_question_id' => $response['booking_question_id'],
+    //             'answer'              => $response['answer'],
+    //             'remark'              => $response['remark'],
+    //             'created_at'          => now(),
+    //             'updated_at'          => now(),
+    //         ]);
+    //     }
+
+    //     return response()->json(['message' => 'Responses saved successfully']);
+    // }
+
     public function store(Request $request)
     {
         $userId        = $request->input('user_id');
         $inspection_id = $request->input('inspection_id');
         $allResponses  = $request->input('all_resp');
 
+        // Decode JSON if it's a string
         if (is_string($allResponses)) {
             $allResponses = json_decode($allResponses, true);
         }
 
+        // Defensive check to avoid null foreach
+        if (! is_array($allResponses)) {
+            return response()->json(['error' => 'Invalid all_resp format'], 422);
+        }
+
         foreach ($allResponses as $response) {
+            $imagePath = null;
+
+            if (! empty($response['image'])) {
+                $base64Image = $response['image'];
+                if (strpos($base64Image, 'base64,') !== false) {
+                    $base64Image = explode('base64,', $base64Image)[1];
+                }
+
+                $base64Image = str_replace(' ', '+', $base64Image);
+                $imageName   = 'booking_' . $userId . '_' . time() . '_' . uniqid() . '.png';
+                $folderPath  = public_path('uploads/booking_answers');
+
+                if (! file_exists($folderPath)) {
+                    mkdir($folderPath, 0775, true);
+                }
+
+                file_put_contents($folderPath . '/' . $imageName, base64_decode($base64Image));
+                $imagePath = 'uploads/booking_answers/' . $imageName;
+            }
+
             DB::table('booking_office_answers')->insert([
                 'user_id'             => $userId,
                 'inspection_id'       => $inspection_id,
                 'booking_question_id' => $response['booking_question_id'],
                 'answer'              => $response['answer'],
                 'remark'              => $response['remark'],
+                'image_path'          => $imagePath,
                 'created_at'          => now(),
                 'updated_at'          => now(),
             ]);
@@ -624,7 +674,7 @@ class BookingOfficeAnswerController extends Controller
 
     public function storeToiletLocation(Request $request)
     {
-         $request->validate([
+        $request->validate([
             'inspection_id'  => 'required|exists:reports,id',
             'location'       => 'required|string',
             'Gents'          => 'required|string',

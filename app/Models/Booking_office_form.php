@@ -8,6 +8,8 @@ class Booking_office_form extends Model
 {
     use HasFactory;
 
+    protected $table = 'booking_office_forms';
+
     protected $fillable = [
         'inspection_id',
         'cbs_name',
@@ -17,6 +19,7 @@ class Booking_office_form extends Model
         'Vacancy',
         'No_of_Counters',
         'UTS',
-        'UTS-cum-PRS',
+        'PRS',
+        'UTS_PRS',
     ];
 }
