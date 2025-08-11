@@ -164,12 +164,12 @@ class BookingOfficeAnswerController extends Controller
         $inspection_id = $request->input('inspection_id');
         $allResponses  = $request->input('all_resp');
 
-        // Decode JSON if it's a string
+       
         if (is_string($allResponses)) {
             $allResponses = json_decode($allResponses, true);
         }
 
-        // Defensive check to avoid null foreach
+        
         if (! is_array($allResponses)) {
             return response()->json(['error' => 'Invalid all_resp format'], 422);
         }
