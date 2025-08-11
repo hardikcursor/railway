@@ -158,18 +158,66 @@ class BookingOfficeAnswerController extends Controller
     //     return response()->json(['message' => 'Responses saved successfully']);
     // }
 
+    // public function store(Request $request)
+    // {
+    //     $userId        = $request->input('user_id');
+    //     $inspection_id = $request->input('inspection_id');
+    //     $allResponses  = $request->input('all_resp');
+
+    //     if (is_string($allResponses)) {
+    //         $allResponses = json_decode($allResponses, true);
+    //     }
+
+    //     if (! is_array($allResponses)) {
+    //         return response()->json(['error' => 'Invalid all_resp format'], 422);
+    //     }
+
+    //     foreach ($allResponses as $response) {
+    //         $imagePath = null;
+
+    //         if (! empty($response['image'])) {
+    //             $base64Image = $response['image'];
+    //             if (strpos($base64Image, 'base64,') !== false) {
+    //                 $base64Image = explode('base64,', $base64Image)[1];
+    //             }
+
+    //             $base64Image = str_replace(' ', '+', $base64Image);
+    //             $imageName   = 'booking_' . $userId . '_' . time() . '_' . uniqid() . '.png';
+    //             $folderPath  = public_path('uploads/booking_answers');
+
+    //             if (! file_exists($folderPath)) {
+    //                 mkdir($folderPath, 0775, true);
+    //             }
+
+    //             file_put_contents($folderPath . '/' . $imageName, base64_decode($base64Image));
+    //             $imagePath = 'uploads/booking_answers/' . $imageName;
+    //         }
+
+    //         DB::table('booking_office_answers')->insert([
+    //             'user_id'             => $userId,
+    //             'inspection_id'       => $inspection_id,
+    //             'booking_question_id' => $response['booking_question_id'],
+    //             'answer'              => $response['answer'],
+    //             'remark'              => $response['remark'],
+    //             'image_path'          => $imagePath,
+    //             'created_at'          => now(),
+    //             'updated_at'          => now(),
+    //         ]);
+    //     }
+
+    //     return response()->json(['message' => 'Responses saved successfully']);
+    // }
+
     public function store(Request $request)
     {
         $userId        = $request->input('user_id');
         $inspection_id = $request->input('inspection_id');
         $allResponses  = $request->input('all_resp');
 
-       
         if (is_string($allResponses)) {
             $allResponses = json_decode($allResponses, true);
         }
 
-        
         if (! is_array($allResponses)) {
             return response()->json(['error' => 'Invalid all_resp format'], 422);
         }
@@ -177,22 +225,32 @@ class BookingOfficeAnswerController extends Controller
         foreach ($allResponses as $response) {
             $imagePath = null;
 
-            if (! empty($response['image'])) {
-                $base64Image = $response['image'];
+            if (! empty($response['image_path'])) {
+                $base64Image = $response['image_path'];
+
+                // Remove prefix (e.g., "data:image/jpeg;base64,")
                 if (strpos($base64Image, 'base64,') !== false) {
                     $base64Image = explode('base64,', $base64Image)[1];
                 }
 
                 $base64Image = str_replace(' ', '+', $base64Image);
-                $imageName   = 'booking_' . $userId . '_' . time() . '_' . uniqid() . '.png';
-                $folderPath  = public_path('uploads/booking_answers');
+                $imageData   = base64_decode($base64Image);
 
-                if (! file_exists($folderPath)) {
-                    mkdir($folderPath, 0775, true);
+                if ($imageData !== false) {
+                    $folderPath = public_path('uploads/booking_answers');
+                    if (! file_exists($folderPath)) {
+                        mkdir($folderPath, 0775, true);
+                    }
+
+                    // Detect file extension from mime type
+                    $extension = $this->getImageExtension($response['image_path']);
+                    $imageName = 'booking_' . $userId . '_' . time() . '_' . uniqid() . '.' . $extension;
+
+                    file_put_contents($folderPath . '/' . $imageName, $imageData);
+
+                    // Save relative path for DB
+                    $imagePath = 'uploads/booking_answers/' . $imageName;
                 }
-
-                file_put_contents($folderPath . '/' . $imageName, base64_decode($base64Image));
-                $imagePath = 'uploads/booking_answers/' . $imageName;
             }
 
             DB::table('booking_office_answers')->insert([
@@ -208,6 +266,17 @@ class BookingOfficeAnswerController extends Controller
         }
 
         return response()->json(['message' => 'Responses saved successfully']);
+    }
+
+/**
+ * Detect file extension from base64 mime type
+ */
+    private function getImageExtension($base64String)
+    {
+        if (preg_match('/^data:image\/(\w+);base64,/', $base64String, $matches)) {
+            return strtolower($matches[1]); // jpg, png, bmp
+        }
+        return 'jpg'; // default
     }
 
     public function bookinganswershow()

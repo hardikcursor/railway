@@ -64,3 +64,7 @@ Route::prefix('booking-office-answers')->group(function () {
     Route::post('/inspectionstore', [BookingOfficeAnswerController::class, 'inspectionstore']);
 
 });
+
+
+// https://themewagon.github.io/Presento/
+// https://themewagon.github.io/bizcraft/blog-item.html
