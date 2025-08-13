@@ -67,4 +67,4 @@ Route::prefix('booking-office-answers')->group(function () {
 
 
 // https://themewagon.github.io/Presento/
-// https://themewagon.github.io/bizcraft/blog-item.html
+// https://themewagon.github.io/bizcraft/blog-item.html~

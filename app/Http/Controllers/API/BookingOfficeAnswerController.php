@@ -268,9 +268,6 @@ class BookingOfficeAnswerController extends Controller
         return response()->json(['message' => 'Responses saved successfully']);
     }
 
-/**
- * Detect file extension from base64 mime type
- */
     private function getImageExtension($base64String)
     {
         if (preg_match('/^data:image\/(\w+);base64,/', $base64String, $matches)) {
