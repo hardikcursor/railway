@@ -6,13 +6,13 @@ use App\Models\Booking_office_answer;
 use App\Models\Booking_office_form;
 use App\Models\Goods_office_answer;
 use App\Models\Goods_Shed_office_form;
-use App\Models\inspection_tea_answer;
 use App\Models\inspectionkitchen_answer;
 use App\Models\InspectionPantryCar_answer;
 use App\Models\InspectionPantryCar_form;
 use App\Models\InspectionPassenger_items__answer;
 use App\Models\InspectionPayUseToilets_answer;
 use App\Models\InspectionPayUseToilets_location_form;
+use App\Models\inspection_tea_answer;
 use App\Models\NonFare_Revenue_answer;
 use App\Models\Parcel_answer;
 use App\Models\Parcel_Office_form;
@@ -25,7 +25,6 @@ use App\Models\Ticket_office_answer;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class SuperadminDashboardController extends Controller
@@ -47,7 +46,7 @@ class SuperadminDashboardController extends Controller
         return view('superadmin.dashboard', compact('reports', 'totalInspections', 'approvedReports', 'pendingCount', 'forwardCount', 'replyPendingCount', 'monthlyReports'));
     }
 
-      public function onemonth()
+    public function onemonth()
     {
         $reports = Report::where('duration', 'Monthly')->orderBy('created_at', 'desc')->get();
         return view('superadmin.report.1month', compact('reports'));
@@ -81,7 +80,7 @@ class SuperadminDashboardController extends Controller
         return redirect()->back()->with('info', 'Report must be in sent status to approve.');
     }
 
-     public function downloadReport($id)
+    public function downloadReport($id)
     {
         $report = Report::findOrFail($id);
 
@@ -133,7 +132,7 @@ class SuperadminDashboardController extends Controller
 
         $InspectionPayUseToilets_detail = InspectionPayUseToilets_location_form::where('inspection_id', $id)
             ->get();
-            
+
         $InspectionPayUseToilets_answer = InspectionPayUseToilets_answer::with('inspectionPayUseToilets')
             ->where('inspection_id', $report->id)
             ->get();
@@ -158,11 +157,12 @@ class SuperadminDashboardController extends Controller
         return $pdf->download('report_' . $report->id . '.pdf');
     }
 
-
     public function userdataget()
     {
-        $users = User::where('id', '!=', Auth::id())->get();
-        return view('superadmin.userdata', compact('users'));
+        $users         = User::role('user')->where('id', '!=', Auth::id())->get();
+        $currentUserId = Auth::id();
+
+        return view('superadmin.userdata', compact('users', 'currentUserId'));
     }
 
     public function changestatus(Request $request)

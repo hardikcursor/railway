@@ -19,8 +19,9 @@ return new class extends Migration
             $table->foreign('inspection_id')->references('id')->on('reports')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('nonfare_question_id')->comment('Foreign key to non_fare__revenues');
             $table->foreign('nonfare_question_id')->references('id')->on('non_fare__revenues')->onDelete('cascade')->onUpdate('cascade');
-            $table->longText('answer')->comment('Answers provided by the booking office');
-            $table->longText('remark')->nullable()->comment('remark provided by the booking office');
+            $table->longText('answer');
+            $table->longText('remark')->nullable();
+            $table->string('image_path')->nullable();
             $table->timestamps();
         });
     }

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreign('parcel_question_id')->references('id')->on('parcel__offices')->onDelete('cascade')->onUpdate('cascade');
             $table->longText('answer')->comment('Answers provided by the booking office');
             $table->longText('remark')->nullable()->comment('remark provided by the booking office');
+              $table->string('image_path')->nullable();
             $table->timestamps();
         });
     }

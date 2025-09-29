@@ -48,8 +48,9 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th>Sr.No</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
+                                    <th>User Name</th>
+                                    <th>User ID</th>
+                                    <th>Login Time</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -59,6 +60,14 @@
                                         <td>{{ ++$key }}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
+                                        <td>
+                                            @if ($user->last_login_at)
+                                                  {{ \Carbon\Carbon::parse($user->last_login_at)->format('d-m-Y H:i:s') }}
+                                            @else
+                                                <span class="text-muted">Never Logged In</span> 
+                                            @endif
+
+                                        </td>
                                         <td>
                                             @if ($user->status == 1)
                                                 <button class="btn btn-sm btn-success btn-3d changeStatusBtn"
@@ -77,7 +86,8 @@
                             </tbody>
                         </table>
                     </div> <!-- /.table-responsive -->
-                </div> <!-- /.ibox-body -->
+                </div>
+
             </div> <!-- /.ibox -->
         </div> <!-- /.page-content -->
     </div> <!-- /.content-wrapper -->
@@ -94,7 +104,10 @@
                 $.ajax({
                     type: 'POST',
                     url: url,
-                    data: { id: id, val: val },
+                    data: {
+                        id: id,
+                        val: val
+                    },
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },

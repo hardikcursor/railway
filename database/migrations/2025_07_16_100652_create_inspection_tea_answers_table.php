@@ -22,6 +22,7 @@ return new class extends Migration
             $table->boolean('yes_no')->comment('Answers provided by the yes =1, no =0');
             $table->longText('answer');
             $table->longText('remark')->nullable();
+            $table->string('image_path')->nullable();
             $table->timestamps();
         });
     }

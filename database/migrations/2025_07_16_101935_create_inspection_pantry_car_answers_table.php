@@ -29,9 +29,9 @@ return new class extends Migration
                 ->references('id')->on('inspection_pantry_cars')
                 ->onDelete('cascade')->onUpdate('cascade');
 
-            $table->longText('answer')->comment('Answers provided by the booking office');
-            $table->longText('remark')->nullable()->comment('Remark provided by the booking office');
-
+            $table->longText('answer');
+            $table->longText('remark')->nullable();
+            $table->string('image_path')->nullable();
             $table->timestamps();
         });
     }

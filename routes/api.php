@@ -62,9 +62,5 @@ Route::prefix('booking-office-answers')->group(function () {
     Route::get('/inspection-base-kitchen', [BookingOfficeAnswerController::class, 'inspectionOfBaseKitchen']);
     Route::post('/inspection-base-kitchen-answer', [BookingOfficeAnswerController::class, 'inspectionBaseKitchenAnswer']);
     Route::post('/inspectionstore', [BookingOfficeAnswerController::class, 'inspectionstore']);
-
+    Route::get('/stations', [BookingOfficeAnswerController::class, 'getstations']);
 });
-
-
-// https://themewagon.github.io/Presento/
-// https://themewagon.github.io/bizcraft/blog-item.html~

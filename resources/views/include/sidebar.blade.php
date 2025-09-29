@@ -65,6 +65,14 @@
                     </li>
                 </ul>
             </li>
+             @role('admin')
+            <li>
+                <a href="{{ route('admin.station.create') }}">
+                    <i class="sidebar-item-icon fa fa-user"></i>
+                    <span class="nav-label">Create Station</span>
+                </a>
+            </li>
+            @endrole
 
             @role('super-admin')
                 <li>

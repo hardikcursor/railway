@@ -61,8 +61,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/inspectionkitchenanswer', [AdminDashboardController::class, 'inspectionKitchenSaveQuotationReport'])->name('admin.inspectionkitchenanswer.store');
     Route::get('/quotation/edit/{model}/{id}', [AdminDashboardController::class, 'edit'])->name('admin.quotation.edit');
     Route::post('/quotation/update/{model}/{id}', [AdminDashboardController::class, 'update'])->name('admin.quotation.update');
-
-
+    Route::get('/stationcreate', [AdminDashboardController::class, 'station'])->name('admin.station.create');
+    Route::post('stationstore', [AdminDashboardController::class, 'storestation'])->name('admin.station.store');
 
 
 });

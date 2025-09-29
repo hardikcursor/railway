@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Backend\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Booking_office;
 use App\Models\Booking_office_answer;
-use App\Models\Booking_office_form;
 use App\Models\Goods_office_answer;
 use App\Models\Goods_Shed_office;
 use App\Models\Goods_Shed_office_form;
@@ -29,6 +28,7 @@ use App\Models\PRS_office;
 use App\Models\PRS_office_answer;
 use App\Models\PRS_office_form;
 use App\Models\Report;
+use App\Models\Station;
 use App\Models\StationCleanliness;
 use App\Models\StationCleanliness_answer;
 use App\Models\Ticket_Examineroffice;
@@ -179,81 +179,144 @@ class AdminDashboardController extends Controller
         return redirect()->back()->with('info', 'Report was already sent/processed.');
     }
 
+    private function imageToBase64($path)
+    {
+        if (! file_exists($path)) {
+            return null;
+        }
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        return 'data:image/' . $type . ';base64,' . base64_encode($data);
+    }
+
     public function downloadReport($id)
     {
         $report = Report::findOrFail($id);
 
-        $bookingofficedetail = Booking_office_form::where('inspection_id', $id)
-            ->get();
-        $bookingOfficeAnswers = Booking_office_answer::with('bookingOffice')
-            ->where('inspection_id', $report->id)
-            ->get();
+        // Helper function to convert images to base64
+        $convertImages = function ($items, $column, $folder) {
+            return $items->map(function ($item) use ($column, $folder) {
+                $item->image_base64 = ! empty($item->$column)
+                    ? $this->imageToBase64(public_path("uploads/$folder/" . $item->$column))
+                    : null;
+                return $item;
+            });
+        };
 
-        $PRSofficedetail = PRS_office_form::where('inspection_id', $id)
-            ->get();
+        // Booking Office Answers
+        $bookingOfficeAnswers = $convertImages(
+            Booking_office_answer::with('bookingOffice')->where('inspection_id', $id)->get(),
+            'image_path',
+            'booking_answers'
+        );
 
-        $PRS_office_answers = PRS_office_answer::with('PRS_office')
-            ->where('inspection_id', $report->id)
-            ->get();
+        // PRS Office Answers
+        $PRS_office_answers = $convertImages(
+            PRS_office_answer::with('PRS_office')->where('inspection_id', $id)->get(),
+            'image_path',
+            'prs_answers'
+        );
+        $PRSofficedetail = PRS_office_form::where('inspection_id', $id)->get();
 
-        $Parcelofficedetail = Parcel_Office_form::where('inspection_id', $id)
-            ->get();
+        // Parcel Office Answers
+        $Parcel_answer = $convertImages(
+            Parcel_answer::with('parcelOffice')->where('inspection_id', $id)->get(),
+            'image_path',
+            'parcel_answers'
+        );
+        $Parcelofficedetail = Parcel_Office_form::where('inspection_id', $id)->get();
 
-        $Parcel_answer = Parcel_answer::with('parcelOffice')
-            ->where('inspection_id', $report->id)
-            ->get();
+        // Goods Shed Office Answers
+        $Goods_office_answer = $convertImages(
+            Goods_office_answer::with('goodsOffice')->where('inspection_id', $id)->get(),
+            'image_path',
+            'goods_answers'
+        );
+        $Goods_officedetail = Goods_Shed_office_form::where('inspection_id', $id)->get();
 
-        $Goods_officedetail = Goods_Shed_office_form::where('inspection_id', $id)
-            ->get();
+        // Ticket Examiner Office Answers
+        $Ticket_office_answer = $convertImages(
+            Ticket_office_answer::with('ticketOffice')->where('inspection_id', $id)->get(),
+            'image_path',
+            'ticket_answers'
+        );
+        $Ticketofficedetail = Ticket_Examineroffice_form::where('inspection_id', $id)->get();
 
-        $Goods_office_answer = Goods_office_answer::with('goodsOffice')
-            ->where('inspection_id', $report->id)
-            ->get();
+        // Non-Fare Revenue Answers
+        $NonFare_Revenue_answer = $convertImages(
+            NonFare_Revenue_answer::with('nonFareRevenueOffice')->where('inspection_id', $id)->get(),
+            'image_path',
+            'nonfare_answers'
+        );
 
-        $Ticketofficedetail = Ticket_Examineroffice_form::where('inspection_id', $id)
-            ->get();
+        // Passenger Items
+        $InspectionPassenger_items__answer = $convertImages(
+            InspectionPassenger_items__answer::with('inspectionPassengerItems')->where('inspection_id', $id)->get(),
+            'image_path',
+            'passenger_items_answers'
+        );
 
-        $Ticket_office_answer = Ticket_office_answer::with('ticketOffice')
-            ->where('inspection_id', $report->id)
-            ->get();
+        // Station Cleanliness
+        $StationCleanliness_answer = $convertImages(
+            StationCleanliness_answer::with('stationCleanliness')->where('inspection_id', $id)->get(),
+            'image_path',
+            'station_cleanliness_answers'
+        );
 
-        $NonFare_Revenue_answer = NonFare_Revenue_answer::with('nonFareRevenueOffice')
-            ->where('inspection_id', $report->id)
-            ->get();
+        // Pay Use Toilets
+        $InspectionPayUseToilets_answer = $convertImages(
+            InspectionPayUseToilets_answer::with('inspectionPayUseToilets')->where('inspection_id', $id)->get(),
+            'image_path',
+            'toilets_answers'
+        );
+        $InspectionPayUseToilets_detail = InspectionPayUseToilets_location_form::where('inspection_id', $id)->get();
 
-        $InspectionPassenger_items__answer = InspectionPassenger_items__answer::with('inspectionPassengerItems')
-            ->where('inspection_id', $report->id)
-            ->get();
+        // Tea
+        $inspection_tea_answer = $convertImages(
+            inspection_tea_answer::with('inspectionTea')->where('inspection_id', $id)->get(),
+            'image_path',
+            'tea_answers'
+        );
 
-        $StationCleanliness_answer = StationCleanliness_answer::with('stationCleanliness')
-            ->where('inspection_id', $report->id)
-            ->get();
+        // Pantry Car
+        $InspectionPantryCar_answer = $convertImages(
+            InspectionPantryCar_answer::with('inspectionPantryCar')->where('inspection_id', $id)->get(),
+            'image_path',
+            'pantrycar_answers'
+        );
+        $InspectionPantryCar_detail = InspectionPantryCar_form::where('inspection_id', $id)->get();
 
-        $InspectionPayUseToilets_detail = InspectionPayUseToilets_location_form::where('inspection_id', $id)
-            ->get();
-            
-        $InspectionPayUseToilets_answer = InspectionPayUseToilets_answer::with('inspectionPayUseToilets')
-            ->where('inspection_id', $report->id)
-            ->get();
+        // Kitchen
+        $inspectionkitchen_answer = $convertImages(
+            inspectionkitchen_answer::with('inspectionKitchen')->where('inspection_id', $id)->get(),
+            'image_path',
+            'kitchen_answers'
+        );
 
-        $inspection_tea_answer = inspection_tea_answer::with('inspectionTea')
-            ->where('inspection_id', $report->id)
-            ->get();
+        // Generate PDF
+        $pdf = Pdf::loadView('admin.pdf.report', compact(
+            'report',
+            'bookingOfficeAnswers',
+            'PRSofficedetail',
+            'PRS_office_answers',
+            'Parcelofficedetail',
+            'Parcel_answer',
+            'Goods_officedetail',
+            'Goods_office_answer',
+            'Ticketofficedetail',
+            'Ticket_office_answer',
+            'NonFare_Revenue_answer',
+            'InspectionPassenger_items__answer',
+            'StationCleanliness_answer',
+            'InspectionPayUseToilets_detail',
+            'InspectionPayUseToilets_answer',
+            'inspection_tea_answer',
+            'InspectionPantryCar_detail',
+            'InspectionPantryCar_answer',
+            'inspectionkitchen_answer'
+        ));
 
-        $InspectionPantryCar_detail = InspectionPantryCar_form::where('inspection_id', $id)
-            ->get();
-
-        $InspectionPantryCar_answer = InspectionPantryCar_answer::with('inspectionPantryCar')
-            ->where('inspection_id', $report->id)
-            ->get();
-
-        $inspectionkitchen_answer = inspectionkitchen_answer::with('inspectionKitchen')
-            ->where('inspection_id', $report->id)
-            ->get();
-
-        $pdf = Pdf::loadView('admin.pdf.report', compact('report', 'bookingofficedetail', 'bookingOfficeAnswers', 'PRSofficedetail', 'PRS_office_answers', 'Parcelofficedetail', 'Parcel_answer', 'Goods_officedetail', 'Goods_office_answer', 'Ticketofficedetail', 'Ticket_office_answer', 'NonFare_Revenue_answer', 'InspectionPassenger_items__answer', 'StationCleanliness_answer', 'InspectionPayUseToilets_detail', 'InspectionPayUseToilets_answer', 'inspection_tea_answer', 'InspectionPantryCar_detail', 'InspectionPantryCar_answer', 'inspectionkitchen_answer'));
-
-        return $pdf->download('report_' . $report->id . '.pdf');
+        return $pdf->download('inspection_report_' . $report->id . '.pdf');
     }
 
     public function generatereport()
@@ -524,21 +587,42 @@ class AdminDashboardController extends Controller
     private function getModelClass($model)
     {
         return match ($model) {
-            'booking' => Booking_office::class,
-            'prs' => PRS_office::class,
-            'parcel' => Parcel_Office::class,
-            'goods_shed' => Goods_Shed_office::class,
-            'ticket' => Ticket_Examineroffice::class,
-            'nonfare' => NonFare_Revenue::class,
+            'booking'              => Booking_office::class,
+            'prs'                  => PRS_office::class,
+            'parcel'               => Parcel_Office::class,
+            'goods_shed'           => Goods_Shed_office::class,
+            'ticket'               => Ticket_Examineroffice::class,
+            'nonfare'              => NonFare_Revenue::class,
             'inspection_passenger' => InspectionPassenger_items::class,
-            'station_cleanliness' => StationCleanliness::class,
-            'inspection_payuse' => InspectionPayUseToilets::class,
-            'inspection_tea' => INSPECTION_TEA::class,
-            'inspection_pantry' => InspectionPantryCar::class,
-            'inspection_kitchen' => INSPECTIONKITCHEN::class,
-            default => abort(404),
+            'station_cleanliness'  => StationCleanliness::class,
+            'inspection_payuse'    => InspectionPayUseToilets::class,
+            'inspection_tea'       => INSPECTION_TEA::class,
+            'inspection_pantry'    => InspectionPantryCar::class,
+            'inspection_kitchen'   => INSPECTIONKITCHEN::class,
+            default                => abort(404),
 
         };
+    }
+
+    // view station
+
+    public function station()
+    {
+        $stations = Station::latest()->get();
+        return view('admin.station.create', compact('stations'));
+    }
+
+    public function storestation(Request $request)
+    {
+        $request->validate([
+            'station' => 'required|string|max:255',
+        ]);
+
+        $station          = new Station;
+        $station->station = $request->station;
+        $station->save();
+
+        return redirect()->route('admin.station.create')->with('success', 'Station created successfully.');
     }
 
 }

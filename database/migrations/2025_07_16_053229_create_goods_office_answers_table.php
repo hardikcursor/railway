@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreign('goods_question_id')->references('id')->on('goods__shed_offices')->onDelete('cascade')->onUpdate('cascade');
             $table->longText('answer');
             $table->longText('remark')->nullable();
+            $table->string('image_path')->nullable();
             $table->timestamps();
         });
     }

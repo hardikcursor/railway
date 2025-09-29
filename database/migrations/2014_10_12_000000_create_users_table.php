@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('incharge_name')->nullable();
             $table->string('password');
             $table->boolean('status')->default(0);
+            $table->string('current_address')->nullable();
+            $table->dateTime('login_date_time')->nullable();
             $table->timestamps();
         });
     }

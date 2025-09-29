@@ -167,53 +167,67 @@
     @else
         <h3 style="text-align: left;">1. <u>Booking Office</u> :</h3>
 
-        @foreach ($bookingofficedetail as $detail)
-            <div style="font-size: 14px; line-height: 1.8; margin-bottom: 30px; text-align: left;">
-                <div style="margin-bottom: 10px;">
-                    <strong>I. Name of CBS:</strong> {{ $detail->cbs_name ?? '' }}
-                </div>
-
-                <div style="margin-bottom: 10px;">
-                    <strong>II. No. of on duty staff:</strong> {{ $detail->no_of_duty_staff ?? '' }}
-                </div>
-
-                <div style="margin-bottom: 10px;">
-                    <strong>III. Sanctioned Cadre:</strong> {{ $detail->Sanctioned_Cadre ?? '' }}
-                </div>
-
-                <div style="margin-bottom: 10px;">
-                    <strong>Available:</strong> {{ $detail->Available ?? '' }}
-                </div>
-
-                <div style="margin-bottom: 10px;">
-                    <strong>Vacancy/Excess:</strong> {{ $detail->Vacancy ?? '' }}
-                </div>
-
-                <div style="margin-bottom: 10px;">
-                    <strong>IV. No. of Counters:</strong> {{ $detail->No_of_Counters ?? '' }}
-                </div>
-
-                <div style="margin-bottom: 10px;">
-                    <strong>(1) UTS:</strong> {{ $detail->UTS ?? '' }}
-                </div>
-
-                <div style="margin-bottom: 10px;">
-                    <strong>(2) PRS:</strong> {{ $detail->PRS ?? '' }}
-                </div>
-
-                <div style="margin-bottom: 10px;">
-                    <strong>(3) UTS-cum-PRS:</strong> {{ $detail->UTS_PRS ?? '' }}
-                </div>
+        <div style="font-size: 14px; line-height: 1.8;">
+            {{-- Booking Office Details --}}
+            <div style="margin-bottom: 10px;">
+                <span style="text-align: left; width: 30px;">I.</span>
+                <span style="text-align: left; width: 180px;">Name of CBS:</span>
+                <span style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">
+                    {{ $bookingOffice->name_of_cbs ?? '' }}
+                </span>
             </div>
-        @endforeach
+            <div style="margin-bottom: 10px;">
+                <span style="text-align: left; width: 30px;">II.</span>
+                <span style="text-align: left; width: 180px;">No. of on duty staff:</span>
+                <span style="display: inline-block; border-bottom: 1px solid #000; min-width: 300px;">
+                    {{ $bookingOffice->duty_staff_no ?? '' }}
+                </span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; margin-bottom: 10px;">
+                <span style="text-align: left; width: 30px;">III.</span>
+                <span style="text-align: left; width: 180px;">Sanctioned Cadre:</span>
+                <span
+                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">
+                    {{ $bookingOffice->sanctioned_cadre ?? '' }}
+                </span>
+                <span style="display: inline-block; width: 100px;">Available:</span>
+                <span
+                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px; margin-right: 15px;">
+                    {{ $bookingOffice->available ?? '' }}
+                </span>
+                <span style="display: inline-block;text-align: left; width: 130px;">Vacancy/Excess:</span>
+                <span style="display: inline-block; border-bottom: 1px solid #000; min-width: 150px;">
+                    {{ $bookingOffice->vacancy_excess ?? '' }}
+                </span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap;">
+                <span style="display: inline-block; width: 30px;">IV.</span>
+                <span style="display: inline-block; width: 180px;">No. of Counters:</span>
+                <span>(1) UTS:</span>
+                <span
+                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 60px; margin-right: 15px;">
+                    {{ $bookingOffice->uts_counter ?? '' }}
+                </span>
+                <span>(2) PRS:</span>
+                <span
+                    style="display: inline-block; border-bottom: 1px solid #000; min-width: 60px; margin-right: 15px;">
+                    {{ $bookingOffice->prs_counter ?? '' }}
+                </span>
+                <span>(3) UTS-cum-PRS:</span>
+                <span style="display: inline-block; border-bottom: 1px solid #000; min-width: 80px;">
+                    {{ $bookingOffice->uts_prs_counter ?? '' }}
+                </span>
+            </div>
+        </div>
 
-
+        {{-- Table with Image --}}
         <table border="1" cellspacing="0" cellpadding="6" width="100%">
             <thead>
                 <tr>
                     <th style="width: 5%;">Sr.No</th>
-                    <th style="width: 60%;">Checks</th>
-                    <th style="width: 35%;">Remarks/Action Taken</th>
+                    <th style="width: 40%;">Checks</th>
+                    <th style="width: 30%;">Remarks/Action Taken</th>
+                    <th style="width: 25%;">Image</th>
                 </tr>
             </thead>
             <tbody>
@@ -222,9 +236,18 @@
                         <td>{{ $key + 1 }}</td>
                         <td>{{ $answer->bookingOffice->checks ?? 'N/A' }}</td>
                         <td>
-                            <strong>Action Taken: </strong> {{ $answer->answer }}<br>
+                            {{ $answer->answer }}<br>
                             <strong>Remark:</strong> {{ $answer->remark ?? 'N/A' }}
                         </td>
+                        <td>
+                            @if (!empty($answer->image_path))
+                                <img src="{{ $answer->image_path }}" alt="Image"
+                                    style="max-width:100px; max-height:100px;">
+                            @else
+                                N/A
+                            @endif
+                        </td>
+
                     </tr>
                 @endforeach
             </tbody>
@@ -303,6 +326,7 @@
                 <th style="width: 5%;">Sr.No</th>
                 <th style="width: 60%;">Checks</th>
                 <th style="width: 35%;">Remarks/Action taken</th>
+                <th style="width: 5%;">Image</th>
 
             </tr>
             @foreach ($PRS_office_answers as $key => $answer)
@@ -313,6 +337,15 @@
                         {{ $answer->answer ?? '""' }} <br>
                         <strong>Remark:</strong> {{ $answer->remark ?? '-' }}
                     </td>
+                    <td>
+                        @if (!empty($answer->image_path))
+                            <img src="{{ $answer->image_path }}" alt="Image"
+                                style="max-width:100px; max-height:100px;">
+                        @else
+                            N/A
+                        @endif
+                    </td>
+
                 </tr>
             @endforeach
         </table>
@@ -384,7 +417,7 @@
                 <th style="width: 5%;">Sr.No</th>
                 <th style="width: 60%;">Checks</th>
                 <th style="width: 35%;">Remarks/Action taken</th>
-
+                <th style="width: 5%;">Image</th>
             </tr>
             @foreach ($Parcel_answer as $key => $answer)
                 <tr>
@@ -394,6 +427,15 @@
                         {{ $answer->answer ?? '""' }} <br>
                         <strong>Remark:</strong> {{ $answer->remark ?? '-' }}
                     </td>
+                    <td>
+                        @if (!empty($answer->image_path))
+                            <img src="{{ $answer->image_path }}" alt="Image"
+                                style="max-width:100px; max-height:100px;">
+                        @else
+                            N/A
+                        @endif
+                    </td>
+
                 </tr>
             @endforeach
         </table>
@@ -457,7 +499,7 @@
                 <th style="width: 5%;">Sr.No</th>
                 <th style="width: 60%;">Checks</th>
                 <th style="width: 35%;">Remarks/Action taken</th>
-
+                <th style="width: 5%;">Image</th>
             </tr>
             @foreach ($Goods_office_answer as $key => $answer)
                 <tr>
@@ -467,6 +509,15 @@
                         {{ $answer->answer ?? '""' }} <br>
                         <strong>Remark:</strong> {{ $answer->remark ?? '-' }}
                     </td>
+                    <td>
+                        @if (!empty($answer->image_path))
+                            <img src="{{ $answer->image_path }}" alt="Image"
+                                style="max-width:100px; max-height:100px;">
+                        @else
+                            N/A
+                        @endif
+                    </td>
+
                 </tr>
             @endforeach
         </table>
@@ -535,7 +586,7 @@
                 <th style="width: 5%;">Sr.No</th>
                 <th style="width: 60%;">Checks</th>
                 <th style="width: 35%;">Remarks/Action taken</th>
-
+                <th style="width: 5%;">Image</th>
             </tr>
             @foreach ($Ticket_office_answer as $key => $answer)
                 <tr>
@@ -545,6 +596,15 @@
                         {{ $answer->answer ?? '""' }} <br>
                         <strong>Remark:</strong> {{ $answer->remark ?? '-' }}
                     </td>
+                    <td>
+                        @if (!empty($answer->image_path))
+                            <img src="{{ $answer->image_path }}" alt="Image"
+                                style="max-width:100px; max-height:100px;">
+                        @else
+                            N/A
+                        @endif
+                    </td>
+
                 </tr>
             @endforeach
         </table>
@@ -560,7 +620,7 @@
                 <th style="width: 5%;">Sr.No</th>
                 <th style="width: 60%;">Checks</th>
                 <th style="width: 35%;">Remarks/Action taken</th>
-
+                <th style="width: 5%;">Image</th>
             </tr>
             @foreach ($NonFare_Revenue_answer as $key => $answer)
                 <tr>
@@ -570,6 +630,15 @@
                         {{ $answer->answer ?? '""' }} <br>
                         <strong>Remark:</strong> {{ $answer->remark ?? '-' }}
                     </td>
+                    <td>
+                        @if (!empty($answer->image_path))
+                            <img src="{{ $answer->image_path }}" alt="Image"
+                                style="max-width:100px; max-height:100px;">
+                        @else
+                            N/A
+                        @endif
+                    </td>
+
                 </tr>
             @endforeach
         </table>
@@ -592,6 +661,7 @@
                     <th>Yes</th>
                     <th>No</th>
                     <th>Remarks/Action Taken</th>
+                    <th>Image</th>
                 </tr>
             </thead>
             <tbody>
@@ -611,6 +681,15 @@
                         </td>
 
                         <td>{{ $answer->remark ?? 'N/A' }}</td>
+                        <td>
+                            @if (!empty($answer->image_path))
+                                <img src="{{ $answer->image_path }}" alt="Image"
+                                    style="max-width:100px; max-height:100px;">
+                            @else
+                                N/A
+                            @endif
+                        </td>
+
                     </tr>
                 @endforeach
             </tbody>
@@ -629,6 +708,7 @@
                     <th style="width: 25%;">Sr.No.</th>
                     <th style="width: 70%;">ITEMS</th>
                     <th style="width: 25%;">Remarks/Action taken</th>
+                    <th style="width: 5%;">Image</th>
                 </tr>
             </thead>
             <tbody>
@@ -642,6 +722,15 @@
                             {{ $answer->answer ?? '""' }} <br>
                             <strong>Remark:</strong> {{ $answer->remark ?? '-' }}
                         </td>
+                        <td>
+                            @if (!empty($answer->image_path))
+                                <img src="{{ $answer->image_path }}" alt="Image"
+                                    style="max-width:100px; max-height:100px;">
+                            @else
+                                N/A
+                            @endif
+                        </td>
+
                     </tr>
                 @endforeach
                 @foreach ($StationCleanliness_answer as $index => $answer)
@@ -770,6 +859,7 @@
                     <th style="width: 50%;">Particulars</th>
                     <th style="width: 15%;">Yes/No</th>
                     <th style="width: 30%;">Remarks/Action taken</th>
+                    <th style="width: 5%;">Image</th>
                 </tr>
             </thead>
             <tbody>
@@ -781,6 +871,15 @@
                             {{ $answer->yes_no == 1 ? 'Yes' : 'No' }}
                         </td>
                         <td>{{ $answer->remark ?? 'N/A' }}</td>
+                        <td>
+                            @if (!empty($answer->image_path))
+                                <img src="{{ $answer->image_path }}" alt="Image"
+                                    style="max-width:100px; max-height:100px;">
+                            @else
+                                N/A
+                            @endif
+                        </td>
+
                     </tr>
                 @endforeach
 
@@ -813,42 +912,52 @@
 
         <table border="1" cellspacing="0" cellpadding="5"
             style="border-collapse: collapse; width: 100%; font-size: 14px; margin-top: 20px;">
-            <thead>
+            <thead style="background-color: #f2f2f2;">
                 <tr>
-                    <th style="width: 10%;">Sr. No</th>
-                    <th style="width: 60%;">Items to be Check</th>
-                    <th style="width: 30%;">Remarks/Action Taken</th>
+                    <th style="width: 10%; text-align: center;">Sr. No</th>
+                    <th style="width: 50%; text-align: left;">Items to be Checked</th>
+                    <th style="width: 25%; text-align: left;">Remarks / Action Taken</th>
+                    <th style="width: 15%; text-align: center;">Image</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Items -->
                 @foreach ($InspectionPantryCar_answer as $key => $answer)
                     <tr>
-                        <td>{{ ++$key }}</td>
+                        <td style="text-align: center;">{{ $key + 1 }}</td>
                         <td>{{ $answer->inspectionPantryCar->checks ?? 'N/A' }}</td>
                         <td>{{ $answer->remark ?? 'N/A' }}</td>
+                        <td style="text-align: center;">
+                            @if (!empty($answer->image_path))
+                                <img src="{{ $answer->image_path }}" alt="Image"
+                                    style="max-width:100px; max-height:100px;">
+                            @else
+                                N/A
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
 
                 <!-- Empty space row -->
                 <tr>
-                    <td colspan="3" style="height: 30px; border: none;"></td>
+                    <td colspan="4" style="height: 30px; border: none;"></td>
                 </tr>
 
                 <!-- Signature Section -->
                 <tr>
                     <td colspan="2" style="padding: 10px; text-align: left;"><strong>(IRCTC Supervisor)</strong>
                     </td>
-                    <td style="padding: 10px; text-align: right;"><strong>(Pantry Car Manager)</strong></td>
+                    <td colspan="2" style="padding: 10px; text-align: right;"><strong>(Pantry Car Manager)</strong>
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="2" style="padding: 50px 10px 10px 10px;"><strong>Date</strong></td>
-                    <td style="padding: 50px 10px 10px 10px; text-align: right;"><strong>(Officer/CMIs
-                            Signature)</strong></td>
+                    <td colspan="2" style="padding: 50px 10px 10px 10px; text-align: right;">
+                        <strong>(Officer / CMIs Signature)</strong>
+                    </td>
                 </tr>
-
             </tbody>
         </table>
+
 
     @endif
 
@@ -868,6 +977,7 @@
                     <th style="width: 60%; text-align: left;">Particulars</th>
                     <th style="width: 15%; text-align: center;">Yes/No</th>
                     <th style="width: 15%; text-align: left;">Remarks</th>
+                    <th style="width: 5%; text-align: left;">Image</th>
                 </tr>
             </thead>
             <tbody>
@@ -879,11 +989,64 @@
                             {{ $answer->yes_no == 1 ? 'Yes' : ($answer->yes_no == 0 ? 'No' : 'N/A') }}
                         </td>
                         <td>{{ $answer->remark ?? 'N/A' }}</td>
+                        <td>
+                            @if (!empty($answer->image_path))
+                                <img src="{{ $answer->image_path }}" alt="Image"
+                                    style="max-width:100px; max-height:100px;">
+                            @else
+                                N/A
+                            @endif
+                        </td>
+
                     </tr>
                 @endforeach
             </tbody>
         </table>
     @endif
+
+
+    {{-- <table border="1" cellspacing="0" cellpadding="5" style="border-collapse: collapse; width: 100%;">
+        <thead>
+            <tr>
+                <th style="width:5%;">S N</th>
+                <th style="width:55%;">ITEMS</th>
+                <th style="width:25%;">Remarks/Action taken</th>
+                <th style="width:15%;">Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Arrangements for housekeeping (details thereon)</td>
+                <td></td>
+                <td>
+                    <img src="" alt="Upload Image"
+                        style="width: 100%; max-width: 100px; border:1px solid #ccc;">
+                </td>
+            </tr>
+            <tr>
+                <td>(a)</td>
+                <td>If the cleanliness is being managed through contract then are all the records of the contract being
+                    maintained properly.</td>
+                <td></td>
+                <td>
+                    <img src="" alt="Upload Image"
+                        style="width: 100%; max-width: 100px; border:1px solid #ccc;">
+                </td>
+            </tr>
+            <tr>
+                <td>(b)</td>
+                <td>Adequacy and availability of manpower for cleanliness work.</td>
+                <td></td>
+                <td>
+                    <img src="" alt="Upload Image"
+                        style="width: 100%; max-width: 100px; border:1px solid #ccc;">
+                </td>
+            </tr>
+            <!-- Repeat for all other rows -->
+        </tbody>
+    </table> --}}
+
 
     <p>Please point out any other irregularities noticed during your inspection : </p>
 

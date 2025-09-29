@@ -33,7 +33,7 @@ return new class extends Migration
             $table->longText('Minor_deficiencies');
             $table->longText('Major_deficiencies_Proposed');
             $table->longText('remark')->nullable();
-
+            $table->string('image_path')->nullable();
             $table->timestamps();
         });
     }

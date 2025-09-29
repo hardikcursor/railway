@@ -30,7 +30,8 @@ return new class extends Migration
                 ->onDelete('cascade')->onUpdate('cascade');
 
             $table->boolean('yes_no')->comment('Answers provided: yes = 1, no = 0');
-            $table->longText('remark')->nullable()->comment('Remark provided by inspection officer');
+            $table->longText('remark')->nullable();
+            $table->string('image_path')->nullable();
 
             $table->timestamps();
         });

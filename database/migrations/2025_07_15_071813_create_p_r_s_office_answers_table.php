@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('prs_question_id')->comment('Foreign key to p_r_s_offices table');
             $table->foreign('prs_question_id')->references('id')->on('p_r_s_offices')->onDelete('cascade')->onUpdate('cascade');
             $table->longText('answer')->comment('Answers provided by the booking office');
+              $table->string('image_path')->nullable();
             $table->longText('remark')->nullable()->comment('remark provided by the booking office');
             $table->timestamps();
         });

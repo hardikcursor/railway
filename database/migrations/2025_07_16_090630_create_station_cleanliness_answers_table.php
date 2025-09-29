@@ -23,7 +23,8 @@ return new class extends Migration
             $table->string('Black')->nullable();
             $table->string('Blue')->nullable();
             $table->string('Green')->nullable();
-            $table->longText('remark')->nullable()->comment('remark provided by the  station cleanliness');
+            $table->longText('remark')->nullable();
+            $table->string('image_path')->nullable();
             $table->timestamps();
         });
     }

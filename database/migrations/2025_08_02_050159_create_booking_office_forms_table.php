@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('Sanctioned_Cadre');
             $table->string('Available');
             $table->string('Vacancy');
-            $table->string('No_of_Counters');
+            $table->string('No_of_Counters')->nullable();
             $table->string('UTS');
             $table->string('PRS');
             $table->string('UTS_PRS');

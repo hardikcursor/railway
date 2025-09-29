@@ -17,12 +17,12 @@ class DummyUsersSeeder extends Seeder
         DB::table('users')->insert([
             [
                 'id'       => 4,
-                'name'     => 'ajay',
+                'name'     => 'cursorsoft',
                 'email'    => 'cursorsoft776@gmail.com',
                 'phone'    => '1234567890',
                 'designation' => 'Booking Office',
                 'incharge_name' => 'Ajay Kumar',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('cursorsoft'),
                 'status'   => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
