@@ -51,6 +51,7 @@
                                     <th>User Name</th>
                                     <th>User ID</th>
                                     <th>Login Time</th>
+                                    <th>Current Location</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -61,12 +62,19 @@
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td>
-                                            @if ($user->last_login_at)
-                                                  {{ \Carbon\Carbon::parse($user->last_login_at)->format('d-m-Y H:i:s') }}
+                                            @if ($user->login_date_time)
+                                                  {{ $user->login_date_time }}
                                             @else
                                                 <span class="text-muted">Never Logged In</span> 
                                             @endif
 
+                                        </td>
+                                        <td>
+                                            @if ($user->current_address)
+                                               {{ $user->current_address }}
+                                            @else
+                                                <span class="text-muted">Unknown</span>
+                                            @endif
                                         </td>
                                         <td>
                                             @if ($user->status == 1)

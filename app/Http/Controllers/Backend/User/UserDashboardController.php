@@ -55,7 +55,7 @@ class UserDashboardController extends Controller
 
     public function secondmonth()
     {
-        $reports = Report::where('duration', 'Quarterly')->orderBy('created_at', 'desc')->get();
+        $reports = Report::where('duration', 'Quaterly')->orderBy('created_at', 'desc')->get();
         return view('user.report.3month', compact('reports'));
     }
 

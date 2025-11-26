@@ -23,7 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Auth Routes
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/signin', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/user', [AuthController::class, 'getuser']);
 
 // Booking Office Answer Routes

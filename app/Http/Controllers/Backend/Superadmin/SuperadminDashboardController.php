@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\Auth;
 
 class SuperadminDashboardController extends Controller
 {
+    
     public function index()
     {
         $reports           = Report::orderBy('created_at', 'desc')->get();
@@ -54,7 +55,7 @@ class SuperadminDashboardController extends Controller
 
     public function secondmonth()
     {
-        $reports = Report::where('duration', 'Quarterly')->orderBy('created_at', 'desc')->get();
+        $reports = Report::where('duration', 'Quaterly')->orderBy('created_at', 'desc')->get();
         return view('superadmin.report.3month', compact('reports'));
     }
 

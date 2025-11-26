@@ -1,10 +1,8 @@
 <?php
-
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class DummyUsersSeeder extends Seeder
@@ -12,21 +10,23 @@ class DummyUsersSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-     public function run()
+    public function run()
     {
-        DB::table('users')->insert([
-            [
-                'id'       => 4,
-                'name'     => 'cursorsoft',
-                'email'    => 'cursorsoft776@gmail.com',
-                'phone'    => '1234567890',
-                'designation' => 'Booking Office',
-                'incharge_name' => 'Ajay Kumar',
-                'password' => Hash::make('cursorsoft'),
-                'status'   => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-        ]);
+
+        $data = [
+            'name'          => 'cursorsoft',
+            'email'         => 'cursorsoft776@gmail.com',
+            'phone'         => '1234567890',
+            'designation'   => 'Booking Office',
+            'incharge_name' => 'Ajay Kumar',
+            'password'      => Hash::make('cursorsoft'),
+            'status'        => 1,
+            'created_at'    => now(),
+            'updated_at'    => now(),
+        ];
+
+        $admin = User::create($data);
+
+        $admin->assignRole('user');
     }
 }

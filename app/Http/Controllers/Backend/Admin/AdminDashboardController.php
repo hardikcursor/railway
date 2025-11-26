@@ -40,6 +40,46 @@ use Illuminate\Http\Request;
 class AdminDashboardController extends Controller
 {
 
+    public function admindashboard()
+    {
+        $reports           = Report::orderBy('created_at', 'desc')->get();
+        $totalInspections  = Report::count();
+        $pendingCount      = Report::where('status', 'pending')->count();
+        $forwardCount      = Report::whereIn('last_clicked_by_role', ['user', 'admin'])->count();
+        $replyPendingCount = $pendingCount + $forwardCount;
+        return view('admin.admindashboard', compact('reports', 'totalInspections', 'pendingCount', 'forwardCount', 'replyPendingCount'));
+    }
+
+    public function payparkdashboard()
+    {
+           $reports           = Report::orderBy('created_at', 'desc')->get();
+        $totalInspections  = Report::count();
+        $pendingCount      = Report::where('status', 'pending')->count();
+        $forwardCount      = Report::whereIn('last_clicked_by_role', ['user', 'admin'])->count();
+        $replyPendingCount = $pendingCount + $forwardCount;
+        return view('admin.payparkdashboard', compact('reports', 'totalInspections', 'pendingCount', 'forwardCount', 'replyPendingCount'));
+    }
+
+    public function cateringdashboard()
+    {
+           $reports           = Report::orderBy('created_at', 'desc')->get();
+        $totalInspections  = Report::count();
+        $pendingCount      = Report::where('status', 'pending')->count();
+        $forwardCount      = Report::whereIn('last_clicked_by_role', ['user', 'admin'])->count();
+        $replyPendingCount = $pendingCount + $forwardCount;
+        return view('admin.cateringdashboard', compact('reports', 'totalInspections', 'pendingCount', 'forwardCount', 'replyPendingCount'));
+    }
+
+    public function cleaningdashboard()
+    {
+           $reports           = Report::orderBy('created_at', 'desc')->get();
+        $totalInspections  = Report::count();
+        $pendingCount      = Report::where('status', 'pending')->count();
+        $forwardCount      = Report::whereIn('last_clicked_by_role', ['user', 'admin'])->count();
+        $replyPendingCount = $pendingCount + $forwardCount;
+        return view('admin.cleaningdashboard', compact('reports', 'totalInspections', 'pendingCount', 'forwardCount', 'replyPendingCount'));
+    }
+
     public function index()
     {
         $reports           = Report::orderBy('created_at', 'desc')->get();
@@ -59,7 +99,7 @@ class AdminDashboardController extends Controller
 
     public function secondmonth()
     {
-        $reports = Report::where('duration', 'Quarterly')->orderBy('created_at', 'desc')->get();
+        $reports = Report::where('duration', 'Quaterly')->orderBy('created_at', 'desc')->get();
         return view('admin.report.3month', compact('reports'));
     }
 

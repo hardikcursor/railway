@@ -38,6 +38,10 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/admindashboard', [AdminDashboardController::class, 'admindashboard'])->name('admin.admindashboard');
+    Route::get('/admin/payparkdashboard', [AdminDashboardController::class, 'payparkdashboard'])->name('admin.payparkdashboard');
+    Route::get('/admin/cateringdashboard', [AdminDashboardController::class, 'cateringdashboard'])->name('admin.cateringdashboard');
+    Route::get('/admin/cleaningdashboard', [AdminDashboardController::class, 'cleaningdashboard'])->name('admin.cleaningdashboard');
     Route::get('/admin/one-month', [AdminDashboardController::class, 'onemonth'])->name('admin.report.onemonth');
     Route::get('/admin/three-month', [AdminDashboardController::class, 'secondmonth'])->name('admin.report.threemonth');
     Route::get('/admin/six-month', [AdminDashboardController::class, 'thirdmonth'])->name('admin.report.sixmonth');

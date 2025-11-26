@@ -37,13 +37,46 @@
             }
         @endphp
 
+
         <ul class="side-menu metismenu">
+            @if (Auth::user()->hasRole('admin'))
+                <li class="{{ Request::url() == route('admin.admindashboard') ? 'active' : '' }}">
+                    <a href="{{ route('admin.admindashboard') }}">
+                        <i class="sidebar-item-icon fa fa-th-large"></i>
+                        <span class="nav-label">Admin Dashboard</span>
+                    </a>
+                </li>    
+            @endif
             <li class="{{ Request::url() == $dashboardRoute ? 'active' : '' }}">
                 <a href="{{ $dashboardRoute }}">
                     <i class="sidebar-item-icon fa fa-th-large"></i>
-                    <span class="nav-label">Dashboard</span>
+                    <span class="nav-label"> Inspection Dashboard</span>
                 </a>
             </li>
+                 @if (Auth::user()->hasRole('admin'))
+                <li class="{{ Request::url() == route('admin.payparkdashboard') ? 'active' : '' }}">
+                    <a href="{{ route('admin.payparkdashboard') }}">
+                        <i class="sidebar-item-icon fa fa-th-large"></i>
+                        <span class="nav-label">Pay and Park Dashboard</span>
+                    </a>
+                </li>    
+            @endif
+                 @if (Auth::user()->hasRole('admin'))
+                <li class="{{ Request::url() == route('admin.cateringdashboard') ? 'active' : '' }}">
+                    <a href="{{ route('admin.cateringdashboard') }}">
+                        <i class="sidebar-item-icon fa fa-th-large"></i>
+                        <span class="nav-label">Catering Dashboard</span>
+                    </a>
+                </li>    
+            @endif
+                 @if (Auth::user()->hasRole('admin'))
+                <li class="{{ Request::url() == route('admin.cleaningdashboard') ? 'active' : '' }}">
+                    <a href="{{ route('admin.cleaningdashboard') }}">
+                        <i class="sidebar-item-icon fa fa-th-large"></i>
+                        <span class="nav-label"> Cleaning Dashboard</span>
+                    </a>
+                </li>    
+            @endif
 
             <li class="heading">FEATURES</li>
 
@@ -58,20 +91,20 @@
                         <a href="{{ $oneMonthPage }}">Monthly</a>
                     </li>
                     <li>
-                        <a href="{{ $threeMonthPage }}">Quarterly</a>
+                        <a href="{{ $threeMonthPage }}">Quaterly</a>
                     </li>
                     <li>
                         <a href="{{ $sixMonthPage }}">Half Yearly</a>
                     </li>
                 </ul>
             </li>
-             @role('admin')
-            <li>
-                <a href="{{ route('admin.station.create') }}">
-                    <i class="sidebar-item-icon fa fa-user"></i>
-                    <span class="nav-label">Create Station</span>
-                </a>
-            </li>
+            @role('admin')
+                <li>
+                    <a href="{{ route('admin.station.create') }}">
+                        <i class="sidebar-item-icon fa fa-user"></i>
+                        <span class="nav-label">Create Station</span>
+                    </a>
+                </li>
             @endrole
 
             @role('super-admin')

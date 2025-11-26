@@ -53,5 +53,4 @@
             </div>
         </div>
     </div>
-    <!-- Recent Sales End -->
 @endsection
