@@ -45,7 +45,7 @@
                         <i class="sidebar-item-icon fa fa-th-large"></i>
                         <span class="nav-label">Admin Dashboard</span>
                     </a>
-                </li>    
+                </li>
             @endif
             <li class="{{ Request::url() == $dashboardRoute ? 'active' : '' }}">
                 <a href="{{ $dashboardRoute }}">
@@ -53,30 +53,41 @@
                     <span class="nav-label"> Inspection Dashboard</span>
                 </a>
             </li>
-                 @if (Auth::user()->hasRole('admin'))
+            @if (Auth::user()->hasRole('admin'))
                 <li class="{{ Request::url() == route('admin.payparkdashboard') ? 'active' : '' }}">
                     <a href="{{ route('admin.payparkdashboard') }}">
                         <i class="sidebar-item-icon fa fa-th-large"></i>
                         <span class="nav-label">Pay and Park Dashboard</span>
                     </a>
-                </li>    
+                </li>
             @endif
-                 @if (Auth::user()->hasRole('admin'))
+            @if (Auth::user()->hasRole('admin'))
                 <li class="{{ Request::url() == route('admin.cateringdashboard') ? 'active' : '' }}">
                     <a href="{{ route('admin.cateringdashboard') }}">
                         <i class="sidebar-item-icon fa fa-th-large"></i>
                         <span class="nav-label">Catering Dashboard</span>
                     </a>
-                </li>    
+                </li>
             @endif
-                 @if (Auth::user()->hasRole('admin'))
-                <li class="{{ Request::url() == route('admin.cleaningdashboard') ? 'active' : '' }}">
-                    <a href="{{ route('admin.cleaningdashboard') }}">
+            @if (Auth::user()->hasRole('admin'))
+                <li class="{{ Request::url() == route('admin.freightdashboard') ? 'active' : '' }}">
+                    <a href="{{ route('admin.freightdashboard') }}">
                         <i class="sidebar-item-icon fa fa-th-large"></i>
-                        <span class="nav-label"> Cleaning Dashboard</span>
+                        <span class="nav-label"> Freight Dashboard</span>
                     </a>
-                </li>    
+                </li>
             @endif
+            @if (Auth::user()->hasRole('admin'))
+                <li class="{{ Request::url() == route('admin.coachingdashboard') ? 'active' : '' }}">
+                    <a href="{{ route('admin.coachingdashboard') }}">
+                        <i class="sidebar-item-icon fa fa-th-large"></i>
+                        <span class="nav-label"> Coaching Dashboard</span>
+                    </a>
+                </li>
+            @endif
+
+
+
 
             <li class="heading">FEATURES</li>
 

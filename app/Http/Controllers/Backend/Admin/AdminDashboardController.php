@@ -52,7 +52,7 @@ class AdminDashboardController extends Controller
 
     public function payparkdashboard()
     {
-           $reports           = Report::orderBy('created_at', 'desc')->get();
+        $reports           = Report::orderBy('created_at', 'desc')->get();
         $totalInspections  = Report::count();
         $pendingCount      = Report::where('status', 'pending')->count();
         $forwardCount      = Report::whereIn('last_clicked_by_role', ['user', 'admin'])->count();
@@ -62,7 +62,7 @@ class AdminDashboardController extends Controller
 
     public function cateringdashboard()
     {
-           $reports           = Report::orderBy('created_at', 'desc')->get();
+        $reports           = Report::orderBy('created_at', 'desc')->get();
         $totalInspections  = Report::count();
         $pendingCount      = Report::where('status', 'pending')->count();
         $forwardCount      = Report::whereIn('last_clicked_by_role', ['user', 'admin'])->count();
@@ -72,7 +72,7 @@ class AdminDashboardController extends Controller
 
     public function cleaningdashboard()
     {
-           $reports           = Report::orderBy('created_at', 'desc')->get();
+        $reports           = Report::orderBy('created_at', 'desc')->get();
         $totalInspections  = Report::count();
         $pendingCount      = Report::where('status', 'pending')->count();
         $forwardCount      = Report::whereIn('last_clicked_by_role', ['user', 'admin'])->count();
@@ -80,6 +80,15 @@ class AdminDashboardController extends Controller
         return view('admin.cleaningdashboard', compact('reports', 'totalInspections', 'pendingCount', 'forwardCount', 'replyPendingCount'));
     }
 
+    public function freightdashboard()
+    {
+        return view('admin.freightdashboard');
+    }
+
+    public function coachingdashboard()
+    {
+        return view('admin.​coachingdashboard');
+    }
     public function index()
     {
         $reports           = Report::orderBy('created_at', 'desc')->get();

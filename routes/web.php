@@ -67,7 +67,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/quotation/update/{model}/{id}', [AdminDashboardController::class, 'update'])->name('admin.quotation.update');
     Route::get('/stationcreate', [AdminDashboardController::class, 'station'])->name('admin.station.create');
     Route::post('stationstore', [AdminDashboardController::class, 'storestation'])->name('admin.station.store');
-
+    Route::get('/freightdashboard', [AdminDashboardController::class, 'freightdashboard'])->name('admin.freightdashboard');
+    Route::get('/coachingdashboard', [AdminDashboardController::class, 'coachingdashboard'])->name('admin.coachingdashboard');
 
 });
 
