@@ -9,6 +9,9 @@
                     <!-- HEADER -->
                     <div class="header1">COACHING DASHBOARD (2025-26)</div>
 
+
+
+
                     <!-- FILTERS -->
                     <div class="filters">
                         <div class="filter-group">
@@ -46,13 +49,13 @@
                                 <div class="metric-columns">
                                     <div class="metric-column">
                                         <div class="metric-label">Passenger (In Lakh)</div>
-                                        <div class="metric-value">187.9</div>
-                                        <div class="metric-change positive"><span class="arrow-up"></span> 13.3%</div>
+                                        <div class="metric-value">{{ $totalPassengersFormatted }}</div>
+                                        <div class="metric-change positive"><span class="arrow-up"></span> 13.3% </div>
                                     </div>
 
                                     <div class="metric-column">
                                         <div class="metric-label">Revenue (In Cr.)</div>
-                                        <div class="metric-value">253.29</div>
+                                        <div class="metric-value">{{ $totalEarningFormatted }}</div>
                                         <div class="metric-change positive"><span class="arrow-up"></span> 12.8%</div>
                                     </div>
                                 </div>
@@ -67,13 +70,13 @@
                                 <div class="metric-columns">
                                     <div class="metric-column">
                                         <div class="metric-label">Passenger (In Lakh)</div>
-                                        <div class="metric-value">370.47</div>
+                                        <div class="metric-value">{{ $totalReserved_Passengers }}</div>
                                         <div class="metric-change positive"><span class="arrow-up"></span> 8.2%</div>
                                     </div>
 
                                     <div class="metric-column">
                                         <div class="metric-label">Revenue (In Cr.)</div>
-                                        <div class="metric-value">1,697.47</div>
+                                        <div class="metric-value">{{ $totalReserved_Earning }}</div>
                                         <div class="metric-change positive"><span class="arrow-up"></span> 8.2%</div>
                                     </div>
                                 </div>
@@ -88,13 +91,13 @@
                                 <div class="metric-columns">
                                     <div class="metric-column">
                                         <div class="metric-label">Passenger (In Lakh)</div>
-                                        <div class="metric-value">182.57</div>
+                                        <div class="metric-value">{{ $Total_Passengers }}</div>
                                         <div class="metric-change positive"><span class="arrow-up"></span> 3.4%</div>
                                     </div>
 
                                     <div class="metric-column">
                                         <div class="metric-label">Revenue (In Cr.)</div>
-                                        <div class="metric-value">1,444.18</div>
+                                        <div class="metric-value">{{ $Total_Earning }}</div>
                                         <div class="metric-change positive"><span class="arrow-up"></span> 7.4%</div>
                                     </div>
                                 </div>
@@ -107,13 +110,16 @@
                     <!-- CHART SECTION -->
                     <div class="chart-container">
                         <div class="chart-box">
-                            <div id="revenue_chart_div" class="chart-area"></div>
-                        </div>
-
-                        <div class="chart-box">
-                            <div id="pass_chart_div" class="chart-area"></div>
+                            <canvas id="myChart1" height="120"></canvas>
                         </div>
                     </div>
+
+                    <div class="chart-container">
+                        <div class="chart-box">
+                            <canvas id="myChart2" height="120"></canvas>
+                        </div>
+                    </div>
+
 
                     <div class="row">
                         <div class="col-6">
@@ -158,11 +164,11 @@
 
 
                     <div class="data-container">
-                        <div class="table-section">
-                            <table class="data-table">
-                                <thead>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover text-center align-middle">
+                                <thead class="table-dark">
                                     <tr>
-                                        <th rowspan="2">Station</th>
+                                        <th rowspan="2" class="align-middle">Station</th>
                                         <th colspan="2">2024-2025</th>
                                         <th colspan="2">2023-2024</th>
                                         <th colspan="2">2022-2023</th>
@@ -176,99 +182,26 @@
                                         <th>Revenue</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="station-name">ADI</td>
-                                        <td>165</td>
-                                        <td>883.5</td>
-                                        <td>183</td>
-                                        <td>1,010.36</td>
-                                        <td>162</td>
-                                        <td>908.84</td>
-                                    </tr>
-                                    <tr class="highlight">
-                                        <td class="station-name">SBIB</td>
-                                        <td>48</td>
-                                        <td>300.2</td>
-                                        <td>28</td>
-                                        <td>121.63</td>
-                                        <td>19</td>
-                                        <td>71</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="station-name">GIMB</td>
-                                        <td>18</td>
-                                        <td>113.5</td>
-                                        <td>17</td>
-                                        <td>105.11</td>
-                                        <td>14</td>
-                                        <td>96</td>
-                                    </tr>
-                                    <tr class="highlight">
-                                        <td class="station-name">MSH</td>
-                                        <td>15</td>
-                                        <td>40.21</td>
-                                        <td>13</td>
-                                        <td>35.19</td>
-                                        <td>9</td>
-                                        <td>28.3</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="station-name">VG</td>
-                                        <td>11</td>
-                                        <td>37.21</td>
-                                        <td>11</td>
-                                        <td>36.66</td>
-                                        <td>10</td>
-                                        <td>34.23</td>
-                                    </tr>
-                                    <tr class="highlight">
-                                        <td class="station-name">PNU</td>
-                                        <td>10</td>
-                                        <td>33.13</td>
-                                        <td>10</td>
-                                        <td>31.86</td>
-                                        <td>8</td>
-                                        <td>29.02</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="station-name">BHUJ</td>
-                                        <td>2</td>
-                                        <td>10.08</td>
-                                        <td>11</td>
-                                        <td>74.88</td>
-                                        <td>10</td>
-                                        <td>66.93</td>
-                                    </tr>
-                                    <tr class="highlight">
-                                        <td class="station-name">MAN</td>
-                                        <td>6</td>
-                                        <td>5.84</td>
-                                        <td>6</td>
-                                        <td>5.05</td>
-                                        <td>5</td>
-                                        <td>3.85</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="station-name">PTN</td>
-                                        <td>8</td>
-                                        <td>3.25</td>
-                                        <td>6</td>
-                                        <td>3.12</td>
-                                        <td>3</td>
-                                        <td>1.76</td>
-                                    </tr>
-                                    <tr class="highlight">
-                                        <td class="station-name">ASV</td>
-                                        <td>14</td>
-                                        <td>52.98</td>
-                                        <td>11</td>
-                                        <td>44.18</td>
-                                        <td>2</td>
-                                        <td>4.11</td>
-                                    </tr>
-                                </tbody>
                             </table>
+
+                            <div class="table-scroll-body">
+                                <table>
+                                    <tbody>
+                                        @foreach ($coachoing as $coachoings)
+                                            <tr>
+                                                <td class="text-start fw-bold" style="width:16.66%;">
+                                                    {{ $coachoings->Station }}</td>
+                                                <td style="width:16.66%;">{{ $coachoings->Total_Passengers }}</td>
+                                                <td style="width:16.66%;">{{ $coachoings->Total_Earning }}</td>
+                                                <td style="width:16.66%;">{{ $coachoings->Total_Passengers }}</td>
+                                                <td style="width:16.66%;">{{ $coachoings->Total_Earning }}</td>
+                                                <td style="width:16.66%;">{{ $coachoings->Total_Passengers }}</td>
+                                                <td style="width:16.66%;">{{ $coachoings->Total_Earning }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
                         <div class="chart-section">
@@ -282,7 +215,8 @@
                                     <span class="label">2019-2020</span>
                                     <div class="bar-group">
                                         <div class="unreserved-bar" style="width: 15%;"><span
-                                                class="value">187.93</span></div>
+                                                class="value">187.93</span>
+                                        </div>
                                         <div class="reserved-bar" style="width: 60%;">726.54</div>
                                     </div>
                                 </div>
@@ -754,40 +688,67 @@
                 margin-left: -5px;
             }
 
-        
+            /* Container for the table body to enable vertical scrolling */
+            .table-scroll-body {
+                max-height: 400px;
+                /* Adjust this value to set the desired height */
+                overflow-y: auto;
+                /* Enables vertical scrolling */
+                overflow-x: hidden;
+                /* Prevents unwanted horizontal scrolling in the body */
+                margin-top: -1px;
+                /* Optional: Adjust to hide the top border of the body table */
+                border-bottom: 1px solid #dee2e6;
+                /* Matches Bootstrap table border */
+            }
 
-        @media (max-width: 992px) {
-        .col-3 {
-        flex: 1 1 48%;
-        }
-        }
+            /* Style the inner table to remove standard borders and match the header table layout */
+            .table-scroll-body table {
+                width: 100%;
+                margin-bottom: 0;
+                /* Remove margin-bottom that Bootstrap adds */
+                /* Use table-layout: fixed to ensure width percentages work reliably */
+                table-layout: fixed;
+            }
 
-        @media (max-width: 576px) {
-        .col-3 {
-        flex: 1 1 100%;
-        /* full width on small devices */
-        }
-        }
+            /* Ensure the fixed header table also uses table-layout: fixed for alignment */
+            .table-responsive>.table {
+                table-layout: fixed;
+            }
 
-        /* MEDIA QUERIES */
-        @media (max-width: 768px) {
-        .filters {
-        flex-direction: column;
-        }
 
-        .ml-auto {
-        margin-left: 0 !important;
-        }
+            @media (max-width: 992px) {
+                .col-3 {
+                    flex: 1 1 48%;
+                }
+            }
 
-        .metric-columns {
-        flex-direction: column;
-        gap: 15px;
-        }
+            @media (max-width: 576px) {
+                .col-3 {
+                    flex: 1 1 100%;
+                    /* full width on small devices */
+                }
+            }
 
-        .chart-box {
-        min-width: 100%;
-        }
-        }
+            /* MEDIA QUERIES */
+            @media (max-width: 768px) {
+                .filters {
+                    flex-direction: column;
+                }
+
+                .ml-auto {
+                    margin-left: 0 !important;
+                }
+
+                .metric-columns {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+
+                .chart-box {
+                    min-width: 100%;
+                }
+            }
         </style>
 
         <!-- GOOGLE CHART JS (Your Same Script) -->
@@ -886,5 +847,184 @@
 
             makeDonutChart("#res_revenue", [53.5, 18.4, 6.5, 5, 4, 3, 2, 2, 1.5, 3], labels);
             makeDonutChart("#res_passenger", [54.9, 17.2, 6.8, 5.5, 4, 3.2, 3, 2.4, 1.8, 3], labels);
+        </script>
+
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
+
+        <script>
+            const ctx1 = document.getElementById("myChart1");
+
+            new Chart(ctx1, {
+                type: "line",
+                data: {
+                    labels: ["JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC", "JAN", "FEB", "MAR"],
+                    datasets: [{
+                            label: "2024-2025",
+                            data: [50.42, 66.82, 54.42, 55.02, 48.78, 46.76, 51.80, 58.76, 58.36, 77.98],
+                            borderColor: "#ff5c33",
+                            backgroundColor: "#ff5c33",
+                            pointRadius: 4,
+                            pointBackgroundColor: "#ff5c33",
+                            tension: 0.4,
+                        },
+                        {
+                            label: "2023-2024",
+                            data: [35, 40, 38, 37, 33, 36, 42, 44, 41, 43],
+                            borderColor: "#ffcc00",
+                            backgroundColor: "#ffcc00",
+                            pointRadius: 4,
+                            pointBackgroundColor: "#ffcc00",
+                            tension: 0.4,
+                        },
+                        {
+                            label: "2022-2023",
+                            data: [25, 30, 28, 27, 26, 30, 31, 32, 29, 33],
+                            borderColor: "#4CAF50",
+                            backgroundColor: "#4CAF50",
+                            pointRadius: 4,
+                            pointBackgroundColor: "#4CAF50",
+                            tension: 0.4,
+                        }
+                    ]
+                },
+
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: "top",
+                            labels: {
+                                usePointStyle: true,
+                                pointStyle: "line",
+                                boxWidth: 30,
+                                padding: 20,
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    },
+
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: "Reserved Revenue (in Cr.)",
+                                font: {
+                                    size: 14,
+                                    weight: "bold",
+                                }
+                            },
+                            ticks: {
+                                padding: 8,
+                            },
+                            grid: {
+                                color: "#ddd"
+                            }
+                        },
+
+                        x: {
+                            ticks: {
+                                padding: 8,
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
+
+        <script>
+            const ctx2 = document.getElementById("myChart2");
+
+            new Chart(ctx2, {
+                type: "line",
+                data: {
+                    labels: ["JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC", "JAN", "FEB", "MAR"],
+                    datasets: [{
+                            label: "2024-2025",
+                            data: [50.42, 66.82, 54.42, 55.02, 48.78, 46.76, 51.80, 58.76, 58.36, 77.98],
+                            borderColor: "#ff5c33",
+                            backgroundColor: "#ff5c33",
+                            pointRadius: 4,
+                            pointBackgroundColor: "#ff5c33",
+                            tension: 0.4,
+                        },
+                        {
+                            label: "2023-2024",
+                            data: [35, 40, 38, 37, 33, 36, 42, 44, 41, 43],
+                            borderColor: "#ffcc00",
+                            backgroundColor: "#ffcc00",
+                            pointRadius: 4,
+                            pointBackgroundColor: "#ffcc00",
+                            tension: 0.4,
+                        },
+                        {
+                            label: "2022-2023",
+                            data: [25, 30, 28, 27, 26, 30, 31, 32, 29, 33],
+                            borderColor: "#4CAF50",
+                            backgroundColor: "#4CAF50",
+                            pointRadius: 4,
+                            pointBackgroundColor: "#4CAF50",
+                            tension: 0.4,
+                        }
+                    ]
+                },
+
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: "top",
+                            labels: {
+                                usePointStyle: true,
+                                pointStyle: "line",
+                                boxWidth: 30,
+                                padding: 20,
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    },
+
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: "Reserved Revenue (in Cr.)",
+                                font: {
+                                    size: 14,
+                                    weight: "bold",
+                                }
+                            },
+                            ticks: {
+                                padding: 8,
+                            },
+                            grid: {
+                                color: "#ddd"
+                            }
+                        },
+
+                        x: {
+                            ticks: {
+                                padding: 8,
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
         </script>
     @endsection

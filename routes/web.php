@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Backend\Admin\AdminDashboardController;
+use App\Http\Controllers\Backend\Admin\CoachingController;
 use App\Http\Controllers\Backend\Superadmin\SuperadminDashboardController;
 use App\Http\Controllers\Backend\User\UserDashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
 
 Route::middleware('guest')->group(function () {
     Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
@@ -69,7 +71,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('stationstore', [AdminDashboardController::class, 'storestation'])->name('admin.station.store');
     Route::get('/freightdashboard', [AdminDashboardController::class, 'freightdashboard'])->name('admin.freightdashboard');
     Route::get('/coachingdashboard', [AdminDashboardController::class, 'coachingdashboard'])->name('admin.coachingdashboard');
-
+    Route::get('/parceldashboard', [AdminDashboardController::class, 'parceldashboard'])->name('admin.parceldashboard');
+   
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {
@@ -108,4 +111,8 @@ Route::get('/redirect-dashboard', function () {
     }
     return redirect()->route('login');
 })->name('redirect.dashboard');
+
+ Route::get('/coaching',[CoachingController::class,'coaching'])->name('admin.coaching');
+   Route::post('/import', [CoachingController::class, 'import'])
+    ->name('excel.coaching');
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Booking_office;
 use App\Models\Booking_office_answer;
+use App\Models\Coaching;
 use App\Models\Goods_office_answer;
 use App\Models\Goods_Shed_office;
 use App\Models\Goods_Shed_office_form;
@@ -85,9 +86,56 @@ class AdminDashboardController extends Controller
         return view('admin.freightdashboard');
     }
 
+    private function formatThreeWithTwoDecimal($number)
+    {
+        // First: format with 2 decimals
+        $number = number_format($number, 2, '.', '');
+
+        // Split integer + decimal
+        $parts = explode('.', $number);
+
+        $int = $parts[0];
+        $dec = $parts[1];
+
+        // Take only first 3 digits of integer
+        $int = substr($int, 0, 3);
+
+        // Return final formatted number
+        return $int . '.' . $dec;
+    }
+
     public function coachingdashboard()
     {
-        return view('admin.​coachingdashboard');
+      
+        $totalPassengers          = Coaching::sum('Unreserved_Passengers');
+        $totalEarning             = Coaching::sum('Unreserved_Earning');
+        $totalReserved_Passengers = Coaching::sum('Reserved_Passengers');
+        $totalReserved_Earning    = Coaching::sum('Reserved_Earning');
+        $Total_Passengers         = Coaching::sum('Total_Passengers');
+        $Total_Earning            = Coaching::sum('Total_Earning');
+
+        // Formatting totals (Keep this as is)
+        $totalPassengersFormatted = $this->formatThreeWithTwoDecimal($totalPassengers);
+        $totalEarningFormatted    = $this->formatThreeWithTwoDecimal($totalEarning);
+        $totalReserved_Passengers = $this->formatThreeWithTwoDecimal($totalReserved_Passengers);
+        $totalReserved_Earning    = $this->formatThreeWithTwoDecimal($totalReserved_Earning);
+        $Total_Passengers         = $this->formatThreeWithTwoDecimal($Total_Passengers);
+        $Total_Earning            = $this->formatThreeWithTwoDecimal($Total_Earning);
+
+        // --- THIS IS THE CHANGED PART ---
+        $coachoing = Coaching::select('Station')
+            ->selectRaw('SUM(Total_Passengers) as Total_Passengers')
+            ->selectRaw('SUM(Total_Earning) as Total_Earning')
+            ->groupBy('Station')
+            ->get();
+        // --------------------------------
+
+        return view('admin.​coachingdashboard', compact('totalPassengersFormatted', 'totalEarningFormatted', 'totalReserved_Passengers', 'totalReserved_Earning', 'Total_Passengers', 'Total_Earning', 'coachoing'));
+    }
+
+    public function parceldashboard()
+    {
+        return view('admin.parceldashboard');
     }
     public function index()
     {

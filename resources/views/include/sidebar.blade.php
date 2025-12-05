@@ -85,7 +85,14 @@
                     </a>
                 </li>
             @endif
-
+              @if (Auth::user()->hasRole('admin'))
+                <li class="{{ Request::url() == route('admin.parceldashboard') ? 'active' : '' }}">
+                    <a href="{{ route('admin.parceldashboard') }}">
+                        <i class="sidebar-item-icon fa fa-th-large"></i>
+                        <span class="nav-label"> Parcel Dashboard</span>
+                    </a>
+                </li>
+            @endif
 
 
 
