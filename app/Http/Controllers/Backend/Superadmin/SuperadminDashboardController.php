@@ -6,13 +6,13 @@ use App\Models\Booking_office_answer;
 use App\Models\Booking_office_form;
 use App\Models\Goods_office_answer;
 use App\Models\Goods_Shed_office_form;
+use App\Models\inspection_tea_answer;
 use App\Models\inspectionkitchen_answer;
 use App\Models\InspectionPantryCar_answer;
 use App\Models\InspectionPantryCar_form;
 use App\Models\InspectionPassenger_items__answer;
 use App\Models\InspectionPayUseToilets_answer;
 use App\Models\InspectionPayUseToilets_location_form;
-use App\Models\inspection_tea_answer;
 use App\Models\NonFare_Revenue_answer;
 use App\Models\Parcel_answer;
 use App\Models\Parcel_Office_form;
@@ -24,28 +24,45 @@ use App\Models\Ticket_Examineroffice_form;
 use App\Models\Ticket_office_answer;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\AdminReportForward;
 
 class SuperadminDashboardController extends Controller
 {
-    
-    public function index()
-    {
-        $reports           = Report::orderBy('created_at', 'desc')->get();
-        $totalInspections  = Report::count();
-        $approvedReports   = Report::where('status', 'approved')->count();
-        $pendingCount      = Report::where('status', 'pending')->count();
-        $forwardCount      = Report::whereIn('last_clicked_by_role', ['user', 'admin'])->count();
-        $replyPendingCount = $pendingCount + $forwardCount;
 
-        $monthlyReports = $reports->groupBy(function ($item) {
-            return \Carbon\Carbon::parse($item->created_at)->format('F');
-        })->map(function ($group) {
-            return $group->count();
-        });
-        return view('superadmin.dashboard', compact('reports', 'totalInspections', 'approvedReports', 'pendingCount', 'forwardCount', 'replyPendingCount', 'monthlyReports'));
+   public function index()
+{
+    $userId = auth()->id();
+
+    $reports = Report::orderBy('created_at', 'desc')->get();
+
+    $totalInspections  = Report::count();
+    $approvedReports   = Report::where('status', 'approved')->count();
+    $pendingCount      = Report::where('status', 'pending')->count();
+    $forwardCount      = Report::whereIn('last_clicked_by_role', ['user', 'admin'])->count();
+    $replyPendingCount = $pendingCount + $forwardCount;
+
+    $monthlyReports = $reports->groupBy(function ($item) {
+        return \Carbon\Carbon::parse($item->created_at)->format('F');
+    })->map(function ($group) {
+        return $group->count();
+    });
+
+    foreach ($reports as $report) {
+        $remarks = AdminReportForward::where('report_id', $report->id)
+            ->where('officer_name', $userId)
+            ->value('officer_remarks');
+
+        $report->user_remarks = $remarks;  
     }
+
+    return view('superadmin.dashboard', compact(
+        'reports', 'totalInspections', 'approvedReports', 'pendingCount', 
+        'forwardCount', 'replyPendingCount', 'monthlyReports', 'userId'
+    ));
+}
 
     public function onemonth()
     {
@@ -65,20 +82,66 @@ class SuperadminDashboardController extends Controller
         return view('superadmin.report.6month', compact('reports'));
     }
 
+    // public function sendtoapproved($id)
+    // {
+    //     $post = Report::findOrFail($id);
+
+    //     if ($post->status === 'sent') {
+    //         $post->status               = 'approved';
+    //         $post->last_clicked_by_role = null;
+
+    //         $post->save();
+
+    //         return redirect()->back()->with('success', 'Report approved successfully!');
+    //     }
+
+    //     return redirect()->back()->with('info', 'Report must be in sent status to approve.');
+    // }
+
     public function sendtoapproved($id)
     {
-        $post = Report::findOrFail($id);
+        $post    = Report::findOrFail($id);
+        $adminId = auth()->id();
 
-        if ($post->status === 'sent') {
-            $post->status               = 'approved';
-            $post->last_clicked_by_role = null;
-
-            $post->save();
-
-            return redirect()->back()->with('success', 'Report approved successfully!');
+        if ($post->status !== 'sent') {
+            return redirect()->back()->with('info', 'Report must be in sent status to approve.');
         }
 
-        return redirect()->back()->with('info', 'Report must be in sent status to approve.');
+        $requiredAdmins = $post->forward_admin_id
+            ? explode(',', $post->forward_admin_id)
+            : [];
+
+        $approvedAdmins = $post->approve_status
+            ? explode(',', $post->approve_status)
+            : [];
+
+        if (! in_array($adminId, $approvedAdmins)) {
+            $approvedAdmins[] = $adminId;
+        }
+
+        $post->approve_status = implode(',', $approvedAdmins);
+
+        sort($requiredAdmins);
+        sort($approvedAdmins);
+
+        if ($requiredAdmins == $approvedAdmins) {
+            $post->status               = 'approved';
+            $post->last_clicked_by_role = null;
+        }
+
+        $checkedAdmins = $post->check_status_id
+            ? explode(',', $post->check_status_id)
+            : [];
+
+        if (! in_array($adminId, $checkedAdmins)) {
+            $checkedAdmins[] = $adminId;
+        }
+
+        $post->check_status_id = implode(',', $checkedAdmins);
+
+        $post->save();
+
+        return redirect()->back()->with('success', 'Check saved successfully!');
     }
 
     public function downloadReport($id)
@@ -160,7 +223,7 @@ class SuperadminDashboardController extends Controller
 
     public function userdataget()
     {
-        $users         = User::role('user')->where('id', '!=', Auth::id())->get();
+        $users         = User::role('user')->get();
         $currentUserId = Auth::id();
 
         return view('superadmin.userdata', compact('users', 'currentUserId'));

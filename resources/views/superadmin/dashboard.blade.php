@@ -90,31 +90,47 @@
                                         <th scope="col">Station</th>
                                         <th scope="col">Type of Inspection</th>
                                         <th scope="col">Duration</th>
+                                        <th>Remark</th>
                                         <th>Download Report</th>
                                         <th>Checked</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($reports as $key => $report)
+                                        @php
+                                            $authId = auth()->id();
+                                            $forwardIds = $report->forward_admin_id
+                                                ? explode(',', $report->forward_admin_id)
+                                                : [];
+
+                                            $inMyList = in_array($authId, $forwardIds);
+                                            $isCheckedByMe = $authId == $report->check_status_id;
+                                        @endphp
+
                                         <tr
                                             class="
-                                            @if ($report->last_clicked_by_role == 'admin') table-danger
-                                            @elseif ($report->status == 'pending')
-                                                table-warning
-                                            @elseif ($report->status == 'sent')
-                                                table-danger
-                                            @else
-                                                table-success @endif
-                                        ">
+                @if ($isCheckedByMe) table-success
+                @elseif ($report->status === 'sent' && $inMyList)
+                    table-danger
+                @elseif ($report->status === 'sent' && !$inMyList)
+                    table-warning
+                @elseif ($report->status === 'pending')
+                    table-warning
+                @else
+                    table-success @endif
+            ">
                                             <td>{{ ++$key }}</td>
                                             <td>{{ $report->created_at->format('d-m-Y') }}</td>
                                             <td>{{ $report->NameInspector }}</td>
                                             <td>{{ $report->Station }}</td>
                                             <td>{{ $report->TypeofInspection }}</td>
                                             <td>{{ $report->Duration }}</td>
+                                            <td>{{ $report->user_remarks ?? 'No remarks' }}</td>
                                             <td>
                                                 <a class="btn btn-sm btn-primary"
-                                                    href="{{ route('superadmin.reports.download', $report->id) }}">Download</a>
+                                                    href="{{ route('superadmin.reports.download', $report->id) }}">
+                                                    Download
+                                                </a>
                                             </td>
                                             <td>
                                                 <form action="{{ route('superadmin.approval', $report->id) }}"
@@ -125,9 +141,8 @@
                                             </td>
                                         </tr>
                                     @endforeach
-
-
                                 </tbody>
+
                             </table>
                         </div>
                     </div>
@@ -135,13 +150,13 @@
             </div>
         </div>
     </div>
-    <button id="openChatBtn" style="position: fixed; bottom: 20px; right: 20px; padding: 10px 20px;">💬 Chat</button>
+    {{-- <button id="openChatBtn" style="position: fixed; bottom: 20px; right: 20px; padding: 10px 20px;">💬 Chat</button>
 
     <!-- Overlay (hidden by default) -->
     <div id="chatOverlay"
         style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: rgba(0, 0, 0, 0.3); z-index: 999;">
-    </div>
+    </div> --}}
 
     <!-- Chat Box -->
     <div id="chatBox"

@@ -8,19 +8,18 @@ use App\Http\Controllers\Backend\User\UserDashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-
 Route::middleware('guest')->group(function () {
     Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'dologin'])->name('dologin');
 
-        // Show forgot password form
-Route::get('forget-password', [AuthController::class, 'showForgetPasswordForm'])->name('forget.password.get');
+    // Show forgot password form
+    Route::get('forget-password', [AuthController::class, 'showForgetPasswordForm'])->name('forget.password.get');
 
-Route::post('forget-password', [AuthController::class, 'submitForgetPasswordForm'])->name('forget.password.post'); 
+    Route::post('forget-password', [AuthController::class, 'submitForgetPasswordForm'])->name('forget.password.post');
 
-Route::get('reset-password/{token}', [AuthController::class, 'showResetPasswordForm'])->name('reset.password.get');
+    Route::get('reset-password/{token}', [AuthController::class, 'showResetPasswordForm'])->name('reset.password.get');
 
-Route::post('reset-password', [AuthController::class, 'submitResetPasswordForm'])->name('reset.password.post');
+    Route::post('reset-password', [AuthController::class, 'submitResetPasswordForm'])->name('reset.password.post');
 });
 
 Route::middleware('auth')->group(function () {
@@ -69,10 +68,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/quotation/update/{model}/{id}', [AdminDashboardController::class, 'update'])->name('admin.quotation.update');
     Route::get('/stationcreate', [AdminDashboardController::class, 'station'])->name('admin.station.create');
     Route::post('stationstore', [AdminDashboardController::class, 'storestation'])->name('admin.station.store');
+    Route::get('stations/{id}/edit', [AdminDashboardController::class, 'editstation'])->name('stations.edit');
+   Route::post('stations/update/{id}', [AdminDashboardController::class, 'updatestation'])->name('stations.update');
+    Route::delete('stations/{id}', [AdminDashboardController::class, 'delete'])->name('stations.destroy');
+
     Route::get('/freightdashboard', [AdminDashboardController::class, 'freightdashboard'])->name('admin.freightdashboard');
     Route::get('/coachingdashboard', [AdminDashboardController::class, 'coachingdashboard'])->name('admin.coachingdashboard');
     Route::get('/parceldashboard', [AdminDashboardController::class, 'parceldashboard'])->name('admin.parceldashboard');
-   
+
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {
@@ -112,7 +115,6 @@ Route::get('/redirect-dashboard', function () {
     return redirect()->route('login');
 })->name('redirect.dashboard');
 
- Route::get('/coaching',[CoachingController::class,'coaching'])->name('admin.coaching');
-   Route::post('/import', [CoachingController::class, 'import'])
+Route::get('/coaching', [CoachingController::class, 'coaching'])->name('admin.coaching');
+Route::post('/import', [CoachingController::class, 'import'])
     ->name('excel.coaching');
-

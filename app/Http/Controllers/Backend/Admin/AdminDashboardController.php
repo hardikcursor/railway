@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Backend\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminReportForward;
 use App\Models\Booking_office;
 use App\Models\Booking_office_answer;
 use App\Models\Coaching;
@@ -35,8 +36,10 @@ use App\Models\StationCleanliness_answer;
 use App\Models\Ticket_Examineroffice;
 use App\Models\Ticket_Examineroffice_form;
 use App\Models\Ticket_office_answer;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AdminDashboardController extends Controller
 {
@@ -48,6 +51,7 @@ class AdminDashboardController extends Controller
         $pendingCount      = Report::where('status', 'pending')->count();
         $forwardCount      = Report::whereIn('last_clicked_by_role', ['user', 'admin'])->count();
         $replyPendingCount = $pendingCount + $forwardCount;
+
         return view('admin.admindashboard', compact('reports', 'totalInspections', 'pendingCount', 'forwardCount', 'replyPendingCount'));
     }
 
@@ -106,7 +110,7 @@ class AdminDashboardController extends Controller
 
     public function coachingdashboard()
     {
-      
+
         $totalPassengers          = Coaching::sum('Unreserved_Passengers');
         $totalEarning             = Coaching::sum('Unreserved_Earning');
         $totalReserved_Passengers = Coaching::sum('Reserved_Passengers');
@@ -123,14 +127,29 @@ class AdminDashboardController extends Controller
         $Total_Earning            = $this->formatThreeWithTwoDecimal($Total_Earning);
 
         // --- THIS IS THE CHANGED PART ---
-        $coachoing = Coaching::select('Station')
-            ->selectRaw('SUM(Total_Passengers) as Total_Passengers')
-            ->selectRaw('SUM(Total_Earning) as Total_Earning')
-            ->groupBy('Station')
+        $raw = Coaching::select(
+            'Station',
+            DB::raw('YEAR(Date) as Year'),
+            DB::raw('SUM(Total_Passengers) as Passengers'),
+            DB::raw('SUM(Total_Earning) as Revenue')
+        )
+            ->groupBy('Station', 'Year')
+            ->orderBy('Station')
+            ->orderBy('Year', 'DESC')
             ->get();
-        // --------------------------------
 
-        return view('admin.​coachingdashboard', compact('totalPassengersFormatted', 'totalEarningFormatted', 'totalReserved_Passengers', 'totalReserved_Earning', 'Total_Passengers', 'Total_Earning', 'coachoing'));
+        $data = [];
+
+// Pivot format convert
+        foreach ($raw as $row) {
+            $data[$row->Station][$row->Year] = [
+                'Passengers' => $row->Passengers,
+                'Revenue'    => $row->Revenue,
+            ];
+        }
+        $years = [2025, 2024, 2023];
+
+        return view('admin.​coachingdashboard', compact('totalPassengersFormatted', 'totalEarningFormatted', 'totalReserved_Passengers', 'totalReserved_Earning', 'Total_Passengers', 'Total_Earning', 'data', 'years'));
     }
 
     public function parceldashboard()
@@ -144,8 +163,37 @@ class AdminDashboardController extends Controller
         $pendingCount      = Report::where('status', 'pending')->count();
         $forwardCount      = Report::whereIn('last_clicked_by_role', ['user', 'admin'])->count();
         $replyPendingCount = $pendingCount + $forwardCount;
+        $officers          = User::role('super-admin')->get();
 
-        return view('admin.dashboard', compact('reports', 'totalInspections', 'pendingCount', 'forwardCount', 'replyPendingCount'));
+        foreach ($reports as $report) {
+            $forwardIds = $report->forward_admin_id
+                ? explode(',', $report->forward_admin_id)
+                : [];
+
+            $approveIds = $report->approve_status
+                ? explode(',', $report->approve_status)
+                : [];
+
+            $report->forwardAdmins = User::whereIn('id', $forwardIds)->get();
+
+            // Attach approval status to each forwarded admin
+            foreach ($report->forwardAdmins as $admin) {
+                // Check if admin id is in approveIds array
+                $admin->hasApproved = in_array($admin->id, $approveIds);
+            }
+        }
+
+        return view(
+            'admin.dashboard',
+            compact(
+                'reports',
+                'totalInspections',
+                'pendingCount',
+                'forwardCount',
+                'replyPendingCount',
+                'officers'
+            )
+        );
     }
 
     public function onemonth()
@@ -257,23 +305,71 @@ class AdminDashboardController extends Controller
         return redirect()->back()->with('info', 'Report must be in pending status to approve.');
     }
 
-    public function send($id)
+    // public function send(Request $request,$id)
+    // {
+    //     $report = Report::findOrFail($id);
+
+    //     $request->validate([
+    //         'officer' => 'required',
+    //         'remarks' => 'nullable|string',
+    //     ]);
+
+    //     // Save to Admin Table
+    //     AdminReportForward::create([
+    //         'report_id'       => $report->id,
+    //         'officer_name'    => $request->officer,
+    //         'officer_remarks' => $request->remarks,
+    //         'status'          => 'sent',
+    //     ]);
+    //     if ($report->status === 'approved') {
+    //         return redirect()->back()->with('info', 'Report is already approved. No changes allowed.');
+    //     }
+
+    //     if (empty($report->last_clicked_by_role)) {
+    //         $report->last_clicked_by_role = 'admin';
+    //         $report->status               = 'sent';
+    //         $report->save();
+
+    //         return redirect()->back()->with('success', 'Report sent successfully!');
+    //     }
+
+    //     return redirect()->back()->with('info', 'Report was already sent/processed.');
+    // }
+
+    public function send(Request $request, $id)
     {
         $report = Report::findOrFail($id);
+
+        $request->validate([
+            'officer' => 'required',
+            'remarks' => 'nullable|string',
+        ]);
+
+        AdminReportForward::create([
+            'report_id'       => $report->id,
+            'officer_name'    => $request->officer,
+            'officer_remarks' => $request->remarks,
+            'status'          => 'sent',
+        ]);
 
         if ($report->status === 'approved') {
             return redirect()->back()->with('info', 'Report is already approved. No changes allowed.');
         }
 
-        if (empty($report->last_clicked_by_role)) {
-            $report->last_clicked_by_role = 'admin';
-            $report->status               = 'sent';
-            $report->save();
+        $existing = $report->forward_admin_id; // e.g. '1,2'
 
-            return redirect()->back()->with('success', 'Report sent successfully!');
+        $ids = $existing ? explode(',', $existing) : [];
+
+        if (! in_array($request->officer, $ids)) {
+            $ids[] = $request->officer;
         }
 
-        return redirect()->back()->with('info', 'Report was already sent/processed.');
+        $report->forward_admin_id     = implode(',', $ids);
+        $report->last_clicked_by_role = 'admin';
+        $report->status               = 'sent';
+        $report->save();
+
+        return redirect()->back()->with('success', 'Report sent successfully!');
     }
 
     private function imageToBase64($path)
@@ -720,6 +816,33 @@ class AdminDashboardController extends Controller
         $station->save();
 
         return redirect()->route('admin.station.create')->with('success', 'Station created successfully.');
+    }
+
+    public function editstation($id)
+    {
+        $station = Station::findOrFail($id);
+        return view('admin.station.edit', compact('station'));
+    }
+
+    public function updatestation(Request $request, $id)
+    {
+        $station = Station::findOrFail($id);
+
+        $request->validate([
+            'station' => 'required',
+        ]);
+
+        $station->update([
+            'station' => $request->station,
+        ]);
+
+        return redirect()->route('admin.station.create')->with('success', 'Station updated successfully!');
+    }
+
+    public function delete($id)
+    {
+        Station::findOrFail($id)->delete();
+        return redirect()->route('admin.station.create')->with('success', 'Station deleted successfully!');
     }
 
 }

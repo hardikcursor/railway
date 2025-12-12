@@ -1,7 +1,71 @@
 @extends('layouts.backend')
+<style>
+    .custom-select-box {
+        position: relative;
+        width: 180px;
+        user-select: none;
+    }
+
+    .custom-select-selected {
+        padding: 7px 10px;
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .custom-select-options {
+        display: none;
+        position: absolute;
+        background: #fff;
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        margin-top: 4px;
+        z-index: 100;
+    }
+
+    .custom-option {
+        padding: 7px 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .custom-option:hover {
+        background: #f2f2f2;
+    }
+
+    .icon {
+        font-size: 17px;
+    }
+
+    .table-wrapper-fixed {
+        width: 100%;
+        overflow-x: auto !important;
+        overflow-y: hidden;
+        display: block;
+        white-space: nowrap !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table-wrapper-fixed table {
+        width: 100%;
+        min-width: 1500px !important;
+    }
+
+    .table th,
+    .table td {
+        white-space: nowrap !important;
+        vertical-align: middle !important;
+    }
+</style>
 @section('main')
     <div class="content-wrapper">
-        <!-- START PAGE CONTENT-->
         <div class="page-content fade-in-up">
             <div class="row">
                 <div class="col-lg-3 col-md-6">
@@ -41,7 +105,7 @@
                     </div>
                 </div>
             </div>
-     
+
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox">
@@ -53,6 +117,7 @@
                         </div>
 
                         <div class="ibox-body ">
+
                             @if (session('success'))
                                 <div class="alert alert-success alert-dismissible fade show" id="flash-message">
                                     {{ session('success') }}
@@ -64,82 +129,142 @@
                                     {{ session('info') }}
                                 </div>
                             @endif
-                            <table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0"
-                                width="100%">
-                                <thead>
-                                    <tr class="text-dark">
-                                        <th scope="col"><input class="form-check-input" type="checkbox"></th>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Name of Inspector</th>
-                                        <th scope="col">Station</th>
-                                        <th scope="col">Type of Inspection</th>
-                                        <th scope="col">Duration</th>
-                                        <th scope="col">Send To Officer </th>
-                                        <th>Download Report</th>
-                                        <th>Checked</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($reports as $key => $report)
-                                        <tr
-                                            class="
-                                            @if ($report->last_clicked_by_role == 'user' || $report->last_clicked_by_role == 'admin') table-danger
-                                            @elseif($report->status == 'pending')
-                                                table-warning
-                                            @elseif($report->status == 'sent')
-                                                table-danger
-                                            @else
-                                                table-success @endif
-                                        ">
-                                            <td>{{ ++$key }}</td>
-                                            <td>{{ $report->created_at->format('d-m-Y') }}</td>
-                                            <td>{{ $report->NameInspector }}</td>
-                                            <td>{{ $report->Station }}</td>
-                                            <td>{{ $report->TypeofInspection }}</td>
-                                            <td>{{ $report->Duration }}</td>
-                                            <td>
-                                                <form action="{{ route('admin.sendToAdmin', $report->id) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    <button type="submit"
-                                                        class="btn {{ $report->last_clicked_by_role == 'admin' || $report->last_clicked_by_role == 'user' ? 'btn-danger' : 'btn-primary' }}">
+
+                        
+                            <div class="table-wrapper-fixed">
+                                <table class="table table-striped table-bordered table-hover align-middle text-nowrap"
+                                    id="example-table" cellspacing="0" width="100%">
+
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th><input class="form-check-input" type="checkbox"></th>
+                                            <th>Date</th>
+                                            <th>Name of Inspector</th>
+                                            <th>Station</th>
+                                            <th>Type of Inspection</th>
+                                            <th>Duration</th>
+                                            <th>Send To Officer</th>
+                                            <th>Current Status</th>
+                                            <th>Download</th>
+                                            <th>Checked</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @foreach ($reports as $key => $report)
+                                            <tr
+                                                class="
+                                                        @if ($report->last_clicked_by_role == 'user' || $report->last_clicked_by_role == 'admin') table-danger
+                                                        @elseif($report->status == 'pending') table-warning
+                                                        @elseif($report->status == 'sent') table-danger
+                                                        @else table-success @endif
+                                                    ">
+                                                <td>{{ ++$key }}</td>
+
+                                                <td>{{ $report->created_at->format('d-m-Y') }}</td>
+
+                                                <td>{{ $report->NameInspector }}</td>
+
+                                                <td>{{ $report->Station }}</td>
+
+                                                <td>{{ $report->TypeofInspection }}</td>
+
+                                                <td>{{ $report->Duration }}</td>
+
+                                                <td>
+                                                    <button type="button" class="btn btn-primary btn-sm showTextareaBtn"
+                                                        data-id="{{ $report->id }}">
                                                         <i class="ti-control-forward"></i>
                                                     </button>
-                                                </form>
 
-                                            </td>
-                                            <td><a class="btn btn-sm btn-primary"
-                                                    href="{{ route('admin.reports.download', $report->id) }}">Download</a>
-                                            </td>
-                                            <td>
-                                                <form action="{{ route('admin.sendToApprove', $report->id) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-success">Checked</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                                    <form action="{{ route('admin.sendToAdmin', $report->id) }}"
+                                                        method="POST" class="textareaForm mt-2 d-none">
+                                                        @csrf
+
+                                                        <label class="form-label fw-semibold">Select Officer</label>
+
+                                                        <select name="officer" class="form-select form-select-sm mb-2"
+                                                            required>
+                                                            <option value="">-- Select Officer --</option>
+                                                            @foreach ($officers as $officer)
+                                                                <option value="{{ $officer->id }}">{{ $officer->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+
+                                                        <textarea name="remarks" class="form-control form-control-sm" rows="2" placeholder="Enter remarks"></textarea>
+
+                                                        <button type="submit"
+                                                            class="btn btn-success btn-sm mt-2">Send</button>
+                                                    </form>
+                                                </td>
+
+                                                <td>
+                                                    <div class="custom-select-box w-100">
+                                                        <div class="custom-select-selected">Status</div>
+
+                                                        <div class="custom-select-options">
+                                                            @foreach ($report->forwardAdmins as $admin)
+                                                                <div class="custom-option"
+                                                                    data-value="{{ $admin->id }}">
+                                                                    <span class="icon">
+                                                                        @if ($admin->hasApproved)
+                                                                            ✔️
+                                                                        @else
+                                                                            ❌
+                                                                        @endif
+                                                                    </span>
+                                                                    <span>{{ $admin->name }}</span>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+
+                                                        <input type="hidden" name="forward_admin_status"
+                                                            class="statusInput">
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    <a class="btn btn-primary btn-sm"
+                                                        href="{{ route('admin.reports.download', $report->id) }}">
+                                                        Download
+                                                    </a>
+                                                </td>
+
+                                                <td>
+                                                    <form action="{{ route('admin.sendToApprove', $report->id) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        <button type="submit"
+                                                            class="btn btn-success btn-sm">Checked</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+
+                                </table>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
     <!-- Chat Button -->
     <!-- Chat Open Button -->
-    <button id="openChatBtn" style="position: fixed; bottom: 20px; right: 20px; padding: 10px 20px;">💬 Chat</button>
+    {{-- <button id="openChatBtn" style="position: fixed; bottom: 20px; right: 20px; padding: 10px 20px;">💬 Chat</button> --}}
 
     <!-- Overlay (hidden by default) -->
-    <div id="chatOverlay"
+    {{-- <div id="chatOverlay"
         style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: rgba(0, 0, 0, 0.3); z-index: 999;">
-    </div>
+    </div> --}}
 
     <!-- Chat Box -->
-    <div id="chatBox"
+    {{-- <div id="chatBox"
         style="display: none; position: fixed; bottom: 70px; right: 20px; width: 300px; height: 400px;
     background: #fff; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.2);
     z-index: 1000;">
@@ -159,7 +284,7 @@
             <button id="sendChatBtn"
                 style="background-color: #007bff; color: white; border: none; padding: 6px 10px; border-radius: 4px;">Send</button>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Chat Box JavaScript -->
     <script>
@@ -199,7 +324,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <script>
-        // Bar Chart
+   
         new Chart("barChart", {
             type: "bar",
             data: {
@@ -225,12 +350,12 @@
 
         // Pie Chart
         const pieLabels = ["Pending", "Approved", "Sent"];
-        const pieData = [10, 25, 15]; // static values
+        const pieData = [10, 25, 15]; 
 
         const pieColors = [
-            "#ffc107", // Yellow for Pending
-            "#28a745", // Green for Approved
-            "#dc3545" // Red for Sent
+            "#ffc107", 
+            "#28a745", 
+            "#dc3545" 
         ];
 
         new Chart("pieChart", {
@@ -257,7 +382,53 @@
         $(document).ready(function() {
             setTimeout(function() {
                 $("#flash-message").fadeOut('slow');
-            }, 5000); // 5000ms = 5 seconds
+            }, 5000);
+        });
+    </script>
+
+    <script>
+        document.querySelectorAll('.showTextareaBtn').forEach(btn => {
+            btn.addEventListener('click', function() {
+
+                let form = this.closest('td').querySelector('.textareaForm');
+                form.classList.toggle('d-none');
+            });
+        });
+    </script>
+
+    <script>
+        document.querySelectorAll('.custom-select-box').forEach(selectBox => {
+            const selected = selectBox.querySelector('.custom-select-selected');
+            const options = selectBox.querySelector('.custom-select-options');
+            const input = selectBox.querySelector('.statusInput');
+
+            selected.addEventListener('click', () => {
+                options.style.display =
+                    options.style.display === "block" ? "none" : "block";
+            });
+
+            selectBox.querySelectorAll('.custom-option').forEach(option => {
+
+                option.addEventListener('click', () => {
+                    const icon = option.querySelector('.icon').innerHTML;
+                    const text = option.innerText.trim();
+
+                    selected.innerHTML = icon + " " + text;
+
+                    input.value = option.dataset.value;
+
+                    options.style.display = "none";
+                });
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            document.querySelectorAll('.custom-select-box').forEach(selectBox => {
+                if (!selectBox.contains(e.target)) {
+                    selectBox.querySelector('.custom-select-options').style.display = 'none';
+                }
+            });
         });
     </script>
 @endsection

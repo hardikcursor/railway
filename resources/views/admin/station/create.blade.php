@@ -14,13 +14,7 @@
             <div class="row">
 
                 <div class="col-md-6">
-                    <div>
-                        @if (session('success'))
-                            <div class="alert alert-info alert-dismissible fade show" id="flash-message">
-                                {{ session('success') }}
-                            </div>
-                        @endif
-                    </div>
+
                     <div class="ibox">
                         <div class="ibox-head">
                             <div class="ibox-title">Station form</div>
@@ -50,17 +44,25 @@
                 <!-- Table Section -->
                 <div class="col-md-12 mt-4">
                     <div class="ibox">
+                        <div>
+                            @if (session('success'))
+                                <div class="alert alert-info alert-dismissible fade show" id="flash-message">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
+                        </div>
                         <div class="ibox-head">
                             <div class="ibox-title">Station List</div>
                         </div>
                         <div class="ibox-body">
-                            <table cclass="table table-striped table-bordered table-hover" id="example-table"
-                                cellspacing="0" width="100%">
+                            <table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0"
+                                width="100%">
                                 <thead>
                                     <tr class="text-dark">
                                         <th scope="col">Sr.No</th>
-                                        <th scope="col">Question</th>
-                                        <th>Action</th>
+                                        <th scope="col">Station</th>
+                                        <th scope="col">Created At</th>
+                                        <th scope="col">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -69,14 +71,35 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $station->station }}</td>
                                             <td>{{ $station->created_at->format('d-m-Y H:i') }}</td>
+
+                                            <td>
+                                                <!-- EDIT BUTTON -->
+                                                <a href="{{ route('stations.edit', $station->id) }}"
+                                                    class="btn btn-sm btn-primary">
+                                                    Edit
+                                                </a>
+
+                                                <!-- DELETE BUTTON -->
+                                                <form action="{{ route('stations.destroy', $station->id) }}" method="POST"
+                                                    style="display:inline-block;"
+                                                    onsubmit="return confirm('Are you sure to delete this station?');">
+                                                    @csrf
+                                                    @method('DELETE')
+
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="3" class="text-center">No stations found</td>
+                                            <td colspan="4" class="text-center">No stations found</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
                             </table>
+
                         </div>
                     </div>
                 </div>

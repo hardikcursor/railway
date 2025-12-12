@@ -17,4 +17,9 @@ class Report extends Model
         'date',
         'status',
     ];
+
+    public function forwards()
+    {
+        return $this->hasMany(AdminReportForward::class, 'report_id', 'id');
+    }
 }
