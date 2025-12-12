@@ -39,11 +39,11 @@
 
 
         <ul class="side-menu metismenu">
-            @if (Auth::user()->hasRole('admin'))
-                <li class="{{ Request::url() == route('admin.admindashboard') ? 'active' : '' }}">
-                    <a href="{{ route('admin.admindashboard') }}">
+            @if (Auth::user()->hasRole('super-admin'))
+                <li class="{{ Request::url() == route('superadmin.admindashboard') ? 'active' : '' }}">
+                    <a href="{{ route('superadmin.admindashboard') }}">
                         <i class="sidebar-item-icon fa fa-th-large"></i>
-                        <span class="nav-label">Admin Dashboard</span>
+                        <span class="nav-label">OVER ALL Dashboard</span>
                     </a>
                 </li>
             @endif

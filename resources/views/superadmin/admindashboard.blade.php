@@ -10,7 +10,7 @@
                 <div class="row mt-3">
 
                     <div class="col-md-4 mb-3">
-                        <a href="#" class="metric-card-link">
+                        <a href="{{ route('superadmin.freightdashboard') }}" class="metric-card-link">
                             <div class="metric-card unreserved">
                                 <div class="metric-title">Freight Revenue</div>
                                 <div class="metric-columns">
@@ -28,7 +28,7 @@
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        <a href="#" class="metric-card-link">
+                        <a href="{{ route('superadmin.parceldashboard') }}" class="metric-card-link">
                             <div class="metric-card reserved">
                                 <div class="metric-title">Parcel</div>
                                 <div class="metric-columns">
@@ -87,7 +87,7 @@
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        <a href="#" class="metric-card-link">
+                        <a href="{{ route('superadmin.coachingdashboard') }}" class="metric-card-link">
                             <div class="metric-card reserved">
                                 <div class="metric-title">Coaching</div>
                                 <div class="metric-columns">
@@ -107,7 +107,7 @@
                     <div class="col-md-4 mb-3">
                         <a href="#" class="metric-card-link">
                             <div class="metric-card reserved">
-                                <div class="metric-title">Exb Contract</div>
+                                <div class="metric-title">Exp Contract</div>
                                 <div class="metric-columns">
                                     <div class="metric-column">
                                         <div class="metric-label">Target</div>

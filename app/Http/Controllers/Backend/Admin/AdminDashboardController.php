@@ -46,13 +46,7 @@ class AdminDashboardController extends Controller
 
     public function admindashboard()
     {
-        $reports           = Report::orderBy('created_at', 'desc')->get();
-        $totalInspections  = Report::count();
-        $pendingCount      = Report::where('status', 'pending')->count();
-        $forwardCount      = Report::whereIn('last_clicked_by_role', ['user', 'admin'])->count();
-        $replyPendingCount = $pendingCount + $forwardCount;
-
-        return view('admin.admindashboard', compact('reports', 'totalInspections', 'pendingCount', 'forwardCount', 'replyPendingCount'));
+        return view('admin.admindashboard');
     }
 
     public function payparkdashboard()
@@ -140,7 +134,6 @@ class AdminDashboardController extends Controller
 
         $data = [];
 
-// Pivot format convert
         foreach ($raw as $row) {
             $data[$row->Station][$row->Year] = [
                 'Passengers' => $row->Passengers,

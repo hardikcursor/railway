@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'role:super-admin'])->group(function () {
+    Route::get('/superadmin/admindashboard', [SuperadminDashboardController::class, 'admindashboard'])->name('superadmin.admindashboard');
     Route::get('/superadmin/dashboard', [SuperadminDashboardController::class, 'index'])->name('superadmin.dashboard');
     Route::get('/admin/onemonth', [SuperadminDashboardController::class, 'onemonth'])->name('superadmin.report.onemonth');
     Route::get('/admin/thirdmonth', [SuperadminDashboardController::class, 'secondmonth'])->name('superadmin.report.thirdmonth');
@@ -35,11 +36,14 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
     Route::get('/superadmin/reports/{id}/download', [SuperadminDashboardController::class, 'downloadReport'])->name('superadmin.reports.download');
     Route::get('/getuser', [SuperadminDashboardController::class, 'userdataget'])->name('superadmin.userdataget');
     Route::post('/chengestatus', [SuperadminDashboardController::class, 'changestatus'])->name('admin.chnageStatus');
+    Route::get('/superadmin/freightdashboard', [SuperadminDashboardController::class, 'freightdashboard'])->name('superadmin.freightdashboard');
+    Route::get('/superadmin/coachingdashboard', [SuperadminDashboardController::class, 'coachingdashboard'])->name('superadmin.coachingdashboard');
+        Route::get('/superadmin/parceldashboard', [SuperadminDashboardController::class, 'parceldashboard'])->name('superadmin.parceldashboard');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-    Route::get('/admin/admindashboard', [AdminDashboardController::class, 'admindashboard'])->name('admin.admindashboard');
+    
     Route::get('/admin/payparkdashboard', [AdminDashboardController::class, 'payparkdashboard'])->name('admin.payparkdashboard');
     Route::get('/admin/cateringdashboard', [AdminDashboardController::class, 'cateringdashboard'])->name('admin.cateringdashboard');
     Route::get('/admin/cleaningdashboard', [AdminDashboardController::class, 'cleaningdashboard'])->name('admin.cleaningdashboard');

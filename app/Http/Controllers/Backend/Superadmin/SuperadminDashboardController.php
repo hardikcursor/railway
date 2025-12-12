@@ -2,17 +2,19 @@
 namespace App\Http\Controllers\Backend\Superadmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminReportForward;
 use App\Models\Booking_office_answer;
 use App\Models\Booking_office_form;
+use App\Models\Coaching;
 use App\Models\Goods_office_answer;
 use App\Models\Goods_Shed_office_form;
-use App\Models\inspection_tea_answer;
 use App\Models\inspectionkitchen_answer;
 use App\Models\InspectionPantryCar_answer;
 use App\Models\InspectionPantryCar_form;
 use App\Models\InspectionPassenger_items__answer;
 use App\Models\InspectionPayUseToilets_answer;
 use App\Models\InspectionPayUseToilets_location_form;
+use App\Models\inspection_tea_answer;
 use App\Models\NonFare_Revenue_answer;
 use App\Models\Parcel_answer;
 use App\Models\Parcel_Office_form;
@@ -24,45 +26,49 @@ use App\Models\Ticket_Examineroffice_form;
 use App\Models\Ticket_office_answer;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\AdminReportForward;
+use Illuminate\Support\Facades\DB;
 
 class SuperadminDashboardController extends Controller
 {
 
-   public function index()
-{
-    $userId = auth()->id();
-
-    $reports = Report::orderBy('created_at', 'desc')->get();
-
-    $totalInspections  = Report::count();
-    $approvedReports   = Report::where('status', 'approved')->count();
-    $pendingCount      = Report::where('status', 'pending')->count();
-    $forwardCount      = Report::whereIn('last_clicked_by_role', ['user', 'admin'])->count();
-    $replyPendingCount = $pendingCount + $forwardCount;
-
-    $monthlyReports = $reports->groupBy(function ($item) {
-        return \Carbon\Carbon::parse($item->created_at)->format('F');
-    })->map(function ($group) {
-        return $group->count();
-    });
-
-    foreach ($reports as $report) {
-        $remarks = AdminReportForward::where('report_id', $report->id)
-            ->where('officer_name', $userId)
-            ->value('officer_remarks');
-
-        $report->user_remarks = $remarks;  
+    public function admindashboard()
+    {
+        return view('superadmin.admindashboard');
     }
 
-    return view('superadmin.dashboard', compact(
-        'reports', 'totalInspections', 'approvedReports', 'pendingCount', 
-        'forwardCount', 'replyPendingCount', 'monthlyReports', 'userId'
-    ));
-}
+    public function index()
+    {
+        $userId = auth()->id();
+
+        $reports = Report::orderBy('created_at', 'desc')->get();
+
+        $totalInspections  = Report::count();
+        $approvedReports   = Report::where('status', 'approved')->count();
+        $pendingCount      = Report::where('status', 'pending')->count();
+        $forwardCount      = Report::whereIn('last_clicked_by_role', ['user', 'admin'])->count();
+        $replyPendingCount = $pendingCount + $forwardCount;
+
+        $monthlyReports = $reports->groupBy(function ($item) {
+            return \Carbon\Carbon::parse($item->created_at)->format('F');
+        })->map(function ($group) {
+            return $group->count();
+        });
+
+        foreach ($reports as $report) {
+            $remarks = AdminReportForward::where('report_id', $report->id)
+                ->where('officer_name', $userId)
+                ->value('officer_remarks');
+
+            $report->user_remarks = $remarks;
+        }
+
+        return view('superadmin.dashboard', compact(
+            'reports', 'totalInspections', 'approvedReports', 'pendingCount',
+            'forwardCount', 'replyPendingCount', 'monthlyReports', 'userId'
+        ));
+    }
 
     public function onemonth()
     {
@@ -240,6 +246,77 @@ class SuperadminDashboardController extends Controller
         }
 
         return response()->json(['success' => false, 'message' => 'User not found'], 404);
+    }
+
+    public function freightdashboard()
+    {
+        return view('superadmin.freightdashboard');
+    }
+
+    private function formatThreeWithTwoDecimal($number)
+    {
+        // First: format with 2 decimals
+        $number = number_format($number, 2, '.', '');
+
+        // Split integer + decimal
+        $parts = explode('.', $number);
+
+        $int = $parts[0];
+        $dec = $parts[1];
+
+        // Take only first 3 digits of integer
+        $int = substr($int, 0, 3);
+
+        // Return final formatted number
+        return $int . '.' . $dec;
+    }
+
+    public function coachingdashboard()
+    {
+
+        $totalPassengers          = Coaching::sum('Unreserved_Passengers');
+        $totalEarning             = Coaching::sum('Unreserved_Earning');
+        $totalReserved_Passengers = Coaching::sum('Reserved_Passengers');
+        $totalReserved_Earning    = Coaching::sum('Reserved_Earning');
+        $Total_Passengers         = Coaching::sum('Total_Passengers');
+        $Total_Earning            = Coaching::sum('Total_Earning');
+
+        // Formatting totals (Keep this as is)
+        $totalPassengersFormatted = $this->formatThreeWithTwoDecimal($totalPassengers);
+        $totalEarningFormatted    = $this->formatThreeWithTwoDecimal($totalEarning);
+        $totalReserved_Passengers = $this->formatThreeWithTwoDecimal($totalReserved_Passengers);
+        $totalReserved_Earning    = $this->formatThreeWithTwoDecimal($totalReserved_Earning);
+        $Total_Passengers         = $this->formatThreeWithTwoDecimal($Total_Passengers);
+        $Total_Earning            = $this->formatThreeWithTwoDecimal($Total_Earning);
+
+        // --- THIS IS THE CHANGED PART ---
+        $raw = Coaching::select(
+            'Station',
+            DB::raw('YEAR(Date) as Year'),
+            DB::raw('SUM(Total_Passengers) as Passengers'),
+            DB::raw('SUM(Total_Earning) as Revenue')
+        )
+            ->groupBy('Station', 'Year')
+            ->orderBy('Station')
+            ->orderBy('Year', 'DESC')
+            ->get();
+
+        $data = [];
+
+        foreach ($raw as $row) {
+            $data[$row->Station][$row->Year] = [
+                'Passengers' => $row->Passengers,
+                'Revenue'    => $row->Revenue,
+            ];
+        }
+        $years = [2025, 2024, 2023];
+
+        return view('superadmin.​coachingdashboard', compact('totalPassengersFormatted', 'totalEarningFormatted', 'totalReserved_Passengers', 'totalReserved_Earning', 'Total_Passengers', 'Total_Earning', 'data', 'years'));
+    }
+
+    public function parceldashboard()
+    {
+        return view('superadmin.parceldashboard');
     }
 
 }
