@@ -37,13 +37,17 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
     Route::get('/getuser', [SuperadminDashboardController::class, 'userdataget'])->name('superadmin.userdataget');
     Route::post('/chengestatus', [SuperadminDashboardController::class, 'changestatus'])->name('admin.chnageStatus');
     Route::get('/superadmin/freightdashboard', [SuperadminDashboardController::class, 'freightdashboard'])->name('superadmin.freightdashboard');
+    Route::get('superadmin/coaching', [SuperadminDashboardController::class, 'coaching'])->name('superadmin.coaching');
+    Route::post('/importexcel',[SuperadminDashboardController::class, 'import'])->name('superadminexcel.coaching');
     Route::get('/superadmin/coachingdashboard', [SuperadminDashboardController::class, 'coachingdashboard'])->name('superadmin.coachingdashboard');
-        Route::get('/superadmin/parceldashboard', [SuperadminDashboardController::class, 'parceldashboard'])->name('superadmin.parceldashboard');
+    Route::get('/superadmin/parceldashboard', [SuperadminDashboardController::class, 'parceldashboard'])->name('superadmin.parceldashboard');
+    Route::get('/superadmin/taskmanager', [SuperadminDashboardController::class, 'taskmanager'])->name('superadmin.taskmanager');
+    Route::get('/superadmin/ticketchecking', [SuperadminDashboardController::class, 'ticketchecking'])->name('superadmin.ticketchecking');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-    
+
     Route::get('/admin/payparkdashboard', [AdminDashboardController::class, 'payparkdashboard'])->name('admin.payparkdashboard');
     Route::get('/admin/cateringdashboard', [AdminDashboardController::class, 'cateringdashboard'])->name('admin.cateringdashboard');
     Route::get('/admin/cleaningdashboard', [AdminDashboardController::class, 'cleaningdashboard'])->name('admin.cleaningdashboard');
@@ -73,7 +77,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/stationcreate', [AdminDashboardController::class, 'station'])->name('admin.station.create');
     Route::post('stationstore', [AdminDashboardController::class, 'storestation'])->name('admin.station.store');
     Route::get('stations/{id}/edit', [AdminDashboardController::class, 'editstation'])->name('stations.edit');
-   Route::post('stations/update/{id}', [AdminDashboardController::class, 'updatestation'])->name('stations.update');
+    Route::post('stations/update/{id}', [AdminDashboardController::class, 'updatestation'])->name('stations.update');
     Route::delete('stations/{id}', [AdminDashboardController::class, 'delete'])->name('stations.destroy');
 
     Route::get('/freightdashboard', [AdminDashboardController::class, 'freightdashboard'])->name('admin.freightdashboard');
@@ -118,7 +122,3 @@ Route::get('/redirect-dashboard', function () {
     }
     return redirect()->route('login');
 })->name('redirect.dashboard');
-
-Route::get('/coaching', [CoachingController::class, 'coaching'])->name('admin.coaching');
-Route::post('/import', [CoachingController::class, 'import'])
-    ->name('excel.coaching');

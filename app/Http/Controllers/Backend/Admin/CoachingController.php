@@ -23,6 +23,6 @@ class CoachingController extends Controller
 
         Excel::import(new CoachingImport, $request->file('file'));
 
-        return back()->with('success', 'Excel Imported Successfully');
+        return redirect()->route('admin.coaching')->with('success', 'Coaching data imported successfully.');
     }
 }

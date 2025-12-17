@@ -18,4 +18,6 @@ class Coaching extends Model
         'Total_Earning',
         'Date',
     ];
+
+   
 }

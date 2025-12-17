@@ -11,8 +11,9 @@
                         <div class="filter-group">
                             <select>
                                 <option>Station</option>
-                                <option>Mumbai</option>
-                                <option>Delhi</option>
+                                @foreach ($station as $stations)
+                                    <option value="{{ $stations->id }}">{{ $stations->station }}</option>
+                                @endforeach
                             </select>
                         </div>
 
@@ -29,6 +30,12 @@
                                 <option>Apr 1, 2024 - Mar 31, 2025</option>
                             </select>
                         </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end m-3">
+                        <a href="{{ route('superadmin.coaching') }}" class="btn btn-success">
+                            <i class="ti-plus"></i> Create Task
+                        </a>
                     </div>
 
                     <div class="row mt-3">
@@ -57,7 +64,7 @@
                         <!-- CARD 2 -->
                         <div class="col-md-4 mb-3">
                             <div class="metric-card total-earning">
-                                <div class="metric-title">Total Passenger Earning</div>
+                                <div class="metric-title">Reserved</div>
 
                                 <div class="metric-columns">
                                     <div class="metric-column">
@@ -78,7 +85,7 @@
                         <!-- CARD 3 -->
                         <div class="col-md-4 mb-3">
                             <div class="metric-card reserved">
-                                <div class="metric-title">Reserved</div>
+                                <div class="metric-title">Total Passenger Earning</div>
 
                                 <div class="metric-columns">
                                     <div class="metric-column">
@@ -201,62 +208,61 @@
 
                     </div>
 
-                     
+
 
                 </div>
 
-                   <div class="chart-section">
-                            <div class="legend">
-                                <span class="reserved-color"></span> RESERVED
-                                <span class="unreserved-color"></span> UNRESERVED
-                            </div>
+                <div class="chart-section">
+                    <div class="legend">
+                        <span class="reserved-color"></span> RESERVED
+                        <span class="unreserved-color"></span> UNRESERVED
+                    </div>
 
-                            <div class="bar-chart">
-                                <div class="chart-row">
-                                    <span class="label">2019-2020</span>
-                                    <div class="bar-group">
-                                        <div class="unreserved-bar" style="width: 15%;"><span
-                                                class="value">187.93</span>
-                                        </div>
-                                        <div class="reserved-bar" style="width: 60%;">726.54</div>
-                                    </div>
+                    <div class="bar-chart">
+                        <div class="chart-row">
+                            <span class="label">2019-2020</span>
+                            <div class="bar-group">
+                                <div class="unreserved-bar" style="width: 15%;"><span class="value">187.93</span>
                                 </div>
-
-                                <div class="chart-row">
-                                    <span class="label">2020-2021</span>
-                                    <div class="bar-group">
-                                        <div class="unreserved-bar negative" style="width: 2.5%;"></div>
-                                        <div class="reserved-bar" style="width: 25%;">318.62</div>
-                                    </div>
-                                </div>
-
-                                <div class="chart-row">
-                                    <span class="label">2021-2022</span>
-                                    <div class="bar-group">
-                                        <div class="unreserved-bar negative" style="width: 1%;"></div>
-                                        <div class="reserved-bar" style="width: 65%;">812.75</div>
-                                    </div>
-                                </div>
-
-                                <div class="chart-row">
-                                    <span class="label">2022-2023</span>
-                                    <div class="bar-group">
-                                        <div class="unreserved-bar negative" style="width: 10%;"></div>
-                                        <div class="reserved-bar" style="width: 90%;">1,175.2</div>
-                                    </div>
-                                </div>
-
-                                <div class="axis">
-                                    <span>0</span>
-                                    <span>200</span>
-                                    <span>400</span>
-                                    <span>600</span>
-                                    <span>800</span>
-                                    <span>1K</span>
-                                    <span>1.2K</span>
-                                </div>
+                                <div class="reserved-bar" style="width: 60%;">726.54</div>
                             </div>
                         </div>
+
+                        <div class="chart-row">
+                            <span class="label">2020-2021</span>
+                            <div class="bar-group">
+                                <div class="unreserved-bar negative" style="width: 2.5%;"></div>
+                                <div class="reserved-bar" style="width: 25%;">318.62</div>
+                            </div>
+                        </div>
+
+                        <div class="chart-row">
+                            <span class="label">2021-2022</span>
+                            <div class="bar-group">
+                                <div class="unreserved-bar negative" style="width: 1%;"></div>
+                                <div class="reserved-bar" style="width: 65%;">812.75</div>
+                            </div>
+                        </div>
+
+                        <div class="chart-row">
+                            <span class="label">2022-2023</span>
+                            <div class="bar-group">
+                                <div class="unreserved-bar negative" style="width: 10%;"></div>
+                                <div class="reserved-bar" style="width: 90%;">1,175.2</div>
+                            </div>
+                        </div>
+
+                        <div class="axis">
+                            <span>0</span>
+                            <span>200</span>
+                            <span>400</span>
+                            <span>600</span>
+                            <span>800</span>
+                            <span>1K</span>
+                            <span>1.2K</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
 
@@ -683,6 +689,7 @@
                 .axis span:first-child {
                     margin-left: -5px;
                 }
+
                 .table-scroll-body {
                     max-height: 400px;
                     overflow-y: auto;
@@ -690,11 +697,13 @@
                     margin-top: -1px;
                     border-bottom: 1px solid #dee2e6;
                 }
+
                 .table-scroll-body table {
                     width: 100%;
                     margin-bottom: 0;
                     table-layout: fixed;
                 }
+
                 .table-responsive>.table {
                     table-layout: fixed;
                 }
@@ -734,7 +743,7 @@
                 }
             </style>
 
-         
+
             <script src="https://www.gstatic.com/charts/loader.js"></script>
             <script>
                 google.charts.load('current', {

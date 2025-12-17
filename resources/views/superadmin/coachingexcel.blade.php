@@ -10,7 +10,7 @@
                 </div>
 
                 <div class="card p-4">
-                    <form action="{{ route('excel.coaching') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('superadminexcel.coaching') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="row align-items-end">

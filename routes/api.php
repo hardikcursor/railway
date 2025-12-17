@@ -24,9 +24,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/signin', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
-Route::get('/user', [AuthController::class, 'getuser']);
+Route::get('/user/profile', [AuthController::class, 'getuserprofile']);
 
-// Booking Office Answer Routes
+
 Route::prefix('booking-office-answers')->group(function () {
     Route::post('/booking-office-details', [BookingOfficeAnswerController::class, 'BookingOfficeDetail']);
     Route::post('/bookinganswer', [BookingOfficeAnswerController::class, 'store']);

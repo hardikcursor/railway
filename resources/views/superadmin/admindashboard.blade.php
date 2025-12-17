@@ -46,7 +46,7 @@
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        <a href="#" class="metric-card-link">
+                        <a href="https://pms.cursorsoft.in/user/dashboard" class="metric-card-link">
                             <div class="metric-card reserved">
                                 <div class="metric-title">Pay & Park</div>
                                 <div class="metric-columns">
@@ -126,9 +126,31 @@
 
                 <div class="row mt-3">
                     <div class="col-md-6 mb-3">
-                        <a href="#" class="metric-card-link">
+                        <a href="{{ route('superadmin.taskmanager') }}" class="metric-card-link">
                             <div class="metric-card reserved">
                                 <div class="metric-title text-center mb-3">Task Manager (App)</div>
+                                <div class="metric-columns">
+                                    <div class="metric-column">
+                                        <div class="metric-label">Target</div>
+                                        <div class="metric-value">79</div>
+                                    </div>
+                                    <div class="metric-column">
+                                        <div class="metric-label">Pending</div>
+                                        <div class="metric-value">27</div>
+                                    </div>
+                                    <div class="metric-column">
+                                        <div class="metric-label">Completed</div>
+                                        <div class="metric-value">3</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <a href="#" class="metric-card-link">
+                            <div class="metric-card reserved">
+                                <div class="metric-title text-center mb-3">NonFare Revenue</div>
                                 <div class="metric-columns">
                                     <div class="metric-column">
                                         <div class="metric-label">Target</div>
@@ -138,9 +160,40 @@
                                         <div class="metric-label">Position</div>
                                         <div class="metric-value">122.99</div>
                                     </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-6 mb-3">
+                        <a href="#" class="metric-card-link">
+                            <div class="metric-card reserved">
+                                <div class="metric-title text-center mb-3">Over all Revenue</div>
+                                <div class="metric-columns">
                                     <div class="metric-column">
-                                        <div class="metric-label">Position</div>
+                                        <div class="metric-label">Revenue</div>
                                         <div class="metric-value">122.99</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <a href="{{ route('superadmin.ticketchecking') }}" class="metric-card-link">
+                            <div class="metric-card reserved">
+                                <div class="metric-title text-center mb-3">Ticket Checking</div>
+                                <div class="metric-columns">
+                                    <div class="metric-column">
+                                        <div class="metric-label">Total Cases</div>
+                                        <div class="metric-value">00.00</div>
+                                    </div>
+
+                                    <div class="metric-column">
+                                        <div class="metric-label">Amount</div>
+                                        <div class="metric-value">00.00</div>
                                     </div>
                                 </div>
                             </div>
@@ -363,4 +416,4 @@
                 }
             }
         </style>
-@endsection
+    @endsection

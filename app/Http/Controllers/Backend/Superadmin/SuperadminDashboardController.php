@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Backend\Superadmin;
 
 use App\Http\Controllers\Controller;
+use App\Imports\CoachingImport;
 use App\Models\AdminReportForward;
 use App\Models\Booking_office_answer;
 use App\Models\Booking_office_form;
@@ -21,6 +22,7 @@ use App\Models\Parcel_Office_form;
 use App\Models\PRS_office_answer;
 use App\Models\PRS_office_form;
 use App\Models\Report;
+use App\Models\Station;
 use App\Models\StationCleanliness_answer;
 use App\Models\Ticket_Examineroffice_form;
 use App\Models\Ticket_office_answer;
@@ -29,6 +31,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SuperadminDashboardController extends Controller
 {
@@ -253,48 +256,89 @@ class SuperadminDashboardController extends Controller
         return view('superadmin.freightdashboard');
     }
 
-    private function formatThreeWithTwoDecimal($number)
+    public function coaching()
     {
-        // First: format with 2 decimals
+        return view('superadmin.coachingexcel');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv,xls',
+        ]);
+
+        Excel::import(new CoachingImport, $request->file('file'));
+
+        return redirect()->route('superadmin.coachingdashboard')->with('success', 'Coaching data imported successfully.');
+    }
+
+    private function formatThreeWithTwoDecimal($value, $unit = 'lakh')
+    {
+        if ($unit === 'crore') {
+            $number = $value / 10000000;
+        } else {
+            $number = $value / 100000;
+        }
+
         $number = number_format($number, 2, '.', '');
 
-        // Split integer + decimal
-        $parts = explode('.', $number);
+        list($int, $dec) = explode('.', $number);
 
-        $int = $parts[0];
-        $dec = $parts[1];
-
-        // Take only first 3 digits of integer
         $int = substr($int, 0, 3);
 
-        // Return final formatted number
         return $int . '.' . $dec;
     }
 
     public function coachingdashboard()
     {
+        // =========================
+        // DASHBOARD TOTALS (SAFE CAST)
+        // =========================
 
-        $totalPassengers          = Coaching::sum('Unreserved_Passengers');
-        $totalEarning             = Coaching::sum('Unreserved_Earning');
-        $totalReserved_Passengers = Coaching::sum('Reserved_Passengers');
-        $totalReserved_Earning    = Coaching::sum('Reserved_Earning');
-        $Total_Passengers         = Coaching::sum('Total_Passengers');
-        $Total_Earning            = Coaching::sum('Total_Earning');
+        $totalUnreservedPassengers = Coaching::selectRaw(
+            'SUM(CAST(Unreserved_Passengers AS UNSIGNED)) as total'
+        )->value('total');
 
-        // Formatting totals (Keep this as is)
-        $totalPassengersFormatted = $this->formatThreeWithTwoDecimal($totalPassengers);
-        $totalEarningFormatted    = $this->formatThreeWithTwoDecimal($totalEarning);
-        $totalReserved_Passengers = $this->formatThreeWithTwoDecimal($totalReserved_Passengers);
-        $totalReserved_Earning    = $this->formatThreeWithTwoDecimal($totalReserved_Earning);
-        $Total_Passengers         = $this->formatThreeWithTwoDecimal($Total_Passengers);
-        $Total_Earning            = $this->formatThreeWithTwoDecimal($Total_Earning);
+        $totalUnreservedEarning = Coaching::selectRaw(
+            'SUM(CAST(Unreserved_Earning AS DECIMAL(15,2))) as total'
+        )->value('total');
 
-        // --- THIS IS THE CHANGED PART ---
+        $totalReservedPassengers = Coaching::selectRaw(
+            'SUM(CAST(Reserved_Passengers AS UNSIGNED)) as total'
+        )->value('total');
+
+        $totalReservedEarning = Coaching::selectRaw(
+            'SUM(CAST(Reserved_Earning AS DECIMAL(15,2))) as total'
+        )->value('total');
+
+        $totalPassengers = Coaching::selectRaw(
+            'SUM(CAST(Total_Passengers AS UNSIGNED)) as total'
+        )->value('total');
+
+        $totalEarning = Coaching::selectRaw(
+            'SUM(CAST(Total_Earning AS DECIMAL(15,2))) as total'
+        )->value('total');
+
+        // =========================
+        // FORMAT VALUES (Lakh etc.)
+        // =========================
+
+        $totalPassengersFormatted = $this->formatThreeWithTwoDecimal($totalUnreservedPassengers);
+        $totalEarningFormatted    = $this->formatThreeWithTwoDecimal($totalUnreservedEarning);
+        $totalReserved_Passengers = $this->formatThreeWithTwoDecimal($totalReservedPassengers);
+        $totalReserved_Earning    = $this->formatThreeWithTwoDecimal($totalReservedEarning);
+        $Total_Passengers         = $this->formatThreeWithTwoDecimal($totalPassengers);
+        $Total_Earning            = $this->formatThreeWithTwoDecimal($totalEarning);
+
+        // =========================
+        // STATION + YEAR DATA
+        // =========================
+
         $raw = Coaching::select(
             'Station',
             DB::raw('YEAR(Date) as Year'),
-            DB::raw('SUM(Total_Passengers) as Passengers'),
-            DB::raw('SUM(Total_Earning) as Revenue')
+            DB::raw('SUM(CAST(Total_Passengers AS UNSIGNED)) as Passengers'),
+            DB::raw('SUM(CAST(Total_Earning AS DECIMAL(15,2))) as Revenue')
         )
             ->groupBy('Station', 'Year')
             ->orderBy('Station')
@@ -309,14 +353,37 @@ class SuperadminDashboardController extends Controller
                 'Revenue'    => $row->Revenue,
             ];
         }
-        $years = [2025, 2024, 2023];
 
-        return view('superadmin.​coachingdashboard', compact('totalPassengersFormatted', 'totalEarningFormatted', 'totalReserved_Passengers', 'totalReserved_Earning', 'Total_Passengers', 'Total_Earning', 'data', 'years'));
+        $years   = [2025, 2024, 2023];
+        $station = Station::get();
+
+        return view('superadmin.​coachingdashboard', compact(
+            'totalPassengersFormatted',
+            'totalEarningFormatted',
+            'totalReserved_Passengers',
+            'totalReserved_Earning',
+            'Total_Passengers',
+            'Total_Earning',
+            'data',
+            'years',
+            'station'
+        ));
     }
 
     public function parceldashboard()
     {
         return view('superadmin.parceldashboard');
+    }
+
+    public function taskmanager()
+    {
+
+        return view('superadmin.taskmanager');
+    }
+
+    public function ticketchecking()
+    {
+        return view('superadmin.ticketchecking');
     }
 
 }

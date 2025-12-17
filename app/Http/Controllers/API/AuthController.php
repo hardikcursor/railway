@@ -66,7 +66,6 @@ class AuthController extends Controller
 
     public function signup(Request $request)
     {
-        // VALIDATION
         $validator = Validator::make($request->all(), [
             'name'          => 'required|string|max:255',
             'email'         => 'required|email|unique:users,email',
@@ -74,6 +73,7 @@ class AuthController extends Controller
             'designation'   => 'required|string|max:255',
             'incharge_name' => 'required|string|max:255',
             'password'      => 'required|min:6',
+            'image'         => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -84,7 +84,35 @@ class AuthController extends Controller
             ], 422);
         }
 
-        // CREATE USER
+        $filename = null;
+
+        if (! empty($request->image)) {
+            $base64Image = $request->image;
+
+            if (strpos($base64Image, 'base64,') !== false) {
+                $base64Image = explode('base64,', $base64Image)[1];
+            }
+
+            $base64Image = str_replace(' ', '+', $base64Image);
+            $imageData   = base64_decode($base64Image);
+
+            if ($imageData !== false) {
+                $folderPath = public_path('uploads/profiles');
+
+                if (! file_exists($folderPath)) {
+                    mkdir($folderPath, 0775, true);
+                }
+
+                $extension = 'jpg';
+                if (preg_match('/^data:image\/(\w+);base64,/', $request->image, $matches)) {
+                    $extension = strtolower($matches[1]);
+                }
+
+                $filename = 'profile_' . time() . '_' . uniqid() . '.' . $extension;
+                file_put_contents($folderPath . '/' . $filename, $imageData);
+            }
+        }
+
         $user = User::create([
             'name'          => $request->name,
             'email'         => $request->email,
@@ -92,12 +120,11 @@ class AuthController extends Controller
             'designation'   => $request->designation,
             'incharge_name' => $request->incharge_name,
             'password'      => Hash::make($request->password),
+            'image'         => $filename,
         ]);
 
-        // ASSIGN ROLE
         $user->assignRole('user');
 
-        // Response without ID
         return response()->json([
             'status'  => true,
             'message' => 'User Registered Successfully!',
@@ -108,6 +135,7 @@ class AuthController extends Controller
                 'designation'   => $user->designation,
                 'incharge_name' => $user->incharge_name,
                 'role'          => 'user',
+                'image'         => $filename ? asset('uploads/profiles/' . $filename) : null,
             ],
         ], 201);
     }
@@ -135,14 +163,31 @@ class AuthController extends Controller
         ]);
     }
 
-    public function getuser()
+    public function getuserprofile(Request $request)
     {
-        $data['users'] = User::all();
+        $user = User::where('id', $request->user_id)->first();
+
+        if (! $user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found',
+            ], 404);
+        }
 
         return response()->json([
-            'sucess'  => true,
-            'errors'  => $data,
-            'message' => 'All User Data',
+            'success' => true,
+            'message' => 'User Profile',
+            'data'    => [
+                'name'          => $user->name,
+                'email'         => $user->email,
+                'phone'         => $user->phone,
+                'designation'   => $user->designation,
+                'incharge_name' => $user->incharge_name,
+                'image'         => $user->image
+                    ? asset('uploads/profiles/' . $user->image)
+                    : null,
+                'status'        => $user->status == 1 ? 'active' : 'inactive',
+            ],
         ]);
     }
 

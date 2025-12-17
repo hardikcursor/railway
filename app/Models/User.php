@@ -23,6 +23,7 @@ class User extends Authenticatable
         'phone',
         'designation',
         'incharge_name',
+        'image',
         'password',
         'current_address',
         'login_date_time',
