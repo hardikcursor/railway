@@ -9,6 +9,7 @@ class Coaching extends Model
     use HasFactory;
 
     protected $fillable = [
+        'Name',
         'Station',
         'Unreserved_Passengers',
         'Unreserved_Earning',

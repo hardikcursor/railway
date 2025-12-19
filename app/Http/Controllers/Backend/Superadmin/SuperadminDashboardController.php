@@ -2,7 +2,6 @@
 namespace App\Http\Controllers\Backend\Superadmin;
 
 use App\Http\Controllers\Controller;
-use App\Imports\CoachingImport;
 use App\Models\AdminReportForward;
 use App\Models\Booking_office_answer;
 use App\Models\Booking_office_form;
@@ -31,7 +30,6 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Facades\Excel;
 
 class SuperadminDashboardController extends Controller
 {
@@ -261,13 +259,30 @@ class SuperadminDashboardController extends Controller
         return view('superadmin.coachingexcel');
     }
 
-    public function import(Request $request)
+    public function coachingStore(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,csv,xls',
+            'name'                  => 'required',
+            'station_name'          => 'required',
+            'unreserved_passengers' => 'required|numeric',
+            'unreserved_earning'    => 'required|numeric',
+            'reserved_passengers'   => 'required|numeric',
+            'reserved_earning'      => 'required|numeric',
+            'total_passengers'      => 'required|numeric',
+            'total_earning'         => 'required|numeric',
+            'date'                  => 'required|date',
         ]);
-
-        Excel::import(new CoachingImport, $request->file('file'));
+        Coaching::create([
+            'Name'                  => $request->name,
+            'Station'               => $request->station_name,
+            'Unreserved_Passengers' => $request->unreserved_passengers,
+            'Unreserved_Earning'    => $request->unreserved_earning,
+            'Reserved_Passengers'   => $request->reserved_passengers,
+            'Reserved_Earning'      => $request->reserved_earning,
+            'Total_Passengers'      => $request->total_passengers,
+            'Total_Earning'         => $request->total_earning,
+            'Date'                  => $request->date,
+        ]);
 
         return redirect()->route('superadmin.coachingdashboard')->with('success', 'Coaching data imported successfully.');
     }
@@ -291,10 +306,6 @@ class SuperadminDashboardController extends Controller
 
     public function coachingdashboard()
     {
-        // =========================
-        // DASHBOARD TOTALS (SAFE CAST)
-        // =========================
-
         $totalUnreservedPassengers = Coaching::selectRaw(
             'SUM(CAST(Unreserved_Passengers AS UNSIGNED)) as total'
         )->value('total');
@@ -319,20 +330,19 @@ class SuperadminDashboardController extends Controller
             'SUM(CAST(Total_Earning AS DECIMAL(15,2))) as total'
         )->value('total');
 
-        // =========================
-        // FORMAT VALUES (Lakh etc.)
-        // =========================
-
         $totalPassengersFormatted = $this->formatThreeWithTwoDecimal($totalUnreservedPassengers);
         $totalEarningFormatted    = $this->formatThreeWithTwoDecimal($totalUnreservedEarning);
         $totalReserved_Passengers = $this->formatThreeWithTwoDecimal($totalReservedPassengers);
         $totalReserved_Earning    = $this->formatThreeWithTwoDecimal($totalReservedEarning);
-        $Total_Passengers         = $this->formatThreeWithTwoDecimal($totalPassengers);
-        $Total_Earning            = $this->formatThreeWithTwoDecimal($totalEarning);
+        $grandTotalPassengers     = $totalUnreservedPassengers + $totalReservedPassengers;
+        $Total_Passengers         = $this->formatThreeWithTwoDecimal($grandTotalPassengers);
+        $grandTotalEarning        = $totalUnreservedEarning + $totalReservedEarning;
+        $Total_Earning            = $this->formatThreeWithTwoDecimal($grandTotalEarning);
 
-        // =========================
-        // STATION + YEAR DATA
-        // =========================
+        $years = Coaching::select(DB::raw('DISTINCT YEAR(Date) as year'))
+            ->orderBy('year', 'DESC')
+            ->pluck('year')
+            ->toArray();
 
         $raw = Coaching::select(
             'Station',
@@ -354,8 +364,58 @@ class SuperadminDashboardController extends Controller
             ];
         }
 
-        $years   = [2025, 2024, 2023];
-        $station = Station::get();
+        $station = Coaching::select('Station')
+            ->whereNotNull('Station')
+            ->distinct()
+            ->orderBy('Station')
+            ->pluck('Station');
+
+        $monthlyPassengersRaw = Coaching::select(
+            DB::raw('YEAR(Date) as dataYear'),
+            DB::raw('MONTH(Date) as dataMonth'),
+            DB::raw('SUM(CAST(Reserved_Passengers AS UNSIGNED)) as totalMonthlyPassengers')
+        )
+            ->groupBy('dataYear', 'dataMonth')
+            ->orderBy('dataYear')
+            ->orderBy('dataMonth')
+            ->get();
+
+        $passengerChartData = [];
+        foreach ($monthlyPassengersRaw as $row) {
+            $passengerChartData[$row->dataYear][$row->dataMonth] = (int) $row->totalMonthlyPassengers;
+        }
+
+        $monthlyEarningRaw = Coaching::select(
+            DB::raw('YEAR(Date) as dataYear'),
+            DB::raw('MONTH(Date) as dataMonth'),
+            DB::raw('SUM(CAST(Reserved_Earning AS DECIMAL(15,2))) as totalMonthlyEarning')
+        )
+            ->groupBy('dataYear', 'dataMonth')
+            ->orderBy('dataYear')
+            ->orderBy('dataMonth')
+            ->get();
+
+        $earningChartData = [];
+        foreach ($monthlyEarningRaw as $row) {
+            $earningChartData[$row->dataYear][$row->dataMonth] = (float) $row->totalMonthlyEarning;
+        }
+
+        $dynamicStats = DB::table('coachings')
+            ->select(
+                'station as station_name',
+                DB::raw('SUM(Unreserved_Passengers) / 100000 as total_pass'),
+                DB::raw('SUM(Unreserved_Earning) as total_earn')
+            )
+            ->groupBy('station_name')
+            ->orderBy('total_earn', 'desc')
+            ->take(10)
+            ->get();
+
+        $unrevPassengerValues = $dynamicStats->pluck('total_pass')->toArray();
+        $unrevPassengerLabels = $dynamicStats->pluck('station_name')->toArray();
+
+        $unrevEarningValues = $dynamicStats->pluck('total_earn')->toArray();
+        $unrevEarningLabels = $dynamicStats->pluck('station_name')->toArray();
 
         return view('superadmin.​coachingdashboard', compact(
             'totalPassengersFormatted',
@@ -366,7 +426,14 @@ class SuperadminDashboardController extends Controller
             'Total_Earning',
             'data',
             'years',
-            'station'
+            'station',
+            'passengerChartData',
+            'monthlyEarningRaw',
+            'earningChartData',
+            'unrevPassengerValues',
+            'unrevPassengerLabels',
+            'unrevEarningValues',
+            'unrevEarningLabels'
         ));
     }
 

@@ -64,6 +64,65 @@ class AuthController extends Controller
         ], 200);
     }
 
+    // public function signup(Request $request)
+    // {
+    //     // VALIDATION
+    //     $validator = Validator::make($request->all(), [
+    //         'name'          => 'required|string|max:255',
+    //         'email'         => 'required|email|unique:users,email',
+    //         'phone'         => 'required|string|max:15',
+    //         'designation'   => 'required|string|max:255',
+    //         'incharge_name' => 'required|string|max:255',
+    //         'password'      => 'required|min:6',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'status'  => false,
+    //             'message' => 'Validation Error',
+    //             'errors'  => $validator->errors(),
+    //         ], 422);
+    //     }
+
+    //     $filename = null;
+
+    //     if ($request->hasFile('image')) {
+    //         $image     = $request->file('image');
+    //         $extension = $image->getClientOriginalExtension();
+
+    //         $filename = time() . '.' . $extension;
+
+    //         $image->move(public_path('uploads/profiles'), $filename);
+    //     }
+    //     $user = User::create([
+    //         'name'          => $request->name,
+    //         'email'         => $request->email,
+    //         'phone'         => $request->phone,
+    //         'designation'   => $request->designation,
+    //         'incharge_name' => $request->incharge_name,
+    //         'password'      => Hash::make($request->password),
+    //         'image'         => $filename,
+    //     ]);
+
+    //     $user->assignRole('user');
+
+    //     return response()->json([
+    //         'status'  => true,
+    //         'message' => 'User Registered Successfully!',
+    //         'data'    => [
+    //             'name'          => $user->name,
+    //             'email'         => $user->email,
+    //             'phone'         => $user->phone,
+    //             'designation'   => $user->designation,
+    //             'incharge_name' => $user->incharge_name,
+    //             'role'          => 'user',
+    //             'image'         => $filename
+    //                 ? asset('uploads/profiles/' . $filename)
+    //                 : null,
+    //         ],
+    //     ], 201);
+    // }
+
     public function signup(Request $request)
     {
         $validator = Validator::make($request->all(), [

@@ -38,7 +38,7 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
     Route::post('/chengestatus', [SuperadminDashboardController::class, 'changestatus'])->name('admin.chnageStatus');
     Route::get('/superadmin/freightdashboard', [SuperadminDashboardController::class, 'freightdashboard'])->name('superadmin.freightdashboard');
     Route::get('superadmin/coaching', [SuperadminDashboardController::class, 'coaching'])->name('superadmin.coaching');
-    Route::post('/importexcel',[SuperadminDashboardController::class, 'import'])->name('superadminexcel.coaching');
+    Route::post('/coachingstore',[SuperadminDashboardController::class, 'coachingStore'])->name('superadmincoachingstore.coaching');
     Route::get('/superadmin/coachingdashboard', [SuperadminDashboardController::class, 'coachingdashboard'])->name('superadmin.coachingdashboard');
     Route::get('/superadmin/parceldashboard', [SuperadminDashboardController::class, 'parceldashboard'])->name('superadmin.parceldashboard');
     Route::get('/superadmin/taskmanager', [SuperadminDashboardController::class, 'taskmanager'])->name('superadmin.taskmanager');
