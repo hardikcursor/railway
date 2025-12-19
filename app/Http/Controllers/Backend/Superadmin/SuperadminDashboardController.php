@@ -268,8 +268,6 @@ class SuperadminDashboardController extends Controller
             'unreserved_earning'    => 'required|numeric',
             'reserved_passengers'   => 'required|numeric',
             'reserved_earning'      => 'required|numeric',
-            'total_passengers'      => 'required|numeric',
-            'total_earning'         => 'required|numeric',
             'date'                  => 'required|date',
         ]);
         Coaching::create([
@@ -279,8 +277,6 @@ class SuperadminDashboardController extends Controller
             'Unreserved_Earning'    => $request->unreserved_earning,
             'Reserved_Passengers'   => $request->reserved_passengers,
             'Reserved_Earning'      => $request->reserved_earning,
-            'Total_Passengers'      => $request->total_passengers,
-            'Total_Earning'         => $request->total_earning,
             'Date'                  => $request->date,
         ]);
 

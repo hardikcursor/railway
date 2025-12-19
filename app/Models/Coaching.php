@@ -15,8 +15,6 @@ class Coaching extends Model
         'Unreserved_Earning',
         'Reserved_Passengers',
         'Reserved_Earning',
-        'Total_Passengers',
-        'Total_Earning',
         'Date',
     ];
 

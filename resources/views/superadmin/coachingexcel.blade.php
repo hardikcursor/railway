@@ -92,7 +92,7 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label for="total_passengers" class="form-label fw-bold">Total Passengers <span
                                     class="text-danger">*</span></label>
                             <input type="number" name="total_passengers"
@@ -113,7 +113,7 @@
                             @error('total_earning')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
+                        </div> --}}
 
                         <div class="mb-3">
                             <label for="date" class="form-label fw-bold">Select Date <span
