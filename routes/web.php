@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Backend\Admin\AdminDashboardController;
-use App\Http\Controllers\Backend\Admin\CoachingController;
 use App\Http\Controllers\Backend\Superadmin\SuperadminDashboardController;
 use App\Http\Controllers\Backend\User\UserDashboardController;
 use Illuminate\Support\Facades\Auth;
@@ -38,11 +37,17 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
     Route::post('/chengestatus', [SuperadminDashboardController::class, 'changestatus'])->name('admin.chnageStatus');
     Route::get('/superadmin/freightdashboard', [SuperadminDashboardController::class, 'freightdashboard'])->name('superadmin.freightdashboard');
     Route::get('superadmin/coaching', [SuperadminDashboardController::class, 'coaching'])->name('superadmin.coaching');
-    Route::post('/coachingstore',[SuperadminDashboardController::class, 'coachingStore'])->name('superadmincoachingstore.coaching');
+    Route::post('superadmin/coaching', [SuperadminDashboardController::class, 'coachingStore'])
+    ->name('superadmin.coaching.store');
     Route::get('/superadmin/coachingdashboard', [SuperadminDashboardController::class, 'coachingdashboard'])->name('superadmin.coachingdashboard');
     Route::get('/superadmin/parceldashboard', [SuperadminDashboardController::class, 'parceldashboard'])->name('superadmin.parceldashboard');
+    Route::get('/superadmin/parcelform', [SuperadminDashboardController::class, 'create'])->name('superadmin.parcelform');
+    Route::post('/parcel/store', [SuperadminDashboardController::class, 'parcelstore'])->name('parcel.store');
     Route::get('/superadmin/taskmanager', [SuperadminDashboardController::class, 'taskmanager'])->name('superadmin.taskmanager');
     Route::get('/superadmin/ticketchecking', [SuperadminDashboardController::class, 'ticketchecking'])->name('superadmin.ticketchecking');
+    Route::get('/superadmin/ticketcheckingmaster', [SuperadminDashboardController::class, 'ticketcheckingmaster'])->name('superadmin.ticketcheckingmaster');
+    Route::post('/ticket-checking/store', [SuperadminDashboardController::class, 'ticketcheckingmasterstore'])->name('superadmin.ticketchecking.store');
+
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {

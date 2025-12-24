@@ -1,789 +1,964 @@
-@extends('layouts.backend')
-
-<style>
-    body {
-        font-family: Arial, Helvetica, sans-serif;
-        background: #fff;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-    }
-
-    th,
-    td {
-        border: 1px solid #000;
-        padding: 6px 6px;
-        text-align: center;
-        vertical-align: middle;
-    }
-
-    /* Top Date */
-    .report-date {
-        background: #b7d7f0;
-        text-align: center;
-        font-size: 16px;
-        font-weight: bold;
-    }
-
-    /* Group Header */
-    .group-head {
-        background: #d9ecf7;
-        font-weight: bold;
-        text-align: center;
-        font-size: 15px;
-    }
-
-    /* Column Header */
-    .col-head {
-        background: #f6caca;
-        font-weight: bold;
-    }
-
-    /* Amount / Total shading */
-    .amt-bg {
-        background: #e6e6e6;
-    }
-
-    /* Left align text */
-    .text-left {
-        text-align: left;
-    }
-
-    /* Total Row */
-    .total-row th {
-        font-weight: bold;
-        background: #f0f0f0;
-    }
-</style>
-
-@section('main')
+@extends('layouts.backend') @section('main')
     <div class="content-wrapper">
         <div class="page-content fade-in-up">
+            <div class="ibox">
+                <div class="header1">TICKET CHECKING DASHBOARD (2024-25)</div>
+                <div class="filters">
+                    <div class="filter-group floating-label">
+                        <label>Cadre / Type</label>
+                        <select class="form-select" name="cadre">
+                            <option value="">All Cadre / Type</option>
 
-            <!-- DASHBOARD -->
+                            @foreach ($cadres as $cadre)
+                                <option value="{{ $cadre }}">
+                                    {{ $cadre }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+
+                    <div class="filter-group floating-label">
+                        <label>Location</label>
+                        <select class="form-select">
+                            <option value="">Select Location</option>
+                            @foreach ($locations as $location)
+                                <option value="{{ $location }}">
+                                    {{ $location }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+
+
+                    <div class="filter-group ml-auto">
+                        <select>
+                            <option>Apr 1, 2024 - Mar 31, 2025</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end m-3">
+                    <a href="{{ route('superadmin.ticketcheckingmaster') }}" class="btn btn-success">
+                        <i class="ti-plus"></i> Create Ticket Checking Master
+                    </a>
+                </div>
+                <div class="row mt-3">
+
+                    <!-- CARD 1 -->
+                    <div class="col-md-6 mb-3">
+                        <div class="metric-card unreserved">
+                            <div class="metric-title">Cases (In Lakh)</div>
+
+                            <div class="metric-columns">
+                                <div class="metric-column">
+                                    <!-- Lakh value -->
+                                    <div class="metric-value">
+                                        {{ number_format($casesInLakh, 3) }}
+                                    </div>
+
+                                    <!-- Percentage -->
+                                    <div class="metric-change positive">
+                                        <span class="arrow-up"></span>
+                                        {{ number_format($percentage, 2) }} %
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="metric-card unreserved">
+                            <div class="metric-title">Revenue ( In Cr)</div>
+
+                            <div class="metric-columns">
+                                <div class="metric-column">
+                                    <div class="metric-value">
+                                        {{ number_format((float) $revenueInCr, 3) }} 
+                                    </div>
+                                    <div class="metric-change positive"><span class="arrow-up"></span>
+                                        {{ number_format((float) $revenuePercentage, 2) }} % </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="chart-container">
+                    <div class="chart-title">MONTH WISE TOTAL REVENUE (In Cr.)</div>
+                    <canvas id="revenueChart"></canvas>
+
+                </div>
+
+
+
+                <div class="chart-container">
+                    <div class="chart-title">MONTH WISE WT/HT REVENUE (In Lakh)</div>
+                    <canvas id="wtChart"></canvas>
+                </div>
+            </div>
+
+
+            <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+            <script>
+                (function() {
+
+                    const months = ["APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC", "JAN", "FEB", "MAR"];
+
+                    const revenueCtx = document.getElementById('revenueChart');
+
+                    if (!revenueCtx) return;
+
+                    new Chart(revenueCtx, {
+                        type: 'line',
+                        data: {
+                            labels: months,
+                            datasets: [{
+                                    label: '2024-2025',
+                                    data: [3.53, 2.68, 2.10, 0.50, 0.42, 0.46, 1.58, 1.70, 1.60, 2.00, 2.30, 2.60],
+                                    borderColor: '#2e7d32',
+                                    tension: 0.4,
+                                    pointRadius: 4
+                                },
+                                {
+                                    label: '2023-2024',
+                                    data: [2.80, 3.00, 2.40, 1.50, 1.70, 1.60, 2.30, 3.40, 1.90, 2.00, 2.50, 2.80],
+                                    borderColor: '#c62828',
+                                    tension: 0.4,
+                                    pointRadius: 4
+                                },
+                                {
+                                    label: '2022-2023',
+                                    data: [3.70, 3.90, 3.10, 1.80, 1.70, 1.60, 2.60, 1.70, 1.50, 1.70, 2.20, 2.50],
+                                    borderColor: '#f57c00',
+                                    tension: 0.4,
+                                    pointRadius: 4
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top'
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+
+                })();
+            </script>
+
+            <script>
+                (function() {
+
+                    const months = ["APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC", "JAN", "FEB", "MAR"];
+
+                    const wtCtx = document.getElementById('wtChart');
+
+                    if (!wtCtx) return;
+
+                    new Chart(wtCtx, {
+                        type: 'line',
+                        data: {
+                            labels: months,
+                            datasets: [{
+                                    label: '2024-2025',
+                                    data: [62.34, 56.07, 45.76, 17.87, 16.65, 18.88, 31.87, 55, 40, 42, 46, 49],
+                                    borderColor: '#2e7d32',
+                                    tension: 0.4,
+                                    pointRadius: 4
+                                },
+                                {
+                                    label: '2023-2024',
+                                    data: [55, 60, 50, 30, 25, 28, 45, 70, 38, 41, 44, 48],
+                                    borderColor: '#c62828',
+                                    tension: 0.4,
+                                    pointRadius: 4
+                                },
+                                {
+                                    label: '2022-2023',
+                                    data: [145, 140, 120, 60, 55, 45, 68, 50, 35, 42, 46, 50],
+                                    borderColor: '#f57c00',
+                                    tension: 0.4,
+                                    pointRadius: 4
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top'
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+
+                })();
+            </script>
+
+
             <div class="row">
-                <div class="col-lg-4 col-md-6">
-                    <div class="ibox bg-success color-white ">
-                        <div class="ibox-body">
-                            <h2 class="font-strong">12</h2>
-                            <div>Non stated</div>
-                        </div>
+                <div class="col-6">
+                    <div class="ticket-box"
+                        style="border: 1px solid #eee; padding: 15px; border-radius: 8px; overflow: visible;">
+                        <h4 class="chart-title">STATION WISE REVENUE</h4>
+                        <canvas id="stationChart"></canvas>
+
                     </div>
                 </div>
 
-                <div class="col-lg-4 col-md-6">
-                    <div class="ibox bg-info color-white">
-                        <div class="ibox-body">
-                            <h2 class="font-strong">8</h2>
-                            <div>PENDING</div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="col-lg-4 col-md-6">
-                    <div class="ibox bg-danger color-white ">
-                        <div class="ibox-body">
-                            <h2 class="font-strong">3</h2>
-                            <div>COMPLETED</div>
-                        </div>
+                <div class="col-6">
+                    <div class="ticket-box"
+                        style="border: 1px solid #eee; padding: 15px; border-radius: 8px; overflow: visible;">
+                        <h4 class="chart-title">UNIT WISE REVENUE</h4>
+                        <canvas id="unitChart"></canvas>
                     </div>
                 </div>
             </div>
-            <div class="d-flex justify-content-end mb-3">
-                <button class="btn btn-success">
-                    <i class="ti-plus"></i> Create Task
-                </button>
-            </div>
 
+            <script>
+                (function() {
 
-            <!-- TABLE -->
-            <div class="ibox mt-4">
-                <div class="ibox-head">
-                    <div class="ibox-title">All Record</div>
-                </div>
+                    const ctx = document.getElementById('stationChart');
+                    if (!ctx) return;
 
-                <div class="ibox-body table-wrapper-fixed">
+                    new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: [
+                                'ADI', 'CTI-SBIB', 'DRM', 'Sr DCM', 'MAN',
+                                'CTI-MS-ADI', 'GIM', 'MSH', 'PNU', 'Others'
+                            ],
+                            datasets: [{
+                                data: [43.1, 17.1, 8.8, 7.8, 6.9, 6.2, 5.1, 3.4, 1.5, 0.1],
+                                backgroundColor: [
+                                    '#0d6efd', '#ffb366', '#9b59b6', '#ff7f0e', '#ff6b6b',
+                                    '#e67ab1', '#87cefa', '#5dade2', '#f1c40f', '#95a5a6'
+                                ],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            cutout: '60%',
+                            plugins: {
+                                legend: {
+                                    position: 'right',
+                                    labels: {
+                                        boxWidth: 12,
+                                        font: {
+                                            size: 12
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
 
-                    <table>
+                })();
+            </script>
 
-                        <!-- Date -->
-                        <tr>
-                            <th colspan="14" class="report-date">01/04/25</th>
-                        </tr>
+            <script>
+                (function() {
 
-                        <!-- GROUP I -->
-                        <tr>
-                            <th colspan="14" class="group-head">Group I</th>
-                        </tr>
+                    const ctx = document.getElementById('unitChart');
+                    if (!ctx) return;
 
-                        <!-- Header Row -->
-                        <tr class="col-head">
-                            <th rowspan="2">Sr No</th>
-                            <th rowspan="2">Name of Staff</th>
-                            <th rowspan="2">Desg</th>
-                            <th rowspan="2">Mobile No.</th>
-                            <th colspan="2">WT</th>
-                            <th colspan="2">OT / HT</th>
-                            <th colspan="2">UBL</th>
-                            <th colspan="2">Total</th>
-                            <th rowspan="2">Trains worked by each group</th>
-                        </tr>
+                    new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: [
+                                'Sleeper',
+                                'Squad',
+                                'Squad / SL',
+                                'Squad',
+                                'Stationary'
+                            ],
+                            datasets: [{
+                                data: [45.7, 22.4, 17.1, 7.8, 7.1],
+                                backgroundColor: [
+                                    '#00bcd4',
+                                    '#0d6efd',
+                                    '#ff7f0e',
+                                    '#f39c12',
+                                    '#ff1493'
+                                ],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            cutout: '60%',
+                            plugins: {
+                                legend: {
+                                    position: 'right',
+                                    labels: {
+                                        boxWidth: 12,
+                                        font: {
+                                            size: 12
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
 
-                        <tr class="col-head">
-                            <th>Cases</th>
-                            <th>Amt</th>
-                            <th>Cases</th>
-                            <th>Amt</th>
-                            <th>Cases</th>
-                            <th>Amt</th>
-                            <th>Cases</th>
-                            <th>Amt</th>
-                        </tr>
+                })();
+            </script>
 
-                        <!-- DATA ROWS -->
-                        <tr>
-                            <td>1</td>
-                            <td class="text-left">Amrish Sharma</td>
-                            <td>CTI & IC</td>
-                            <td>7043784481</td>
-                            <td>8</td>
-                            <td class="amt-bg">8780</td>
-                            <td>12</td>
-                            <td class="amt-bg">6530</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>20</td>
-                            <td class="amt-bg">15310</td>
-                            <td class="amt-bg">12947 / 19483 / 11092</td>
-                        </tr>
-
-                        <tr>
-                            <td>2</td>
-                            <td class="text-left">Harvendra Singh</td>
-                            <td>Sr TE</td>
-                            <td>8460439181</td>
-                            <td>1</td>
-                            <td class="amt-bg">850</td>
-                            <td>39</td>
-                            <td class="amt-bg">17250</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>40</td>
-                            <td class="amt-bg">18100</td>
-                            <td>11463 / 19015</td>
-                        </tr>
-
-                        <tr>
-                            <td>3</td>
-                            <td class="text-left">Bittal Patel</td>
-                            <td>Sr TE</td>
-                            <td>8141802555</td>
-                            <td>4</td>
-                            <td class="amt-bg">4400</td>
-                            <td>15</td>
-                            <td class="amt-bg">7650</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>19</td>
-                            <td class="amt-bg">12050</td>
-                            <td>19167 / 12833</td>
-                        </tr>
-
-                        <tr>
-                            <td>4</td>
-                            <td class="text-left">Nehal K</td>
-                            <td>Sr TE</td>
-                            <td>7283920243</td>
-                            <td>5</td>
-                            <td class="amt-bg">5500</td>
-                            <td>16</td>
-                            <td class="amt-bg">7230</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>21</td>
-                            <td class="amt-bg">12730</td>
-                            <td>19167 / 12833</td>
-                        </tr>
-
-                        <tr>
-                            <td>5</td>
-                            <td class="text-left">Hemlata Chauhan</td>
-                            <td>Sr TE</td>
-                            <td>9374937494</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>Rest</td>
-                        </tr>
-
-                        <tr>
-                            <td>6</td>
-                            <td class="text-left">Rajkumar S</td>
-                            <td>Sr TE</td>
-                            <td>8003149081</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>Rest</td>
-                        </tr>
-
-                        <tr>
-                            <td>7</td>
-                            <td class="text-left">R A Rajpurohit</td>
-                            <td>Dy CTI</td>
-                            <td>9071315213</td>
-                            <td>8</td>
-                            <td class="amt-bg">7700</td>
-                            <td>16</td>
-                            <td class="amt-bg">7900</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>24</td>
-                            <td class="amt-bg">15600</td>
-                            <td>19489 / 22959</td>
-                        </tr>
-
-                        <!-- GROUP I TOTAL -->
-                        <tr class="total-row">
-                            <th colspan="4">Group I Total</th>
-                            <th>26</th>
-                            <th>27230</th>
-                            <th>98</th>
-                            <th>46560</th>
-                            <th>0</th>
-                            <th>0</th>
-                            <th>124</th>
-                            <th>73790</th>
-                            <th></th>
-                        </tr>
-
-                        <!-- GROUP II -->
-                        <tr>
-                            <th colspan="14" class="group-head">Group II</th>
-                        </tr>
-
-                        <tr>
-                            <td>1</td>
-                            <td class="text-left">Vinod M Vania</td>
-                            <td>CTI & IC</td>
-                            <td>9824643158</td>
-                            <td>7</td>
-                            <td class="amt-bg">7010</td>
-                            <td>10</td>
-                            <td class="amt-bg">5050</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>17</td>
-                            <td class="amt-bg">12060</td>
-                            <td>20968 / 22959</td>
-                        </tr>
-
-                        <tr>
-                            <td>2</td>
-                            <td class="text-left">Bharti Vani</td>
-                            <td>SR.TE</td>
-                            <td>9427072611</td>
-                            <td>5</td>
-                            <td class="amt-bg">5000</td>
-                            <td>3</td>
-                            <td class="amt-bg">1500</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>8</td>
-                            <td class="amt-bg">6500</td>
-                            <td>20939 / 12547</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td class="text-left">Santosh Kumari</td>
-                            <td>Dy CTI</td>
-                            <td>9662936173</td>
-                            <td>8</td>
-                            <td class="amt-bg">8000</td>
-                            <td>20</td>
-                            <td class="amt-bg">9500</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>28</td>
-                            <td class="amt-bg">17500</td>
-                            <td class="amt-bg">20939 / 22548 / 20485</td>
-                        </tr>
-
-                        <tr>
-                            <td>4</td>
-                            <td class="text-left">Lalita Tiwari</td>
-                            <td>Dy CTI</td>
-                            <td>7043784293</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>Rest</td>
-                        </tr>
-
-                        <tr>
-                            <td>5</td>
-                            <td class="text-left">Niraj Mehta</td>
-                            <td>Dy CTI</td>
-                            <td>7043784372</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>15</td>
-                            <td class="amt-bg">7190</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>15</td>
-                            <td class="amt-bg">7190</td>
-                            <td>20939 / 12547</td>
-                        </tr>
-
-                        <tr>
-                            <td>6</td>
-                            <td class="text-left">Sanjay Bar</td>
-                            <td>Dy CTI</td>
-                            <td>7043784196</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>Rest</td>
-                        </tr>
-
-                        <tr>
-                            <td>7</td>
-                            <td class="text-left">Zala Pruthvi</td>
-                            <td>Sr TE</td>
-                            <td>7487872277</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>Rest</td>
-                        </tr>
-
-
-                        <tr class="total-row">
-                            <th colspan="4">Group II Total</th>
-                            <th>20</th>
-                            <th>20010</th>
-                            <th>48</th>
-                            <th>23240</th>
-                            <th>0</th>
-                            <th>0</th>
-                            <th>68</th>
-                            <th>43250</th>
-                            <th></th>
-                        </tr>
-
-                        <tr>
-                            <td>1</td>
-                            <td class="text-left">S M Vyas</td>
-                            <td>CTI & IC</td>
-                            <td>7043784476</td>
-                            <td>4</td>
-                            <td class="amt-bg">3800</td>
-                            <td>21</td>
-                            <td class="amt-bg">10200</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>25</td>
-                            <td class="amt-bg">14000</td>
-                            <td>19489 / 22959 / 11463</td>
-                        </tr>
-
-                        <tr>
-                            <td>2</td>
-                            <td class="text-left">N B Parmar</td>
-                            <td>CTI</td>
-                            <td>7043784490</td>
-                            <td>10</td>
-                            <td class="amt-bg">9600</td>
-                            <td>5</td>
-                            <td class="amt-bg">2500</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>15</td>
-                            <td class="amt-bg">12100</td>
-                            <td>20939 / 20485</td>
-                        </tr>
-
-                        <tr>
-                            <td>3</td>
-                            <td class="text-left">Vijay Dutt</td>
-                            <td>SR. TE</td>
-                            <td>9321995606</td>
-                            <td>3</td>
-                            <td class="amt-bg">3250</td>
-                            <td>16</td>
-                            <td class="amt-bg">8110</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>19</td>
-                            <td class="amt-bg">11360</td>
-                            <td>19483 / 22945 / 19489 / 19484</td>
-                        </tr>
-
-                        <tr>
-                            <td>4</td>
-                            <td class="text-left">Surendra Chaudhry</td>
-                            <td>TE</td>
-                            <td>8487822187</td>
-                            <td>5</td>
-                            <td class="amt-bg">3120</td>
-                            <td>24</td>
-                            <td class="amt-bg">10440</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>29</td>
-                            <td class="amt-bg">13560</td>
-                            <td>20939 / 22548 / 12915</td>
-                        </tr>
-
-                        <tr>
-                            <td>5</td>
-                            <td class="text-left">Sharavan K</td>
-                            <td>TE</td>
-                            <td>9950658454</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>Rest</td>
-                        </tr>
-
-                        <tr>
-                            <td>6</td>
-                            <td class="text-left">Dilkhush Meena</td>
-                            <td>TE</td>
-                            <td>9672171864</td>
-                            <td>10</td>
-                            <td class="amt-bg">8000</td>
-                            <td>8</td>
-                            <td class="amt-bg">3970</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>18</td>
-                            <td class="amt-bg">11970</td>
-                            <td>19489 / 19484</td>
-                        </tr>
-
-                        <tr>
-                            <td>7</td>
-                            <td class="text-left">Shail Tiwari</td>
-                            <td>Dy CTI</td>
-                            <td>8000680224</td>
-                            <td>11</td>
-                            <td class="amt-bg">9860</td>
-                            <td>10</td>
-                            <td class="amt-bg">4890</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>21</td>
-                            <td class="amt-bg">14750</td>
-                            <td>12947 / 19167 / 12833</td>
-                        </tr>
-
-                        <tr class="total-row">
-                            <th colspan="4">Group III Total</th>
-                            <th>43</th>
-                            <th>37630</th>
-                            <th>84</th>
-                            <th>40110</th>
-                            <th>0</th>
-                            <th>0</th>
-                            <th>127</th>
-                            <th>77740</th>
-                            <th></th>
-                        </tr>
-
-                        <tr>
-                            <th colspan="14" class="group-head">Group IV</th>
-                        </tr>
-
-                        <tr>
-                            <td>1</td>
-                            <td class="text-left">Saji Philip</td>
-                            <td>CTI & IC</td>
-                            <td>7043784372</td>
-                            <td>6</td>
-                            <td class="amt-bg">6340</td>
-                            <td>13</td>
-                            <td class="amt-bg">6640</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>19</td>
-                            <td class="amt-bg">12980</td>
-                            <td>19167 / 12833</td>
-                        </tr>
-
-                        <tr>
-                            <td>2</td>
-                            <td class="text-left">Jai Gopal</td>
-                            <td>Dy CTI</td>
-                            <td>7817066307</td>
-                            <td>4</td>
-                            <td class="amt-bg">4000</td>
-                            <td>17</td>
-                            <td class="amt-bg">8620</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>21</td>
-                            <td class="amt-bg">12620</td>
-                            <td>12833 / 19489</td>
-                        </tr>
-
-                        <tr>
-                            <td>3</td>
-                            <td class="text-left">Himanshu J</td>
-                            <td>TE</td>
-                            <td>7339957420</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>Rest</td>
-                        </tr>
-
-                        <tr>
-                            <td>4</td>
-                            <td class="text-left">Ramavdesh</td>
-                            <td>Sr CCTC</td>
-                            <td>7903124938</td>
-                            <td>4</td>
-                            <td class="amt-bg">3650</td>
-                            <td>14</td>
-                            <td class="amt-bg">6450</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>18</td>
-                            <td class="amt-bg">10100</td>
-                            <td>20939 / 12915</td>
-                        </tr>
-
-                        <tr>
-                            <td>5</td>
-                            <td class="text-left">Shailesh Shrimali</td>
-                            <td>Dy CTI</td>
-                            <td>9427805657</td>
-                            <td>5</td>
-                            <td class="amt-bg">5340</td>
-                            <td>9</td>
-                            <td class="amt-bg">4740</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>14</td>
-                            <td class="amt-bg">10080</td>
-                            <td>12947 / 19167 / 12833</td>
-                        </tr>
-
-                        <tr>
-                            <td>6</td>
-                            <td class="text-left">Navneet R</td>
-                            <td>Dy CTI</td>
-                            <td>7043784202</td>
-                            <td>11</td>
-                            <td class="amt-bg">10700</td>
-                            <td>10</td>
-                            <td class="amt-bg">5010</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>21</td>
-                            <td class="amt-bg">15710</td>
-                            <td>12947 / 19167 / 19489</td>
-                        </tr>
-
-                        <tr>
-                            <td>7</td>
-                            <td class="text-left">Y C Gurjar</td>
-                            <td>Dy CTI</td>
-                            <td>7043784334</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>Rest</td>
-                        </tr>
-
-                        <tr>
-                            <td>8</td>
-                            <td class="text-left">Lavish Singh</td>
-                            <td>Sr TE</td>
-                            <td>6354598017</td>
-                            <td>5</td>
-                            <td class="amt-bg">5000</td>
-                            <td>14</td>
-                            <td class="amt-bg">7150</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>19</td>
-                            <td class="amt-bg">12150</td>
-                            <td>19489</td>
-                        </tr>
-
-                        <tr class="total-row">
-                            <th colspan="4">Group IV Total</th>
-                            <th>35</th>
-                            <th>35030</th>
-                            <th>77</th>
-                            <th>38610</th>
-                            <th>0</th>
-                            <th>0</th>
-                            <th>112</th>
-                            <th>73640</th>
-                            <th></th>
-                        </tr>
-
-                        <tr style="background:#e9b3b3;font-weight:bold;">
-                            <th colspan="4">Total (Group I, II, III, IV)</th>
-                            <th>124</th>
-                            <th>119900</th>
-                            <th>307</th>
-                            <th>148520</th>
-                            <th>0</th>
-                            <th>0</th>
-                            <th>431</th>
-                            <th>268420</th>
-                            <th></th>
-                        </tr>
-
-                        <tr>
-                            <th colspan="14" class="group-head" style="background:#ded7f0;">Prosecution Squad</th>
-                        </tr>
-
-                        <tr>
-                            <td>1</td>
-                            <td class="text-left">K C Katariya</td>
-                            <td>CTI & IC</td>
-                            <td>9825549897</td>
-                            <td>5</td>
-                            <td class="amt-bg">4750</td>
-                            <td>16</td>
-                            <td class="amt-bg">6850</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>21</td>
-                            <td class="amt-bg">11600</td>
-                            <td>19489 / 19484 / 16506</td>
-                        </tr>
-
-                        <tr>
-                            <td>2</td>
-                            <td class="text-left">Brijesh Nagar</td>
-                            <td>Dy CTI / PNU</td>
-                            <td>9079327809</td>
-                            <td>8</td>
-                            <td class="amt-bg">3340</td>
-                            <td>18</td>
-                            <td class="amt-bg">7770</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>26</td>
-                            <td class="amt-bg">11110</td>
-                            <td>19924 / 19223</td>
-                        </tr>
-
-                        <tr>
-                            <td>3</td>
-                            <td class="text-left">Sitaram Sharma</td>
-                            <td>Dy CTI</td>
-                            <td>9079243508</td>
-                            <td>7</td>
-                            <td class="amt-bg">6850</td>
-                            <td>30</td>
-                            <td class="amt-bg">15600</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>37</td>
-                            <td class="amt-bg">22450</td>
-                            <td>12833 / 15635</td>
-                        </tr>
-
-                        <tr>
-                            <td>4</td>
-                            <td class="text-left">Balwantsingh</td>
-                            <td>Dy CTI</td>
-                            <td>9737419995</td>
-                            <td>7</td>
-                            <td class="amt-bg">5950</td>
-                            <td>14</td>
-                            <td class="amt-bg">11510</td>
-                            <td>0</td>
-                            <td class="amt-bg">0</td>
-                            <td>21</td>
-                            <td class="amt-bg">17460</td>
-                            <td>20939 / 12915 / 12916 / 12547</td>
-                        </tr>
-
-                        <tr style="background:#e6a0a0;font-weight:bold;">
-                            <th colspan="4">Prosecution Squad Total</th>
-                            <th>27</th>
-                            <th>20890</th>
-                            <th>78</th>
-                            <th>41730</th>
-                            <th>0</th>
-                            <th>0</th>
-                            <th>105</th>
-                            <th>62620</th>
-                            <th></th>
-                        </tr>
-
-                        <tr style="background:#bfe3b4;font-weight:bold;font-size:15px;">
-                            <th colspan="4">Grand Total</th>
-                            <th>151</th>
-                            <th>140790</th>
-                            <th>385</th>
-                            <th>190250</th>
-                            <th>0</th>
-                            <th>0</th>
-                            <th>536</th>
-                            <th>331040</th>
-                            <th></th>
-                        </tr>
-
-
-                    </table>
-
-                </div>
-            </div>
 
         </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="chart-box">
+                    <h3 class="text-center">
+                        Revenue (in Cr.) and Cases (in Lakh) - YOY
+                    </h3>
+                    <canvas id="yoyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+
+        <script>
+            const ctx = document.getElementById('yoyChart').getContext('2d');
+
+            const yoyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['2023-2024', '2022-2023', '2021-2022', '2024-2025'],
+                    datasets: [{
+                            label: 'Revenue (In Cr.)',
+                            data: [28.31, 27.9, 19.96, 11.27], // ફોટા મુજબના ડેટા
+                            backgroundColor: '#388E3C', // લીલો રંગ
+                            yAxisID: 'yRevenue',
+                            barPercentage: 0.8,
+                            categoryPercentage: 0.5
+                        },
+                        {
+                            label: 'Total Case (In Lakh)',
+                            data: [3.99, 4.04, 3.17, 1.51], // ફોટા મુજબના ડેટા
+                            backgroundColor: '#FF9800', // નારંગી રંગ
+                            yAxisID: 'yCases',
+                            barPercentage: 0.8,
+                            categoryPercentage: 0.5
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        yRevenue: {
+                            type: 'linear',
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Revenue (In Cr.)'
+                            },
+                            min: 0,
+                            max: 30
+                        },
+                        yCases: {
+                            type: 'linear',
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Total Case (In Lakh)'
+                            },
+                            min: 0,
+                            max: 5,
+                            grid: {
+                                drawOnChartArea: false
+                            } // ગ્રીડ લાઈન ઓવરલેપ ન થાય તે માટે
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        </script>
+
+        <canvas id="dualBarChart"></canvas>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            const ctx = document.getElementById('dualBarChart').getContext('2d');
+
+            const data = {
+                labels: ['2023-2024', '2022-2023', '2021-2022', '2024-2025'],
+                datasets: [{
+                        label: 'Revenue (In Cr.)',
+                        data: [28.31, 27.9, 19.96, 11.27],
+                        backgroundColor: 'green',
+                        yAxisID: 'y1',
+                        borderRadius: 4,
+                        barPercentage: 0.4,
+                    },
+                    {
+                        label: 'Total Case (In Lakh)',
+                        data: [3.99, 4.04, 3.17, 1.51],
+                        backgroundColor: 'orange',
+                        yAxisID: 'y2',
+                        borderRadius: 4,
+                        barPercentage: 0.4,
+                    },
+                ],
+            };
+
+            const options = {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Revenue (in Cr.) and Cases (in Lakh) - YOY',
+                        font: {
+                            size: 16,
+                            weight: 'bold',
+                        },
+                        padding: {
+                            top: 10,
+                            bottom: 20,
+                        },
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            boxWidth: 20,
+                            padding: 15,
+                        },
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                },
+                scales: {
+                    y1: {
+                        type: 'linear',
+                        position: 'left',
+                        beginAtZero: true,
+                        max: 30,
+                        title: {
+                            display: true,
+                            text: 'Revenue (In Cr.)',
+                        },
+                        ticks: {
+                            stepSize: 5,
+                        },
+                    },
+                    y2: {
+                        type: 'linear',
+                        position: 'right',
+                        beginAtZero: true,
+                        max: 5,
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                        title: {
+                            display: true,
+                            text: 'Total Case (In Lakh)',
+                        },
+                        ticks: {
+                            stepSize: 1,
+                        },
+                    },
+                },
+            };
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: options,
+            });
+        </script>
     </div>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .ibox {
+            background: #f0f2f5;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .header1 {
+            background: linear-gradient(to right, #4caf50, #8bc34a);
+            padding: 15px;
+            font-size: 24px;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 5px;
+            color: #000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        /* FILTERS */
+        .filters {
+            display: flex;
+            gap: 10px;
+            background: #fff;
+            padding: 12px;
+            border-radius: 5px;
+            border-top: 5px solid #6c9c6f;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 180px;
+            border: 1px solid #ccc;
+            background: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            position: relative;
+            width: 180px;
+        }
+
+        .filter-group select {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 14px;
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 13px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background: #fff;
+        }
+
+        .floating-label label {
+            position: absolute;
+            top: -8px;
+            left: 12px;
+            background: #eef1f5;
+            padding: 0 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #28a745;
+            letter-spacing: .3px;
+        }
+
+
+        .ml-auto {
+            margin-left: auto;
+        }
+
+
+        .metrics-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .metric-card {
+            flex: 1 1 320px;
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .metric-title {
+            text-align: center;
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .total-earning .metric-title {
+            border-bottom: none;
+        }
+
+        .metric-columns {
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+        }
+
+        .metric-column {
+            flex: 1;
+        }
+
+        .metric-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .metric-value {
+            font-size: 34px;
+            font-weight: bold;
+        }
+
+        .metric-change {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .metric-change.positive {
+            color: #4caf50;
+        }
+
+        .arrow-up {
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-bottom: 7px solid #4caf50;
+            margin-right: 5px;
+        }
+
+        .chart-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .chart-box {
+            flex: 1 1 450px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .chart-area {
+            height: 320px;
+        }
+
+        .ticket-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .ticket-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .chart-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .col-6 {
+            flex: 1 1 23%;
+            min-width: 250px;
+            margin-top: 30px;
+        }
+
+        .ticket-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px 18px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: box-shadow 0.3s ease;
+            cursor: default;
+            user-select: none;
+        }
+
+        .ticket-box:hover {
+            box-shadow: 0 8px 30px rgba(76, 175, 80, 0.2);
+        }
+
+        .ticket-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #2e2e2e;
+        }
+
+        .chart-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .ticket-group {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .group-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 18px;
+            color: #007bff;
+            user-select: none;
+        }
+
+        .ticket-box {
+            margin-bottom: 25px;
+        }
+
+        #unrev_revenue,
+        #unrev_passenger {
+            overflow: hidden !important;
+            overflow: visible !important;
+        }
+
+        .ticket-box {
+            overflow: visible;
+            max-width: 100%;
+        }
+
+        .data-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        h3 {
+            margin-top: 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .unit {
+            font-size: 12px;
+            font-weight: normal;
+        }
+
+        .table-section {
+            flex: 2;
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .data-table th,
+        .data-table td {
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+
+        .data-table thead th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .data-table .highlight {
+            background-color: #e0f7fa;
+        }
+
+        .station-name {
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .chart-section {
+            flex: 1.5;
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+
+        .legend {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .legend span {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .reserved-color {
+            background-color: #007bff;
+
+        }
+
+        .unreserved-color {
+            background-color: #00cccc;
+
+        }
+
+        .bar-chart {
+            position: relative;
+            padding-bottom: 30px;
+        }
+
+        .chart-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #eee;
+            padding: 5px 0;
+        }
+
+        .label {
+            width: 15%;
+            font-size: 11px;
+            text-align: right;
+            padding-right: 5px;
+            color: #555;
+        }
+
+        .bar-group {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            height: 20px;
+            border-left: 1px solid #000;
+            margin-left: 10px;
+        }
+
+        .reserved-bar,
+        .unreserved-bar {
+            height: 100%;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 3px;
+            box-sizing: border-box;
+            white-space: nowrap;
+        }
+
+        .reserved-bar {
+            background-color: #007bff;
+            justify-content: flex-start;
+        }
+
+        .unreserved-bar {
+            background-color: #00cccc;
+            order: -1;
+            justify-content: flex-end;
+        }
+
+        .unreserved-bar.negative {
+            background-color: #00cccc;
+            direction: rtl;
+            justify-content: flex-start;
+        }
+
+        .unreserved-bar.negative .value {
+            direction: ltr;
+            color: #333;
+            position: absolute;
+            right: 100%;
+            margin-right: 5px;
+        }
+
+        .axis {
+            display: flex;
+            justify-content: space-between;
+            padding-left: 20%;
+            font-size: 10px;
+            border-top: 1px solid #333;
+            padding-top: 5px;
+            margin-top: 10px;
+            position: absolute;
+            bottom: 0;
+            width: 80%;
+        }
+
+        .axis span:first-child {
+            margin-left: -5px;
+        }
+
+        .table-scroll-body {
+            max-height: 400px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            margin-top: -1px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .table-scroll-body table {
+            width: 100%;
+            margin-bottom: 0;
+            table-layout: fixed;
+        }
+
+        .table-responsive>.table {
+            table-layout: fixed;
+        }
+
+        @media (max-width: 992px) {
+            .col-3 {
+                flex: 1 1 48%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .col-3 {
+                flex: 1 1 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .filters {
+                flex-direction: column;
+            }
+
+            .ml-auto {
+                margin-left: 0 !important;
+            }
+
+            .metric-columns {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .chart-box {
+                min-width: 100%;
+            }
+        }
+    </style>
 @endsection

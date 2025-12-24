@@ -8,6 +8,8 @@
                     PARCEL DASHBOARD(2025-26)
                 </div>
 
+
+
                 <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-6">
 
                     <!-- Filters (4 blocks) -->
@@ -24,20 +26,11 @@
                             <!-- Mock Dropdown Content (Based on 2.png) -->
                             <div
                                 class="dropdown-content mt-1 w-60 bg-white border border-gray-300 rounded-lg shadow-xl p-3">
-                                <input type="text" placeholder="Type to search"
-                                    class="w-full p-2 border border-gray-300 rounded-md mb-2 text-sm">
-                                <div class="space-y-1 text-sm">
-                                    <label class="flex items-center"><input type="checkbox" checked
-                                            class="mr-2 accent-orange-500"> Leasing</label>
-                                    <label class="flex items-center"><input type="checkbox" checked
-                                            class="mr-2 accent-orange-500"> Luggage</label>
-                                    <label class="flex items-center"><input type="checkbox" checked
-                                            class="mr-2 accent-orange-500"> Non-Perishable</label>
-                                    <label class="flex items-center"><input type="checkbox" checked
-                                            class="mr-2 accent-orange-500"> Perishable</label>
-                                    <label class="flex items-center"><input type="checkbox" checked
-                                            class="mr-2 accent-orange-500"> RMT</label>
-                                </div>
+                                @foreach ($item as $items)
+                                    <option value="{{ $items }}">
+                                        {{ $items }}
+                                    </option>
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -55,66 +48,16 @@
                             <!-- Mock Dropdown Content (Based on 3.png) -->
                             <div
                                 class="dropdown-content mt-1 w-60 bg-white border border-gray-300 rounded-lg shadow-xl p-3">
-                                <input type="text" placeholder="Type to search"
-                                    class="w-full p-2 border border-gray-300 rounded-md mb-2 text-sm">
-                                <div class="space-y-1 text-sm h-48 overflow-y-auto">
-                                    <label class="flex items-center"><input type="checkbox" checked
-                                            class="mr-2 accent-orange-500"> ADI</label>
-                                    <label class="flex items-center"><input type="checkbox" class="mr-2 accent-orange-500">
-                                        ASV</label>
-                                    <label class="flex items-center"><input type="checkbox" class="mr-2 accent-orange-500">
-                                        CLDY</label>
-                                    <label class="flex items-center"><input type="checkbox" checked
-                                            class="mr-2 accent-orange-500"> CWCJ</label>
-                                    <label class="flex items-center"><input type="checkbox" class="mr-2 accent-orange-500">
-                                        DHS</label>
-                                    <label class="flex items-center"><input type="checkbox" checked
-                                            class="mr-2 accent-orange-500"> GIMB</label>
-                                    <label class="flex items-center"><input type="checkbox" checked
-                                            class="mr-2 accent-orange-500"> GNC</label>
-                                    <label class="flex items-center"><input type="checkbox" class="mr-2 accent-orange-500">
-                                        HMT</label>
-                                    <label class="flex items-center"><input type="checkbox" checked
-                                            class="mr-2 accent-orange-500"> LCH</label>
-                                    <label class="flex items-center"><input type="checkbox" checked
-                                            class="mr-2 accent-orange-500"> MSH</label>
-                                    <label class="flex items-center"><input type="checkbox" checked
-                                            class="mr-2 accent-orange-500"> NBVJ</label>
-                                </div>
+                                @foreach ($station as $stations)
+                                    <option value="{{ $stations }}">
+                                        {{ $stations }}
+                                    </option>
+                                @endforeach
                             </div>
                         </div>
                     </div>
 
-                    <div class="lg:col-span-1">
-                        <div class="dropdown relative w-full">
-                            <button
-                                class="w-full bg-white p-2 border border-gray-300 rounded-md shadow-sm flex justify-between items-center text-gray-700 text-sm hover:border-blue-500">
-                                Financial Years <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </button>
-                            <!-- Mock Dropdown Content (Based on 4.png) -->
-                            <div
-                                class="dropdown-content mt-1 w-40 bg-white border border-gray-300 rounded-lg shadow-xl p-3">
-                                <div class="space-y-1 text-sm">
-                                    <label class="flex items-center"><input type="checkbox" checked
-                                            class="mr-2 accent-orange-500"> 2019-2020</label>
-                                    <label class="flex items-center"><input type="checkbox" checked
-                                            class="mr-2 accent-orange-500"> 2020-2021</label>
-                                    <label class="flex items-center"><input type="checkbox" checked
-                                            class="mr-2 accent-orange-500"> 2021-2022</label>
-                                    <label class="flex items-center"><input type="checkbox" checked
-                                            class="mr-2 accent-orange-500"> 2022-2023</label>
-                                    <label class="flex items-center"><input type="checkbox" checked
-                                            class="mr-2 accent-orange-500"> 2023-2024</label>
-                                    <label class="flex items-center"><input type="checkbox" checked
-                                            class="mr-2 accent-orange-500"> 2024-2025</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
 
                     <div class="lg:col-span-1">
                         <div class="dropdown relative w-full">
@@ -156,42 +99,77 @@
                     </div>
 
                     <!-- KPIs (3 blocks) -->
-                    <div class="lg:col-span-1 bg-white p-3 rounded-lg shadow-md text-center">
-                        <p class="text-xs text-gray-500 mb-1">Revenue(In Cr.)</p>
-                        <p class="text-xl font-bold text-gray-800">18.2</p>
-                        <p class="text-sm text-red-600 flex items-center justify-center">
+                    <div class="lg:col-span-2 bg-white p-3 rounded-lg shadow-md text-center">
+                        <p class="text-xs text-gray-500 mb-1">Revenue (In Cr.)</p>
+
+                        <h3 class="text-xl font-bold text-gray-800">
+                            {{ number_format($revenueInCr, 2) }}
+                        </h3>
+
+                        <p
+                            class="text-sm flex items-center justify-center
+                             {{ $revenuePercentage >= 0 ? 'text-green-600' : 'text-red-600' }}">
+
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="{{ $revenuePercentage >= 0 ? 'M5 15l7-7 7 7' : 'M19 9l-7 7-7-7' }}">
                                 </path>
                             </svg>
-                            -81.5%
+
+                            {{ number_format($revenuePercentage, 1) }}%
                         </p>
                     </div>
+
                     <div class="lg:col-span-1 bg-white p-3 rounded-lg shadow-md text-center">
-                        <p class="text-xs text-gray-500 mb-1">Weight(In Tonnes)</p>
-                        <p class="text-xl font-bold text-gray-800">397.05</p>
-                        <p class="text-sm text-red-600 flex items-center justify-center">
+                        <p class="text-xs text-gray-500 mb-1">Weight (In Tonnes)</p>
+
+                        <h3 class="text-xl font-bold text-gray-800">
+                            {{ number_format($weightInTonnes, 2) }}
+                        </h3>
+
+                        <p
+                            class="text-sm {{ $weightPercentage >= 0 ? 'text-green-600' : 'text-red-600' }}
+        flex items-center justify-center">
+
+                            @if ($weightPercentage >= 0)
+                                ▲
+                            @else
+                                ▼
+                            @endif
+
+                            {{ number_format(abs($weightPercentage), 2) }}%
+                        </p>
+                    </div>
+
+                    <div class="lg:col-span-1 bg-white p-3 rounded-lg shadow-md text-center">
+                        <p class="text-xs text-gray-500 mb-1">Package (In Lakh)</p>
+
+                        <p class="text-xl font-bold text-gray-800">
+                            {{ number_format($packageInLakh, 2) }}
+                        </p>
+
+                        <p
+                            class="text-sm flex items-center justify-center
+                             {{ $packagePercentage >= 0 ? 'text-green-600' : 'text-red-600' }}">
+
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="{{ $packagePercentage >= 0 ? 'M5 15l7-7 7 7' : 'M19 9l-7 7-7-7' }}">
                                 </path>
                             </svg>
-                            -84.0%
+
+                            {{ number_format($packagePercentage, 1) }}%
                         </p>
                     </div>
-                    <div class="lg:col-span-1 bg-white p-3 rounded-lg shadow-md text-center">
-                        <p class="text-xs text-gray-500 mb-1">Pakege(In Lakh)</p>
-                        <p class="text-xl font-bold text-gray-800">14.01</p>
-                        <p class="text-sm text-red-600 flex items-center justify-center">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
-                                </path>
-                            </svg>
-                            -80.0%
-                        </p>
-                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-end m-3">
+                    <a href="{{ route('superadmin.parcelform') }}" class="btn btn-success">
+                        <i class="ti-plus"></i> Create Parcel Form
+                    </a>
                 </div>
 
 
@@ -322,7 +300,8 @@
     <!-- Load Chart.js for graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <!-- Load Chart.js Datalabels Plugin for showing values on bars/lines -->
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js">
+    </script>
 
     <script>
         // Register the datalabels plugin globally for all charts
@@ -756,7 +735,6 @@
                     datalabels: {
                         color: '#fff',
                         formatter: (value) => {
-                            // Display label only for segments > 5% for readability
                             if (value > 5) {
                                 return value.toFixed(1) + '%';
                             }

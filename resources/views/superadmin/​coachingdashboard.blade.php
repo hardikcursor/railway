@@ -57,8 +57,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- CARD 2 -->
                     <div class="col-md-4 mb-3">
                         <div class="metric-card total-earning">
                             <div class="metric-title">Reserved</div>
@@ -345,7 +343,7 @@
                                 height: 400,
                                 width: '100%'
                             },
-                            series: dataValues.map(Number), // Controller માંથી આવતા આંકડા
+                            series: dataValues.map(Number),
                             labels: dataLabels,
                             colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0', '#3F51B5', '#546E7A', '#D4526E',
                                 '#8D5B4C', '#F86624'
@@ -368,7 +366,6 @@
                                                 fontSize: '14px',
                                                 fontWeight: 'bold',
                                                 formatter: function(w) {
-                                                    // કુલ સરવાળો Lakh માં બતાવશે
                                                     let total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
                                                     return total.toFixed(2) + " Lakh";
                                                 }
@@ -377,18 +374,15 @@
                                     }
                                 }
                             },
-                            // ચાર્ટની ઉપર ટકાવારી બતાવવા માટે
                             dataLabels: {
                                 enabled: true,
                                 formatter: function(val, opts) {
-                                    // અહીં val એ આપોઆપ ગણાયેલી ટકાવારી છે
                                     return val.toFixed(1) + "%";
                                 },
                                 dropShadow: {
                                     enabled: false
                                 }
                             },
-                            // જ્યારે માઉસ સ્ટેશન પર લઈ જાવ ત્યારે કિંમત અને % બંને બતાવવા
                             tooltip: {
                                 y: {
                                     formatter: function(val, opts) {
@@ -586,7 +580,7 @@
             margin-left: auto;
         }
 
-        /* METRIC CARDS */
+
         .metrics-container {
             display: flex;
             gap: 20px;
@@ -653,7 +647,6 @@
             margin-right: 5px;
         }
 
-        /* CHARTS */
         .chart-container {
             display: flex;
             gap: 20px;
@@ -764,7 +757,6 @@
             margin: auto;
         }
 
-        /* --- General Headings --- */
         h3 {
             margin-top: 0;
             font-size: 16px;
@@ -776,7 +768,6 @@
             font-weight: normal;
         }
 
-        /* --- Table Styling (Left Section) --- */
         .table-section {
             flex: 2;
             background-color: #fff;
@@ -802,10 +793,8 @@
             font-weight: bold;
         }
 
-        /* Styling for the light blue rows (as seen in the image) */
         .data-table .highlight {
             background-color: #e0f7fa;
-            /* Light Cyan */
         }
 
         .station-name {
@@ -813,7 +802,6 @@
             text-align: left;
         }
 
-        /* --- Chart Styling (Right Section) --- */
         .chart-section {
             flex: 1.5;
             background-color: #fff;
@@ -821,7 +809,7 @@
             border: 1px solid #ddd;
         }
 
-        /* Legend Styling */
+
         .legend {
             display: flex;
             justify-content: flex-end;
@@ -839,19 +827,17 @@
 
         .reserved-color {
             background-color: #007bff;
-            /* Blue */
+
         }
 
         .unreserved-color {
             background-color: #00cccc;
-            /* Cyan */
+
         }
 
-        /* Chart Structure */
         .bar-chart {
             position: relative;
             padding-bottom: 30px;
-            /* Space for axis */
         }
 
         .chart-row {
@@ -876,11 +862,8 @@
             align-items: center;
             height: 20px;
             border-left: 1px solid #000;
-            /* Represents the Y-axis (0-point) */
             margin-left: 10px;
         }
-
-        /* Individual Bars */
         .reserved-bar,
         .unreserved-bar {
             height: 100%;
@@ -898,43 +881,31 @@
         .reserved-bar {
             background-color: #007bff;
             justify-content: flex-start;
-            /* Values on the left edge of the bar */
         }
 
         .unreserved-bar {
             background-color: #00cccc;
-            /* Unreserved bars for 2020-2023 in the image are negative/left-aligned */
             order: -1;
-            /* Place before the reserved bar */
             justify-content: flex-end;
-            /* Value at the right edge of the bar */
         }
-
-        /* Special styling for negative/left-side bars */
         .unreserved-bar.negative {
             background-color: #00cccc;
             direction: rtl;
-            /* Flip direction to align text to the right inside the bar */
             justify-content: flex-start;
         }
 
         .unreserved-bar.negative .value {
             direction: ltr;
-            /* Reset text direction for the number itself */
             color: #333;
-            /* Darker text for readability over light cyan */
             position: absolute;
-            /* Position value next to the bar */
             right: 100%;
             margin-right: 5px;
         }
 
-        /* X-Axis Representation */
         .axis {
             display: flex;
             justify-content: space-between;
             padding-left: 20%;
-            /* Align with the start of the bar area */
             font-size: 10px;
             border-top: 1px solid #333;
             padding-top: 5px;
@@ -975,11 +946,8 @@
         @media (max-width: 576px) {
             .col-3 {
                 flex: 1 1 100%;
-                /* full width on small devices */
             }
         }
-
-        /* MEDIA QUERIES */
         @media (max-width: 768px) {
             .filters {
                 flex-direction: column;

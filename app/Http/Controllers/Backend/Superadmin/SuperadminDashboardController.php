@@ -6,6 +6,7 @@ use App\Models\AdminReportForward;
 use App\Models\Booking_office_answer;
 use App\Models\Booking_office_form;
 use App\Models\Coaching;
+use App\Models\CoachingDetail;
 use App\Models\Goods_office_answer;
 use App\Models\Goods_Shed_office_form;
 use App\Models\inspectionkitchen_answer;
@@ -16,6 +17,7 @@ use App\Models\InspectionPayUseToilets_answer;
 use App\Models\InspectionPayUseToilets_location_form;
 use App\Models\inspection_tea_answer;
 use App\Models\NonFare_Revenue_answer;
+use App\Models\Parcel;
 use App\Models\Parcel_answer;
 use App\Models\Parcel_Office_form;
 use App\Models\PRS_office_answer;
@@ -23,6 +25,7 @@ use App\Models\PRS_office_form;
 use App\Models\Report;
 use App\Models\Station;
 use App\Models\StationCleanliness_answer;
+use App\Models\TicketChecking;
 use App\Models\Ticket_Examineroffice_form;
 use App\Models\Ticket_office_answer;
 use App\Models\User;
@@ -88,22 +91,6 @@ class SuperadminDashboardController extends Controller
         $reports = Report::where('duration', 'Half Yearly')->orderBy('created_at', 'desc')->get();
         return view('superadmin.report.6month', compact('reports'));
     }
-
-    // public function sendtoapproved($id)
-    // {
-    //     $post = Report::findOrFail($id);
-
-    //     if ($post->status === 'sent') {
-    //         $post->status               = 'approved';
-    //         $post->last_clicked_by_role = null;
-
-    //         $post->save();
-
-    //         return redirect()->back()->with('success', 'Report approved successfully!');
-    //     }
-
-    //     return redirect()->back()->with('info', 'Report must be in sent status to approve.');
-    // }
 
     public function sendtoapproved($id)
     {
@@ -259,6 +246,31 @@ class SuperadminDashboardController extends Controller
         return view('superadmin.coachingexcel');
     }
 
+    // public function coachingStore(Request $request)
+    // {
+    //     $request->validate([
+    //         'name'                  => 'required',
+    //         'station_name'          => 'required',
+    //         'unreserved_passengers' => 'required|numeric',
+    //         'unreserved_earning'    => 'required|numeric',
+    //         'reserved_passengers'   => 'required|numeric',
+    //         'reserved_earning'      => 'required|numeric',
+    //         'date'                  => 'required|date',
+    //     ]);
+    //     Coaching::create([
+    //         'Name'                  => $request->name,
+    //         'Station'               => $request->station_name,
+    //         'Unreserved_Passengers' => $request->unreserved_passengers,
+    //         'Unreserved_Earning'    => $request->unreserved_earning,
+    //         'Reserved_Passengers'   => $request->reserved_passengers,
+    //         'Reserved_Earning'      => $request->reserved_earning,
+    //         'Date'                  => $request->date,
+
+    //     ]);
+
+    //     return redirect()->route('superadmin.coachingdashboard')->with('success', 'Coaching data imported successfully.');
+    // }
+
     public function coachingStore(Request $request)
     {
         $request->validate([
@@ -270,7 +282,9 @@ class SuperadminDashboardController extends Controller
             'reserved_earning'      => 'required|numeric',
             'date'                  => 'required|date',
         ]);
-        Coaching::create([
+
+        // 1️⃣ Store main coaching data
+        $coaching = Coaching::create([
             'Name'                  => $request->name,
             'Station'               => $request->station_name,
             'Unreserved_Passengers' => $request->unreserved_passengers,
@@ -280,7 +294,39 @@ class SuperadminDashboardController extends Controller
             'Date'                  => $request->date,
         ]);
 
-        return redirect()->route('superadmin.coachingdashboard')->with('success', 'Coaching data imported successfully.');
+        // 2️⃣ Store Unreserved Details
+        if ($request->has('unreserved')) {
+            foreach ($request->unreserved['class'] as $i => $class) {
+                if ($class) {
+                    CoachingDetail::create([
+                        'coaching_id' => $coaching->id,
+                        'type'        => 'unreserved',
+                        'class'       => $class,
+                        'passenger'   => $request->unreserved['passenger'][$i],
+                        'revenue'     => $request->unreserved['revenue'][$i],
+                    ]);
+                }
+            }
+        }
+
+        // 3️⃣ Store Reserved Details
+        if ($request->has('reserved')) {
+            foreach ($request->reserved['class'] as $i => $class) {
+                if ($class) {
+                    CoachingDetail::create([
+                        'coaching_id' => $coaching->id,
+                        'type'        => 'reserved',
+                        'class'       => $class,
+                        'passenger'   => $request->reserved['passenger'][$i],
+                        'revenue'     => $request->reserved['revenue'][$i],
+                    ]);
+                }
+            }
+        }
+
+        return redirect()
+            ->route('superadmin.coachingdashboard')
+            ->with('success', 'Coaching data stored successfully');
     }
 
     private function formatThreeWithTwoDecimal($value, $unit = 'lakh')
@@ -330,10 +376,11 @@ class SuperadminDashboardController extends Controller
         $totalEarningFormatted    = $this->formatThreeWithTwoDecimal($totalUnreservedEarning);
         $totalReserved_Passengers = $this->formatThreeWithTwoDecimal($totalReservedPassengers);
         $totalReserved_Earning    = $this->formatThreeWithTwoDecimal($totalReservedEarning);
-        $grandTotalPassengers     = $totalUnreservedPassengers + $totalReservedPassengers;
-        $Total_Passengers         = $this->formatThreeWithTwoDecimal($grandTotalPassengers);
-        $grandTotalEarning        = $totalUnreservedEarning + $totalReservedEarning;
-        $Total_Earning            = $this->formatThreeWithTwoDecimal($grandTotalEarning);
+        $manualTotalPassengers    = $totalUnreservedPassengers + $totalReservedPassengers;
+        $manualTotalEarning       = $totalUnreservedEarning + $totalReservedEarning;
+
+        $Total_Passengers = $this->formatThreeWithTwoDecimal($manualTotalPassengers);
+        $Total_Earning    = $this->formatThreeWithTwoDecimal($manualTotalEarning);
 
         $years = Coaching::select(DB::raw('DISTINCT YEAR(Date) as year'))
             ->orderBy('year', 'DESC')
@@ -343,20 +390,17 @@ class SuperadminDashboardController extends Controller
         $raw = Coaching::select(
             'Station',
             DB::raw('YEAR(Date) as Year'),
-            DB::raw('SUM(CAST(Total_Passengers AS UNSIGNED)) as Passengers'),
-            DB::raw('SUM(CAST(Total_Earning AS DECIMAL(15,2))) as Revenue')
+            DB::raw('SUM(CAST(Unreserved_Passengers AS UNSIGNED) + CAST(Reserved_Passengers AS UNSIGNED)) as Passengers'),
+            DB::raw('SUM(CAST(Unreserved_Earning AS DECIMAL(15,2)) + CAST(Reserved_Earning AS DECIMAL(15,2))) as Revenue')
         )
             ->groupBy('Station', 'Year')
-            ->orderBy('Station')
-            ->orderBy('Year', 'DESC')
             ->get();
 
         $data = [];
-
         foreach ($raw as $row) {
             $data[$row->Station][$row->Year] = [
-                'Passengers' => $row->Passengers,
-                'Revenue'    => $row->Revenue,
+                'Passengers' => (float) $row->Passengers,
+                'Revenue'    => (float) $row->Revenue,
             ];
         }
 
@@ -435,7 +479,66 @@ class SuperadminDashboardController extends Controller
 
     public function parceldashboard()
     {
-        return view('superadmin.parceldashboard');
+        $revenue = Parcel::sum('revenue');
+
+        $revenueInCr = $revenue / 10000000;
+
+        $totalRevenueTarget = 10000000;
+        $revenuePercentage  = ($revenue / $totalRevenueTarget) * 100;
+
+        $totalPackage = Parcel::sum('package');
+
+        $packageInLakh = $totalPackage / 100000;
+
+        $totalPackageTarget = 100000;
+
+        $packagePercentage = $totalPackageTarget > 0
+            ? ($packageInLakh / $totalPackageTarget) * 100
+            : 0;
+
+        $station = Parcel::select('station')
+            ->distinct()
+            ->orderBy('station')
+            ->pluck('station');
+
+        $item = Parcel::select('items')
+            ->distinct()
+            ->orderBy('items')
+            ->pluck('items');
+
+        $totalWeightKg = Parcel::sum('weight');
+
+        $weightInTonnes = $totalWeightKg / 1000;
+
+        $totalWeightTarget = 1000;
+
+        $weightPercentage = $totalWeightTarget > 0
+            ? ($weightInTonnes / $totalWeightTarget) * 100
+            : 0;
+
+        return view('superadmin.parceldashboard', compact('revenueInCr', 'revenuePercentage', 'packageInLakh', 'packagePercentage', 'station', 'item', 'weightInTonnes', 'weightPercentage'));
+    }
+
+    public function create()
+    {
+        return view('superadmin.parcelform');
+    }
+
+    public function parcelstore(Request $request)
+    {
+        $request->validate([
+            'name'    => 'required|string|max:255',
+            'revenue' => 'required|numeric',
+            'weight'  => 'required|numeric',
+            'package' => 'required|integer',
+            'date'    => 'required|date',
+            'items'   => 'required|string',
+            'station' => 'required|string',
+        ]);
+
+        Parcel::create($request->all());
+
+        return redirect()->route('superadmin.parceldashboard')->with('success', 'Parcel data saved successfully!');
     }
 
     public function taskmanager()
@@ -446,7 +549,55 @@ class SuperadminDashboardController extends Controller
 
     public function ticketchecking()
     {
-        return view('superadmin.ticketchecking');
+        $cases = \App\Models\TicketChecking::sum('cases');
+
+        $casesInLakh = $cases / 100000;
+
+        $totalTarget = 100000;
+        $percentage  = ($cases / $totalTarget) * 100;
+
+        $revenue = TicketChecking::sum('revenue');
+
+        $revenueInCr = $revenue / 10000000;
+
+        $totalRevenueTarget = 10000000;
+        $revenuePercentage  = ($revenue / $totalRevenueTarget) * 100;
+
+        $cadres = TicketChecking::select('cadre')
+            ->distinct()
+            ->orderBy('cadre')
+            ->pluck('cadre');
+
+        $locations = TicketChecking::select('location')
+            ->distinct()
+            ->orderBy('location')
+            ->pluck('location');
+
+        return view('superadmin.ticketchecking', compact('cases', 'casesInLakh', 'percentage', 'revenueInCr', 'revenuePercentage', 'cadres', 'locations'));
+    }
+
+    public function ticketcheckingmaster()
+    {
+        return view('superadmin.ticketcheckingmaster');
+    }
+
+    public function ticketcheckingmasterstore(Request $request)
+    {
+        $request->validate([
+            'cadre'    => 'required|string',
+            'location' => 'required|string',
+            'cases'    => 'required|integer|min:0',
+            'revenue'  => 'required|numeric|min:0',
+        ]);
+
+        TicketChecking::create($request->only([
+            'cadre',
+            'location',
+            'cases',
+            'revenue',
+        ]));
+
+        return redirect()->route('superadmin.ticketchecking')->with('success', 'Ticket Checking data saved successfully!');
     }
 
 }
