@@ -29,12 +29,18 @@
                         </select>
                     </div>
                 </div>
+                <div class="d-flex justify-content-end align-items-center m-3">
+                    <a href="#" class="btn btn-primary" style="margin-right:12px;">
+                        ↑ Import Excel
+                    </a>
 
-                <div class="d-flex justify-content-end m-3">
                     <a href="{{ route('superadmin.coaching') }}" class="btn btn-success">
-                        <i class="ti-plus"></i> Create Coaching
+                        + Create Coaching
                     </a>
                 </div>
+
+
+
                 <div class="row mt-3">
 
                     <!-- CARD 1 -->
@@ -101,101 +107,101 @@
                 </div>
 
 
-                <div class="chart-container">
-                    <div class="chart-box shadow-sm p-3 bg-white rounded">
-                        <canvas id="passengerTrendChart" height="260"></canvas>
+                <div class="row mt-4">
+                    <div class="col-md-6 col-12">
+                        <div class="chart-box">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 col-12">
+                        <div class="chart-box">
+                            <canvas id="passengerChart"></canvas>
+                        </div>
                     </div>
                 </div>
 
+
                 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
+                <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
                 <script>
-                    const rawPassengerData = @json($passengerChartData);
-                    const financialMonths = ["APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC", "JAN", "FEB", "MAR"];
+                    const rawRevenueData = @json($earningChartData);
+                    const passengerData = @json($passengerChartData);
+                    const years = @json($years);
+
+                    const months = ['APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'JAN', 'FEB', 'MAR'];
                     const monthOrder = [4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3];
-                    const colors = ["#ff5c33", "#ffcc00", "#4CAF50", "#2196F3"];
-                    const FIXED_TOTAL = 100000;
+                    const colors = ['#6ab04c', '#ffc107', '#ff7a00', '#00a8ff', '#9c27b0'];
 
-                    const passengerDatasets = Object.keys(rawPassengerData).sort((a, b) => b - a).map((year, i) => {
-                        const monthlyValues = monthOrder.map(m => rawPassengerData[year]?.[m] || 0);
-                        const monthlyPercentages = monthlyValues.map(val =>
-                            val > 0 ? parseFloat(((val / FIXED_TOTAL) * 100).toFixed(4)) : 0
-                        );
+                    const revenueDatasets = Object.keys(rawRevenueData)
+                        .map(yearStr => parseInt(yearStr))
+                        .sort((a, b) => b - a)
+                        .map((year, i) => {
+                            const data = monthOrder.map(m => +(rawRevenueData[year]?.[m] || 0) / 10000000);
+                            return {
+                                label: `${year}-${(year+1).toString().slice(-2)}`,
+                                data: data,
+                                borderColor: colors[i % colors.length],
+                                backgroundColor: colors[i % colors.length],
+                                tension: 0.4,
+                                pointRadius: 3,
+                                fill: false,
+                                spanGaps: true
+                            };
+                        });
 
+                    const passengerDatasets = years.map((year, i) => {
+                        const data = monthOrder.map(m => passengerData[year]?.[m] || 0);
                         return {
-                            label: `${year-1}-${year.toString().slice(-2)}`,
-                            data: monthlyPercentages,
-                            actualData: monthlyValues,
+                            label: `${year}-${(year+1).toString().slice(-2)}`,
+                            data: data,
                             borderColor: colors[i % colors.length],
                             backgroundColor: colors[i % colors.length],
-                            borderWidth: 1.5,
                             tension: 0.4,
-                            pointRadius: 2.5,
-                            pointBackgroundColor: "#fff",
-                            fill: false
+                            pointRadius: 4,
+                            fill: false,
+                            spanGaps: true
                         };
                     });
 
-                    new Chart(document.getElementById("passengerTrendChart"), {
-                        type: "line",
+                    new Chart(document.getElementById('revenueChart'), {
+                        type: 'line',
                         data: {
-                            labels: financialMonths,
-                            datasets: passengerDatasets
+                            labels: months,
+                            datasets: revenueDatasets
                         },
                         options: {
                             responsive: true,
-                            maintainAspectRatio: false,
                             plugins: {
                                 legend: {
-                                    position: "top",
-                                    align: "end",
-                                    labels: {
-                                        usePointStyle: true,
-                                        pointStyle: 'circle',
-                                        boxWidth: 3,
-                                        boxHeight: 3,
-                                        pointStyleWidth: 3,
-                                        padding: 10,
-                                        font: {
-                                            size: 10
-                                        }
-                                    }
+                                    position: 'top'
                                 },
                                 tooltip: {
                                     callbacks: {
-                                        label: function(ctx) {
-                                            let label = ctx.dataset.label || '';
-                                            let percent = ctx.parsed.y + '%';
-                                            let actual = ctx.dataset.actualData[ctx.dataIndex].toLocaleString('en-IN');
-                                            return ` ${label}: ${percent}  `;
-                                        }
+                                        label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)} Cr`
                                     }
                                 }
                             },
                             scales: {
                                 y: {
-                                    beginAtZero: true,
-                                    title: {
-                                        display: true,
-                                        text: "Reserved Passenger(In Crore)",
-                                        font: {
-                                            size: 15,
-                                            weight: 'bold'
+                                    min: 0,
+                                    max: 2,
+                                    ticks: {
+                                        stepSize: 0.5,
+                                        callback: val => {
+                                            const lakhVal = val * 100;
+                                            const allowed = [0, 50, 100, 150, 200];
+                                            return allowed.includes(lakhVal) ? lakhVal.toString() : '';
                                         }
                                     },
-                                    ticks: {
-                                        font: {
-                                            size: 9
-                                        },
-                                        callback: (v) => v + "%"
+                                    title: {
+                                        display: true,
+                                        text: 'Reserved Revenue (Crore)'
                                     }
                                 },
                                 x: {
-                                    ticks: {
-                                        font: {
-                                            size: 9
-                                        }
-                                    },
                                     grid: {
                                         display: false
                                     }
@@ -203,115 +209,67 @@
                             }
                         }
                     });
-                </script>
 
-                <div class="chart-container">
-                    <div class="chart-box shadow-sm p-3 bg-white rounded">
-                        <canvas id="myChart2" height="260"></canvas>
-                    </div>
-                </div>
+                    const allPassengerValues = passengerDatasets.flatMap(d => d.data);
+                    const maxPassengerValue = Math.max(...allPassengerValues);
 
-                <script>
-                    const rawEarningData = @json($earningChartData);
-                    const monthsList = ["APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC", "JAN", "FEB", "MAR"];
-                    const mOrder = [4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3];
-                    const chartColors = ["#FF5722", "#FFC107", "#4CAF50", "#2196F3"];
-                    const FIXED_TOTAL_LAKH = 10000000;
+                    // 🔹 Smart step size logic
+                    let stepSize = 5;
 
-                    const earnDatasets = Object.keys(rawEarningData).sort((a, b) => b - a).map((year, i) => {
-                        const monthlyValues = mOrder.map(m => rawEarningData[year]?.[m] || 0);
-                        const monthlyPercentages = monthlyValues.map(val =>
-                            val > 0 ? parseFloat(((val / FIXED_TOTAL_LAKH) * 100).toFixed(2)) : 0
-                        );
+                    if (maxPassengerValue <= 5) {
+                        stepSize = 1;
+                    } else if (maxPassengerValue <= 10) {
+                        stepSize = 2;
+                    } else if (maxPassengerValue <= 20) {
+                        stepSize = 5;
+                    } else if (maxPassengerValue <= 50) {
+                        stepSize = 10;
+                    } else {
+                        stepSize = 20;
+                    }
 
-                        return {
-                            label: `${year-1}-${year.toString().slice(-2)}`,
-                            data: monthlyPercentages,
-                            actualValues: monthlyValues,
-                            borderColor: chartColors[i % chartColors.length],
-                            backgroundColor: chartColors[i % chartColors.length],
-                            borderWidth: 1.5,
-                            tension: 0.4,
-                            pointRadius: 2.5,
-                            pointBackgroundColor: "#fff",
-                            fill: false
-                        };
-                    });
+                    const maxY = Math.ceil(maxPassengerValue / stepSize) * stepSize;
 
-                    const earnCtx = document.getElementById("myChart2");
-                    if (earnCtx) {
-                        new Chart(earnCtx.getContext('2d'), {
-                            type: "line",
-                            data: {
-                                labels: monthsList,
-                                datasets: earnDatasets
+                    new Chart(document.getElementById('passengerChart'), {
+                        type: 'line',
+                        data: {
+                            labels: months,
+                            datasets: passengerDatasets
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top'
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: ctx =>
+                                            `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)} Lakh`
+                                    }
+                                }
                             },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                plugins: {
-                                    legend: {
-                                        position: "top",
-                                        align: "end",
-                                        labels: {
-                                            usePointStyle: true,
-                                            pointStyle: 'circle',
-                                            boxWidth: 3,
-                                            boxHeight: 3,
-                                            pointStyleWidth: 3,
-                                            padding: 10,
-                                            font: {
-                                                size: 10
-                                            }
-                                        }
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: maxY,
+                                    ticks: {
+                                        stepSize: stepSize,
+                                        callback: value => value + ' '
                                     },
-                                    tooltip: {
-                                        callbacks: {
-                                            label: function(ctx) {
-                                                let label = ctx.dataset.label || '';
-                                                let percentageValue = ctx.raw + '%';
-                                                let actualAmount = ctx.dataset.actualValues[ctx.dataIndex].toLocaleString(
-                                                    'en-IN', {
-                                                        style: 'currency',
-                                                        currency: 'INR',
-                                                        minimumFractionDigits: 0
-                                                    });
-                                            }
-                                        }
+                                    title: {
+                                        display: true,
+                                        text: 'Reserved Passenger (Lakh)'
                                     }
                                 },
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        title: {
-                                            display: true,
-                                            text: "Contribution % (of 1 Lakh)",
-                                            font: {
-                                                size: 10,
-                                                weight: 'bold'
-                                            }
-                                        },
-                                        ticks: {
-                                            font: {
-                                                size: 9
-                                            },
-                                            callback: (v) => v + "%"
-                                        }
-                                    },
-                                    x: {
-                                        ticks: {
-                                            font: {
-                                                size: 9
-                                            }
-                                        },
-                                        grid: {
-                                            display: false
-                                        }
+                                x: {
+                                    grid: {
+                                        display: false
                                     }
                                 }
                             }
-                        });
-                    }
+                        }
+                    });
                 </script>
 
                 <div class="row">
@@ -336,26 +294,29 @@
 
                 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
                 <script>
-                    function createDynamicChart(id, dataValues, dataLabels, centerLabel) {
+                    const stationLabels = @json($passengerLabels);
+                    const passengerSeries = @json($passengerValues);
+                    const revenueSeries = @json($revenueValues);
+                </script>
+
+                <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+                <script>
+                    function createDynamicDonut(id, series, labels, centerLabel, unit) {
+
                         var options = {
                             chart: {
                                 type: 'donut',
-                                height: 400,
-                                width: '100%'
+                                height: 400
                             },
-                            series: dataValues.map(Number),
-                            labels: dataLabels,
-                            colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0', '#3F51B5', '#546E7A', '#D4526E',
-                                '#8D5B4C', '#F86624'
-                            ],
+                            series: series.map(Number),
+                            labels: labels,
                             legend: {
                                 position: 'right',
-                                width: 140,
                                 fontSize: '12px'
                             },
                             plotOptions: {
                                 pie: {
-                                    customScale: 0.85,
                                     donut: {
                                         size: '70%',
                                         labels: {
@@ -363,74 +324,152 @@
                                             total: {
                                                 show: true,
                                                 label: centerLabel,
-                                                fontSize: '14px',
-                                                fontWeight: 'bold',
                                                 formatter: function(w) {
                                                     let total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
-                                                    return total.toFixed(2) + " Lakh";
+                                                    return total.toFixed(2) + ' ' + unit;
                                                 }
                                             }
                                         }
                                     }
                                 }
                             },
-                            dataLabels: {
-                                enabled: true,
-                                formatter: function(val, opts) {
-                                    return val.toFixed(1) + "%";
-                                },
-                                dropShadow: {
-                                    enabled: false
-                                }
-                            },
                             tooltip: {
                                 y: {
                                     formatter: function(val, opts) {
                                         let total = opts.globals.seriesTotals.reduce((a, b) => a + b, 0);
-                                        let percent = (val / total * 100).toFixed(1);
-                                        return val + " Lakh (" + percent + "%)";
+                                        let percent = ((val / total) * 100).toFixed(1);
+                                        return `${val} ${unit} (${percent}%)`;
                                     }
                                 }
+                            },
+                            dataLabels: {
+                                formatter: val => val.toFixed(1) + '%'
                             }
                         };
 
                         new ApexCharts(document.querySelector(id), options).render();
                     }
-
-
-                    createDynamicChart(
-                        "#dynamic_passenger_chart",
-                        @json($unrevPassengerValues),
-                        @json($unrevPassengerLabels),
-                        "Total Passengers"
-                    );
-
-
-                    createDynamicChart(
-                        "#dynamic_revenue_chart",
-                        @json($unrevEarningValues),
-                        @json($unrevEarningLabels),
-                        "Total Revenue"
-                    );
                 </script>
 
+                <script>
+                    /* 🔵 Passenger Donut (Lakh) */
+                    createDynamicDonut(
+                        "#dynamic_passenger_chart",
+                        passengerSeries,
+                        stationLabels,
+                        "Total Passengers",
+                        "Lakh"
+                    );
 
+                    /* 🟢 Revenue Donut (Crore) */
+                    createDynamicDonut(
+                        "#dynamic_revenue_chart",
+                        revenueSeries,
+                        stationLabels,
+                        "Total Revenue",
+                        "Cr"
+                    );
+                </script>
+            </div>
 
-                <div class="col-6">
-                    <div class="ticket-group">
-                        <h3 class="group-title">Reserved Ticket</h3>
-                        <div class="ticket-box">
-                            <div class="chart-title">Revenue (in Cr.)</div>
-                            <div id="res_revenue"></div>
+            <div class="container">
+                <h3 class="group-title mb-3 text-center">Reserved Ticket</h3>
+
+                <div class="row">
+                    <div class="col-6">
+                        <div class="ticket-group">
+                            <div class="ticket-box">
+                                <div id="res_revenue">Revenue (in.Cr)</div>
+                            </div>
                         </div>
-
-                        <div class="ticket-box">
-                            <div class="chart-title">Passenger (in Lakh)</div>
-                            <div id="res_passenger"></div>
+                    </div>
+                    <div class="col-6">
+                        <div class="ticket-group">
+                            <div class="ticket-box">
+                                <div id="res_passenger">Passenger (in.Lakh)</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+
+            <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+            <script>
+                function createStaticDonut(id, series, labels, centerText, unit) {
+                    var options = {
+                        chart: {
+                            type: 'donut',
+                            height: 260
+                        },
+                        series: series,
+                        labels: labels,
+                        legend: {
+                            position: 'right',
+                            fontSize: '12px'
+                        },
+                        plotOptions: {
+                            pie: {
+                                donut: {
+                                    size: '65%',
+                                    labels: {
+                                        show: true,
+                                        total: {
+                                            show: true,
+                                            label: centerText,
+                                            formatter: function(w) {
+                                                let total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                                return total.toFixed(1) + ' ' + unit;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        dataLabels: {
+                            formatter: val => val.toFixed(1) + '%'
+                        },
+                        tooltip: {
+                            y: {
+                                formatter: function(val, opts) {
+                                    let total = opts.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                    let percent = ((val / total) * 100).toFixed(1);
+                                    return `${val} ${unit} (${percent}%)`;
+                                }
+                            }
+                        }
+                    };
+
+                    new ApexCharts(document.querySelector(id), options).render();
+                }
+
+                // Prepare data dynamically from PHP variables passed from Laravel
+                const reservedRevenueSeries = @json($reservedRevenueValues);
+                const reservedRevenueLabels = @json($reservedPassengerLabels);
+
+                const reservedPassengerSeries = @json($reservedPassengerValues);
+                const reservedPassengerLabels = @json($reservedPassengerLabels);
+
+                // Reserved Ticket Revenue chart
+                createStaticDonut(
+                    "#res_revenue",
+                    reservedRevenueSeries,
+                    reservedRevenueLabels,
+                    "Total Revenue",
+                    "Cr"
+                );
+
+                // Reserved Ticket Passenger chart
+                createStaticDonut(
+                    "#res_passenger",
+                    reservedPassengerSeries,
+                    reservedPassengerLabels,
+                    "Total Passenger",
+                    "Lakh"
+                );
+            </script>
+
+
 
             <div class="data-container">
                 <div class="table-responsive">
@@ -647,24 +686,8 @@
             margin-right: 5px;
         }
 
-        .chart-container {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
 
-        .chart-box {
-            flex: 1 1 450px;
-            background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-        }
 
-        .chart-area {
-            height: 320px;
-        }
 
         .ticket-box {
             background: white;
@@ -864,6 +887,7 @@
             border-left: 1px solid #000;
             margin-left: 10px;
         }
+
         .reserved-bar,
         .unreserved-bar {
             height: 100%;
@@ -888,6 +912,7 @@
             order: -1;
             justify-content: flex-end;
         }
+
         .unreserved-bar.negative {
             background-color: #00cccc;
             direction: rtl;
@@ -948,6 +973,7 @@
                 flex: 1 1 100%;
             }
         }
+
         @media (max-width: 768px) {
             .filters {
                 flex-direction: column;
@@ -1034,35 +1060,4 @@
             new google.visualization.LineChart(document.getElementById("pass_chart_div")).draw(data, options);
         }
     </script>
-
-    {{-- <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-        <script>
-            function makeDonutChart(id, values, labels) {
-                var options = {
-                    chart: {
-                        type: "donut",
-                        height: 260,
-                    },
-                    series: values,
-                    labels: labels,
-                    legend: {
-                        position: "right",
-                    },
-                    dataLabels: {
-                        enabled: true,
-                        formatter: (v) => v.toFixed(1) + "%",
-                    },
-                };
-                new ApexCharts(document.querySelector(id), options).render();
-            }
-
-            const labels = ["ADI", "SBIB", "GIMB", "MISC", "NBVJ", "MSH", "PNU", "ASV", "VG", "Others"];
-
-            makeDonutChart("#unrev_revenue", [44, 13.3, 7.5, 5, 4, 3.5, 3, 2.5, 2, 13.2], labels);
-            makeDonutChart("#unrev_passenger", [34.9, 10.1, 8, 6, 5, 4.5, 3.2, 2.5, 2, 24.1], labels);
-
-            makeDonutChart("#res_revenue", [53.5, 18.4, 6.5, 5, 4, 3, 2, 2, 1.5, 3], labels);
-            makeDonutChart("#res_passenger", [54.9, 17.2, 6.8, 5.5, 4, 3.2, 3, 2.4, 1.8, 3], labels);
-        </script> --}}
 @endsection
-</div>

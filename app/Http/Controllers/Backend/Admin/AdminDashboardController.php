@@ -794,7 +794,7 @@ class AdminDashboardController extends Controller
 
     public function station()
     {
-        $stations = Station::latest()->get();
+        $stations = Station::orderBy('station', 'asc')->get();
         return view('admin.station.create', compact('stations'));
     }
 

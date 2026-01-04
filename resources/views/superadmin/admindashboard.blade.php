@@ -12,15 +12,15 @@
                     <div class="col-md-4 mb-3">
                         <a href="{{ route('superadmin.freightdashboard') }}" class="metric-card-link">
                             <div class="metric-card unreserved">
-                                <div class="metric-title">Freight Revenue</div>
+                                <div class="metric-title">Freight Revenue </div>
                                 <div class="metric-columns">
                                     <div class="metric-column">
                                         <div class="metric-label">Target</div>
-                                        <div class="metric-value">122.99</div>
+                                        <div class="metric-value">00.00</div>
                                     </div>
                                     <div class="metric-column">
-                                        <div class="metric-label">Position</div>
-                                        <div class="metric-value">122.99</div>
+                                        <div class="metric-label">Revenue</div>
+                                        <div class="metric-value">467.47 </div>
                                     </div>
                                 </div>
                             </div>
@@ -30,15 +30,15 @@
                     <div class="col-md-4 mb-3">
                         <a href="{{ route('superadmin.parceldashboard') }}" class="metric-card-link">
                             <div class="metric-card reserved">
-                                <div class="metric-title">Parcel</div>
+                                <div class="metric-title">Parcel </div>
                                 <div class="metric-columns">
                                     <div class="metric-column">
                                         <div class="metric-label">Target</div>
-                                        <div class="metric-value">122.99</div>
+                                        <div class="metric-value">00.00</div>
                                     </div>
                                     <div class="metric-column">
-                                        <div class="metric-label">Position</div>
-                                        <div class="metric-value">122.99</div>
+                                        <div class="metric-label">Revenue</div>
+                                        <div class="metric-value">1.20 </div>
                                     </div>
                                 </div>
                             </div>
@@ -52,11 +52,11 @@
                                 <div class="metric-columns">
                                     <div class="metric-column">
                                         <div class="metric-label">Target</div>
-                                        <div class="metric-value">122.99</div>
+                                        <div class="metric-value">00.00</div>
                                     </div>
                                     <div class="metric-column">
-                                        <div class="metric-label">Position</div>
-                                        <div class="metric-value">122.99</div>
+                                        <div class="metric-label">Revenue</div>
+                                        <div class="metric-value">00.00</div>
                                     </div>
                                 </div>
                             </div>
@@ -69,17 +69,17 @@
                 <div class="row mt-3">
 
                     <div class="col-md-4 mb-3">
-                        <a href="#" class="metric-card-link">
+                        <a href="{{ route('superadmin.cateringdashboard') }}" class="metric-card-link">
                             <div class="metric-card unreserved">
-                                <div class="metric-title">Catering</div>
+                                <div class="metric-title">Catering </div>
                                 <div class="metric-columns">
                                     <div class="metric-column">
                                         <div class="metric-label">Target</div>
-                                        <div class="metric-value">122.99</div>
+                                        <div class="metric-value">00.00</div>
                                     </div>
                                     <div class="metric-column">
-                                        <div class="metric-label">Position</div>
-                                        <div class="metric-value">122.99</div>
+                                        <div class="metric-label">Revenue</div>
+                                        <div class="metric-value">25.0</div>
                                     </div>
                                 </div>
                             </div>
@@ -93,11 +93,11 @@
                                 <div class="metric-columns">
                                     <div class="metric-column">
                                         <div class="metric-label">Target</div>
-                                        <div class="metric-value">122.99</div>
+                                        <div class="metric-value">00.00</div>
                                     </div>
                                     <div class="metric-column">
-                                        <div class="metric-label">Position</div>
-                                        <div class="metric-value">122.99</div>
+                                        <div class="metric-label">Revenue</div>
+                                        <div class="metric-value">26.65 </div>
                                     </div>
                                 </div>
                             </div>
@@ -111,11 +111,11 @@
                                 <div class="metric-columns">
                                     <div class="metric-column">
                                         <div class="metric-label">Target</div>
-                                        <div class="metric-value">122.99</div>
+                                        <div class="metric-value">00.00</div>
                                     </div>
                                     <div class="metric-column">
-                                        <div class="metric-label">Position</div>
-                                        <div class="metric-value">122.99</div>
+                                        <div class="metric-label">Revenue</div>
+                                        <div class="metric-value">00.00</div>
                                     </div>
                                 </div>
                             </div>
@@ -154,11 +154,11 @@
                                 <div class="metric-columns">
                                     <div class="metric-column">
                                         <div class="metric-label">Target</div>
-                                        <div class="metric-value">122.99</div>
+                                        <div class="metric-value">00.00</div>
                                     </div>
                                     <div class="metric-column">
-                                        <div class="metric-label">Position</div>
-                                        <div class="metric-value">122.99</div>
+                                        <div class="metric-label">Revenue</div>
+                                        <div class="metric-value">00.00</div>
                                     </div>
                                 </div>
                             </div>
@@ -174,7 +174,7 @@
                                 <div class="metric-columns">
                                     <div class="metric-column">
                                         <div class="metric-label">Revenue</div>
-                                        <div class="metric-value">122.99</div>
+                                        <div class="metric-value">00.00</div>
                                     </div>
                                 </div>
                             </div>
@@ -193,7 +193,7 @@
 
                                     <div class="metric-column">
                                         <div class="metric-label">Amount</div>
-                                        <div class="metric-value">00.00</div>
+                                        <div class="metric-value">3.120 </div>
                                     </div>
                                 </div>
                             </div>

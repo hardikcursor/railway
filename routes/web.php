@@ -5,6 +5,9 @@ use App\Http\Controllers\Backend\Admin\AdminDashboardController;
 use App\Http\Controllers\Backend\Superadmin\SuperadminDashboardController;
 use App\Http\Controllers\Backend\User\UserDashboardController;
 use Illuminate\Support\Facades\Auth;
+
+
+
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -36,6 +39,10 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
     Route::get('/getuser', [SuperadminDashboardController::class, 'userdataget'])->name('superadmin.userdataget');
     Route::post('/chengestatus', [SuperadminDashboardController::class, 'changestatus'])->name('admin.chnageStatus');
     Route::get('/superadmin/freightdashboard', [SuperadminDashboardController::class, 'freightdashboard'])->name('superadmin.freightdashboard');
+    Route::get('/superadmin/freightform', [SuperadminDashboardController::class, 'importFreightform'])->name('superadmin.freightform');
+    Route::post('superadmin/freight/import-excel', [SuperadminDashboardController::class, 'importFreightExcel'])
+    ->name('freight.import.excel');
+
     Route::get('superadmin/coaching', [SuperadminDashboardController::class, 'coaching'])->name('superadmin.coaching');
     Route::post('superadmin/coaching', [SuperadminDashboardController::class, 'coachingStore'])
     ->name('superadmin.coaching.store');
@@ -47,14 +54,15 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
     Route::get('/superadmin/ticketchecking', [SuperadminDashboardController::class, 'ticketchecking'])->name('superadmin.ticketchecking');
     Route::get('/superadmin/ticketcheckingmaster', [SuperadminDashboardController::class, 'ticketcheckingmaster'])->name('superadmin.ticketcheckingmaster');
     Route::post('/ticket-checking/store', [SuperadminDashboardController::class, 'ticketcheckingmasterstore'])->name('superadmin.ticketchecking.store');
-
+    Route::get('/superadmin/cateringdashboard', [SuperadminDashboardController::class, 'cateringdashboard'])->name('superadmin.cateringdashboard');
+    Route::get('/superadmin/cateringform', [SuperadminDashboardController::class, 'cateringform'])->name('superadmin.cateringform');
+    Route::post('superadmin/cateringstore', [SuperadminDashboardController::class, 'cateringstore'])->name('superadmin.catering.store');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::get('/admin/payparkdashboard', [AdminDashboardController::class, 'payparkdashboard'])->name('admin.payparkdashboard');
-    Route::get('/admin/cateringdashboard', [AdminDashboardController::class, 'cateringdashboard'])->name('admin.cateringdashboard');
     Route::get('/admin/cleaningdashboard', [AdminDashboardController::class, 'cleaningdashboard'])->name('admin.cleaningdashboard');
     Route::get('/admin/one-month', [AdminDashboardController::class, 'onemonth'])->name('admin.report.onemonth');
     Route::get('/admin/three-month', [AdminDashboardController::class, 'secondmonth'])->name('admin.report.threemonth');
@@ -84,10 +92,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('stations/{id}/edit', [AdminDashboardController::class, 'editstation'])->name('stations.edit');
     Route::post('stations/update/{id}', [AdminDashboardController::class, 'updatestation'])->name('stations.update');
     Route::delete('stations/{id}', [AdminDashboardController::class, 'delete'])->name('stations.destroy');
-
     Route::get('/freightdashboard', [AdminDashboardController::class, 'freightdashboard'])->name('admin.freightdashboard');
     Route::get('/coachingdashboard', [AdminDashboardController::class, 'coachingdashboard'])->name('admin.coachingdashboard');
     Route::get('/parceldashboard', [AdminDashboardController::class, 'parceldashboard'])->name('admin.parceldashboard');
+    Route::get('/admin/cateringdashboard', [AdminDashboardController::class, 'cateringdashboard'])->name('admin.cateringdashboard');
 
 });
 

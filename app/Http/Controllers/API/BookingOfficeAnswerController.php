@@ -1316,7 +1316,7 @@ class BookingOfficeAnswerController extends Controller
 
       public function getstations()
     {
-        $stations = Station::latest()->get();
+        $stations = Station::orderBy('station', 'asc')->get();
 
         if ($stations->isEmpty()) {
             return response()->json([

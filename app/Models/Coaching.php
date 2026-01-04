@@ -17,6 +17,4 @@ class Coaching extends Model
         'Reserved_Earning',
         'Date',
     ];
-
-   
 }

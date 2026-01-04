@@ -2,9 +2,11 @@
 namespace App\Http\Controllers\Backend\Superadmin;
 
 use App\Http\Controllers\Controller;
+use App\Imports\FreightImport;
 use App\Models\AdminReportForward;
 use App\Models\Booking_office_answer;
 use App\Models\Booking_office_form;
+use App\Models\Catering;
 use App\Models\Coaching;
 use App\Models\CoachingDetail;
 use App\Models\Goods_office_answer;
@@ -33,6 +35,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SuperadminDashboardController extends Controller
 {
@@ -410,25 +413,10 @@ class SuperadminDashboardController extends Controller
             ->orderBy('Station')
             ->pluck('Station');
 
-        $monthlyPassengersRaw = Coaching::select(
+        $rawRevenueData = Coaching::select(
             DB::raw('YEAR(Date) as dataYear'),
             DB::raw('MONTH(Date) as dataMonth'),
-            DB::raw('SUM(CAST(Reserved_Passengers AS UNSIGNED)) as totalMonthlyPassengers')
-        )
-            ->groupBy('dataYear', 'dataMonth')
-            ->orderBy('dataYear')
-            ->orderBy('dataMonth')
-            ->get();
-
-        $passengerChartData = [];
-        foreach ($monthlyPassengersRaw as $row) {
-            $passengerChartData[$row->dataYear][$row->dataMonth] = (int) $row->totalMonthlyPassengers;
-        }
-
-        $monthlyEarningRaw = Coaching::select(
-            DB::raw('YEAR(Date) as dataYear'),
-            DB::raw('MONTH(Date) as dataMonth'),
-            DB::raw('SUM(CAST(Reserved_Earning AS DECIMAL(15,2))) as totalMonthlyEarning')
+            DB::raw('SUM(CAST(Reserved_Earning AS DECIMAL(15,2))) as totalReservedEarning')
         )
             ->groupBy('dataYear', 'dataMonth')
             ->orderBy('dataYear')
@@ -436,26 +424,72 @@ class SuperadminDashboardController extends Controller
             ->get();
 
         $earningChartData = [];
-        foreach ($monthlyEarningRaw as $row) {
-            $earningChartData[$row->dataYear][$row->dataMonth] = (float) $row->totalMonthlyEarning;
+        foreach ($rawRevenueData as $row) {
+            $earningChartData[$row->dataYear][$row->dataMonth] = (float) $row->totalReservedEarning;
         }
 
-        $dynamicStats = DB::table('coachings')
-            ->select(
-                'station as station_name',
-                DB::raw('SUM(Unreserved_Passengers) / 100000 as total_pass'),
-                DB::raw('SUM(Unreserved_Earning) as total_earn')
-            )
-            ->groupBy('station_name')
-            ->orderBy('total_earn', 'desc')
-            ->take(10)
+        $rawReservedPassengersData = Coaching::select(
+            DB::raw('YEAR(Date) as dataYear'),
+            DB::raw('MONTH(Date) as dataMonth'),
+            DB::raw('SUM(CAST(Reserved_Passengers AS UNSIGNED)) as totalReservedPassengers')
+        )
+            ->groupBy('dataYear', 'dataMonth')
+            ->orderBy('dataYear')
+            ->orderBy('dataMonth')
             ->get();
 
-        $unrevPassengerValues = $dynamicStats->pluck('total_pass')->toArray();
-        $unrevPassengerLabels = $dynamicStats->pluck('station_name')->toArray();
+        $passengerChartData = [];
+        foreach ($rawReservedPassengersData as $row) {
+            $passengerChartData[$row->dataYear][$row->dataMonth] = round($row->totalReservedPassengers / 100000, 2);
+        }
 
-        $unrevEarningValues = $dynamicStats->pluck('total_earn')->toArray();
-        $unrevEarningLabels = $dynamicStats->pluck('station_name')->toArray();
+        $stationSummary = Coaching::select(
+            'Station',
+            DB::raw('SUM(CAST(Unreserved_Passengers AS UNSIGNED)) as passengers'),
+            DB::raw('SUM(CAST(Unreserved_Earning AS DECIMAL(15,2))) as earning')
+        )
+            ->whereNotNull('Station')
+            ->groupBy('Station')
+            ->orderBy('Station')
+            ->get();
+
+        $passengerLabels = [];
+        $passengerValues = [];
+        $revenueValues   = [];
+
+        foreach ($stationSummary as $row) {
+            $passengerLabels[] = $row->Station;
+
+            // Passenger → Lakh
+            $passengerValues[] = round($row->passengers / 100000, 2);
+
+            // Revenue → Crore
+            $revenueValues[] = round($row->earning / 10000000, 2);
+        }
+
+        $stationReservedSummary = Coaching::select(
+            'Station',
+            DB::raw('SUM(CAST(Reserved_Passengers AS UNSIGNED)) as passengers'),
+            DB::raw('SUM(CAST(Reserved_Earning AS DECIMAL(15,2))) as earning')
+        )
+            ->whereNotNull('Station')
+            ->groupBy('Station')
+            ->orderBy('Station')
+            ->get();
+
+        $reservedPassengerLabels = [];
+        $reservedPassengerValues = [];
+        $reservedRevenueValues   = [];
+
+        foreach ($stationReservedSummary as $row) {
+            $reservedPassengerLabels[] = $row->Station;
+
+            // Passenger → Lakh
+            $reservedPassengerValues[] = round($row->passengers / 100000, 2);
+
+            // Revenue → Crore
+            $reservedRevenueValues[] = round($row->earning / 10000000, 2);
+        }
 
         return view('superadmin.​coachingdashboard', compact(
             'totalPassengersFormatted',
@@ -467,13 +501,14 @@ class SuperadminDashboardController extends Controller
             'data',
             'years',
             'station',
-            'passengerChartData',
-            'monthlyEarningRaw',
             'earningChartData',
-            'unrevPassengerValues',
-            'unrevPassengerLabels',
-            'unrevEarningValues',
-            'unrevEarningLabels'
+            'passengerChartData',
+            'passengerLabels',
+            'passengerValues',
+            'revenueValues',
+            'reservedPassengerLabels',
+            'reservedPassengerValues',
+            'reservedRevenueValues'
         ));
     }
 
@@ -598,6 +633,80 @@ class SuperadminDashboardController extends Controller
         ]));
 
         return redirect()->route('superadmin.ticketchecking')->with('success', 'Ticket Checking data saved successfully!');
+    }
+
+    public function cateringdashboard()
+    {
+
+        $station = Catering::select('station')
+            ->distinct()
+            ->orderBy('station')
+            ->pluck('station');
+
+        $category = Catering::select('category')
+            ->distinct()
+            ->orderBy('category')
+            ->pluck('category');
+
+        $unittype = Catering::select('unit_type')
+            ->distinct()
+            ->orderBy('unit_type')
+            ->pluck('unit_type');
+
+        $totalunit = Catering::sum('total_units');
+
+        $revenueInCr  = Catering::sum('annual_fee');
+        $fee_paidInCr = Catering::sum('fee_paid');
+
+        $carings = Catering::all();
+
+        return view('superadmin.cateringdashboard', compact(
+            'station',
+            'category',
+            'unittype',
+            'totalunit',
+            'revenueInCr',
+            'fee_paidInCr',
+            'carings'
+        ));
+    }
+
+    public function cateringform()
+    {
+        return view('superadmin.cateringform');
+    }
+
+    public function cateringstore(Request $request)
+    {
+        $request->validate([
+            'name'        => 'required|string|max:255',
+            'category'    => 'required',
+            'station'     => 'required',
+            'unit_type'   => 'required',
+            'total_units' => 'required|integer',
+            'annual_fee'  => 'required|numeric',
+            'fee_paid'    => 'required|numeric',
+        ]);
+
+        Catering::create($request->all());
+
+        return redirect()->route('superadmin.cateringdashboard')->with('success', 'Data stored successfully!');
+    }
+
+    public function importFreightform()
+    {
+        return view('superadmin.freightform');
+    }
+
+    public function importFreightExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        Excel::import(new FreightImport, $request->file('file'));
+
+        return back()->with('success', 'Freight Excel Imported Successfully');
     }
 
 }

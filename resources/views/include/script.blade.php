@@ -12,6 +12,12 @@
 <script src="{{ asset('assets/js/scripts/dashboard_1_demo.js') }}" type="text/javascript"></script>
 
 <script src="{{ asset('assets/vendors/DataTables/datatables.min.js') }}" type="text/javascript"></script>
+
+    <!-- PAGE LEVEL PLUGINS-->
+    <script src="{{ asset('assets/vendors/morris.js/morris.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('assets/vendors/raphael/raphael.min.js') }}" type="text/javascript"></script>
+    <!-- PAGE LEVEL SCRIPTS-->
+    <script src="{{ asset('assets/js/scripts/charts_morris_demo.js') }}" type="text/javascript"></script>
     <!-- PAGE LEVEL SCRIPTS-->
     <script type="text/javascript">
         $(function() {
