@@ -57,14 +57,14 @@
                     <div class="col-md-4">
                         <div class="kpi-card bg-success">
                             <div class="kpi-title">Annual L/Fee (Cr.)</div>
-                            <div class="kpi-value">{{ $revenueInCr }}</div>
+                            <div class="kpi-value">{{ number_format($revenueInCr, 2) }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-4">
                         <div class="kpi-card bg-warning">
                             <div class="kpi-title">L/Fee Paid (Cr.)</div>
-                            <div class="kpi-value">{{ $fee_paidInCr }}</div>
+                            <div class="kpi-value">{{ number_format($lfeeInCr, 2) }}</div>
                         </div>
                     </div>
                 </div>
@@ -119,30 +119,48 @@
 
                 <div class="table-responsive-custom">
                     <table class="responsive-table">
-
                         <thead>
                             <tr>
+                                <th>Sr. No.</th>
                                 <th>Stn</th>
                                 <th>Category</th>
-                                <th>Unit</th>
-                                <th>Licensee</th>
-                                <th>Annual (Cr.)</th>
-                                <th>Paid (Cr.)</th>
+                                <th>Type of Unit</th>
+                                <th>Platform Location</th>
+                                <th>Name of Licensee</th>
+                                <th>Annual L/Fee (In Cr.)</th>
+                                <th>L/Fee Raised (In Cr.)</th>
+                                <th>L/Fee Paid (In Cr.)</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($carings as $catering)
+                            @forelse ($caterings as $index => $catering)
                                 <tr>
-                                    <td>{{ $catering->station }}</td>
-                                    <td>{{ $catering->category }}</td>
-                                    <td>{{ $catering->unit_type }}</td>
-                                    <td>{{ $catering->name }}</td>
-                                    <td>{{ $catering->annual_fee }}</td>
-                                    <td>{{ $catering->fee_paid }}</td>
+                                    <td>{{ $caterings->firstItem() + $index }}</td> <!-- પેજિનેશન સાથે સાચો Sr. No. -->
+                                    <td>{{ $catering->station ?? '-' }}</td>
+                                    <td>{{ $catering->category ?? '-' }}</td>
+                                    <td>{{ $catering->type_of_unit ?? '-' }}</td>
+                                    <td>{{ $catering->platform_no ?? '-' }}</td>
+                                    <td>{{ $catering->name ?? ($catering->name_of_unit ?? '-') }}</td>
+                                    <td>{{ number_format($catering->annual_license_fee / 10000000, 2) }}</td>
+                                    <td>{{ number_format($catering->annual_fee / 10000000, 2) }}</td>
+                                    <td>{{ number_format($catering->fee_paid / 10000000, 2) }}</td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="9" class="text-center py-4">કોઈ રેકોર્ડ મળ્યો નથી</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
+
+    
+                    <div class="mt-4">
+                        {{ $caterings->links() }}
+                    </div>
+
+                    <!-- <div class="mt-4">
+                    {{ $caterings->links('pagination::simple-bootstrap-5') }}
+                </div> -->
                 </div>
             </div>
         </div>
@@ -410,6 +428,3 @@
             })
         </script>
     @endsection
-
-
-

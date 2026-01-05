@@ -5,9 +5,6 @@ use App\Http\Controllers\Backend\Admin\AdminDashboardController;
 use App\Http\Controllers\Backend\Superadmin\SuperadminDashboardController;
 use App\Http\Controllers\Backend\User\UserDashboardController;
 use Illuminate\Support\Facades\Auth;
-
-
-
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -40,12 +37,12 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
     Route::post('/chengestatus', [SuperadminDashboardController::class, 'changestatus'])->name('admin.chnageStatus');
     Route::get('/superadmin/freightdashboard', [SuperadminDashboardController::class, 'freightdashboard'])->name('superadmin.freightdashboard');
     Route::get('/superadmin/freightform', [SuperadminDashboardController::class, 'importFreightform'])->name('superadmin.freightform');
-    Route::post('superadmin/freight/import-excel', [SuperadminDashboardController::class, 'importFreightExcel'])
-    ->name('freight.import.excel');
+    Route::post('/superadmin/freight/import', [SuperadminDashboardController::class, 'importExcel'])->name('freight.import');
 
     Route::get('superadmin/coaching', [SuperadminDashboardController::class, 'coaching'])->name('superadmin.coaching');
     Route::post('superadmin/coaching', [SuperadminDashboardController::class, 'coachingStore'])
-    ->name('superadmin.coaching.store');
+        ->name('superadmin.coaching.store');
+    Route::post('/coaching/import', [SuperadminDashboardController::class, 'importCoaching'])->name('coaching.import');
     Route::get('/superadmin/coachingdashboard', [SuperadminDashboardController::class, 'coachingdashboard'])->name('superadmin.coachingdashboard');
     Route::get('/superadmin/parceldashboard', [SuperadminDashboardController::class, 'parceldashboard'])->name('superadmin.parceldashboard');
     Route::get('/superadmin/parcelform', [SuperadminDashboardController::class, 'create'])->name('superadmin.parcelform');
@@ -57,6 +54,7 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
     Route::get('/superadmin/cateringdashboard', [SuperadminDashboardController::class, 'cateringdashboard'])->name('superadmin.cateringdashboard');
     Route::get('/superadmin/cateringform', [SuperadminDashboardController::class, 'cateringform'])->name('superadmin.cateringform');
     Route::post('superadmin/cateringstore', [SuperadminDashboardController::class, 'cateringstore'])->name('superadmin.catering.store');
+    Route::post('/import-power-units', [SuperadminDashboardController::class, 'import'])->name('superadmin.catering.import');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {

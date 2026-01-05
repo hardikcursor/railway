@@ -2,6 +2,8 @@
 namespace App\Http\Controllers\Backend\Superadmin;
 
 use App\Http\Controllers\Controller;
+use App\Imports\CateringImport;
+use App\Imports\CoachingImport;
 use App\Imports\FreightImport;
 use App\Models\AdminReportForward;
 use App\Models\Booking_office_answer;
@@ -11,13 +13,13 @@ use App\Models\Coaching;
 use App\Models\CoachingDetail;
 use App\Models\Goods_office_answer;
 use App\Models\Goods_Shed_office_form;
+use App\Models\inspection_tea_answer;
 use App\Models\inspectionkitchen_answer;
 use App\Models\InspectionPantryCar_answer;
 use App\Models\InspectionPantryCar_form;
 use App\Models\InspectionPassenger_items__answer;
 use App\Models\InspectionPayUseToilets_answer;
 use App\Models\InspectionPayUseToilets_location_form;
-use App\Models\inspection_tea_answer;
 use App\Models\NonFare_Revenue_answer;
 use App\Models\Parcel;
 use App\Models\Parcel_answer;
@@ -27,14 +29,16 @@ use App\Models\PRS_office_form;
 use App\Models\Report;
 use App\Models\Station;
 use App\Models\StationCleanliness_answer;
-use App\Models\TicketChecking;
 use App\Models\Ticket_Examineroffice_form;
 use App\Models\Ticket_office_answer;
+use App\Models\TicketChecking;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class SuperadminDashboardController extends Controller
@@ -249,31 +253,6 @@ class SuperadminDashboardController extends Controller
         return view('superadmin.coachingexcel');
     }
 
-    // public function coachingStore(Request $request)
-    // {
-    //     $request->validate([
-    //         'name'                  => 'required',
-    //         'station_name'          => 'required',
-    //         'unreserved_passengers' => 'required|numeric',
-    //         'unreserved_earning'    => 'required|numeric',
-    //         'reserved_passengers'   => 'required|numeric',
-    //         'reserved_earning'      => 'required|numeric',
-    //         'date'                  => 'required|date',
-    //     ]);
-    //     Coaching::create([
-    //         'Name'                  => $request->name,
-    //         'Station'               => $request->station_name,
-    //         'Unreserved_Passengers' => $request->unreserved_passengers,
-    //         'Unreserved_Earning'    => $request->unreserved_earning,
-    //         'Reserved_Passengers'   => $request->reserved_passengers,
-    //         'Reserved_Earning'      => $request->reserved_earning,
-    //         'Date'                  => $request->date,
-
-    //     ]);
-
-    //     return redirect()->route('superadmin.coachingdashboard')->with('success', 'Coaching data imported successfully.');
-    // }
-
     public function coachingStore(Request $request)
     {
         $request->validate([
@@ -330,6 +309,23 @@ class SuperadminDashboardController extends Controller
         return redirect()
             ->route('superadmin.coachingdashboard')
             ->with('success', 'Coaching data stored successfully');
+    }
+
+    public function importCoaching(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:20480', // max 20MB
+        ]);
+
+        try {
+            Excel::import(new CoachingImport, $request->file('file'));
+
+            return back()->with('success', 'Coaching data successfully imported!');
+        } catch (\Exception $e) {
+            \Log::error('Coaching Import Failed: ' . $e->getMessage());
+
+            return back()->with('error', 'Import failed: ' . $e->getMessage());
+        }
     }
 
     private function formatThreeWithTwoDecimal($value, $unit = 'lakh')
@@ -653,12 +649,18 @@ class SuperadminDashboardController extends Controller
             ->orderBy('unit_type')
             ->pluck('unit_type');
 
-        $totalunit = Catering::sum('total_units');
+        $totalunit = Catering::count('total_units');
 
-        $revenueInCr  = Catering::sum('annual_fee');
+        $totalAnnualFee = Catering::sum('annual_license_fee');
+
+        $revenueInCr  = round($totalAnnualFee / 10000000, 2);
         $fee_paidInCr = Catering::sum('fee_paid');
 
-        $carings = Catering::all();
+        $totalFee = Catering::sum('annual_fee');
+
+        $lfeeInCr = round($totalFee / 10000000, 2);
+
+        $caterings = Catering::orderBy('annual_license_fee', 'desc')->paginate(10);
 
         return view('superadmin.cateringdashboard', compact(
             'station',
@@ -666,14 +668,28 @@ class SuperadminDashboardController extends Controller
             'unittype',
             'totalunit',
             'revenueInCr',
-            'fee_paidInCr',
-            'carings'
+            'caterings',
+            'lfeeInCr'
         ));
     }
 
     public function cateringform()
     {
         return view('superadmin.cateringform');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:10240',
+        ]);
+
+        try {
+            Excel::import(new CateringImport, $request->file('file'));
+            return back()->with('success', 'સફળતાપૂર્વક ઇમ્પોર્ટ થયું! કુલ રેકોર્ડ્સ: ' . Catering::count());
+        } catch (\Exception $e) {
+            return back()->with('error', 'એરર: ' . $e->getMessage() . ' (Line: ' . $e->getLine() . ')');
+        }
     }
 
     public function cateringstore(Request $request)
@@ -698,15 +714,28 @@ class SuperadminDashboardController extends Controller
         return view('superadmin.freightform');
     }
 
-    public function importFreightExcel(Request $request)
+    public function importExcel(Request $request)
     {
+        // 🔹 Step 2.1: Validation
         $request->validate([
             'file' => 'required|mimes:xlsx,xls',
         ]);
 
-        Excel::import(new FreightImport, $request->file('file'));
+        try {
+            // 🔹 Step 2.2: Excel Import
+            Excel::import(new FreightImport, $request->file('file'));
 
-        return back()->with('success', 'Freight Excel Imported Successfully');
+            // 🔹 Step 2.3: Success message
+            return redirect()
+                ->back()
+                ->with('success', 'Freight Excel data successfully imported!');
+        } catch (\Exception $e) {
+
+            // 🔴 Error handling
+            return redirect()
+                ->back()
+                ->with('error', 'Error while importing Excel: ' . $e->getMessage());
+        }
     }
 
 }

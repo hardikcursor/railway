@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('reports', function (Blueprint $table) {
-               $table->text('forward_admin_id')->nullable()->after('forward_user_id');
+               $table->text('forward_admin_id')->nullable()->after('last_clicked_by_role');
             $table->text('approve_status')->nullable()->after('forward_admin_id');
             $table->text('check_status_id')->nullable()->after('approve_status');
         });

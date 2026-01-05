@@ -29,9 +29,10 @@
 
 
                 <div class="card p-4">
-              
 
-                    <form action="{{ route('superadmin.coaching.store') }}" method="POST" class="bg-white p-4 rounded shadow-sm border">
+
+                    <form action="{{ route('superadmin.coaching.store') }}" method="POST"
+                        class="bg-white p-4 rounded shadow-sm border">
                         @csrf
 
                         <div class="mb-3">
@@ -177,6 +178,32 @@
                             </button>
                         </div>
 
+                    </form>
+                </div>
+
+                <div class="card-body">
+                    @if (session('success'))
+                        <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
+                    @if (session('error'))
+                        <div class="alert alert-danger">{{ session('error') }}</div>
+                    @endif
+
+                    <form action="{{ route('coaching.import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="excel_file" class="form-label">Select Excel File (.xlsx or .xls)</label>
+                            <input type="file" name="excel_file" id="excel_file" class="form-control"
+                                accept=".xlsx,.xls" required>
+                            @error('excel_file')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        <button type="submit" class="btn btn-success">
+                            Upload & Import
+                        </button>
+                        <a href="{{ url()->previous() }}" class="btn btn-secondary">Cancel</a>
                     </form>
                 </div>
             </div>

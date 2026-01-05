@@ -4,27 +4,32 @@
     <div class="content-wrapper">
         <div class="page-content fade-in-up">
 
-            <div class="ibox">
+            <div class="container">
+                <h3>Freight Excel Import</h3>
 
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
 
-                <div class="card p-4">
-                    <form action="{{ route('freight.import.excel') }}" method="POST" enctype="multipart/form-data"
-                        class="d-inline">
-                        @csrf
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
-                        <input type="file" name="file" id="freightExcel" hidden required>
+                <form method="POST" action="{{ route('freight.import') }}" enctype="multipart/form-data">
+                    @csrf
 
-                        <button type="button" class="btn btn-primary me-3"
-                            onclick="document.getElementById('freightExcel').click()">
-                            ↑ Import Excel
-                        </button>
+                    <div class="mb-3">
+                        <input type="file" name="file" class="form-control" required>
+                    </div>
 
-                        <button type="submit" class="btn btn-success">
-                            Upload
-                        </button>
-                    </form>
-
-                </div>
+                    <button class="btn btn-primary">
+                        Import Excel
+                    </button>
+                </form>
             </div>
 
         </div>

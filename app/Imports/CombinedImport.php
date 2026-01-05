@@ -17,13 +17,10 @@ class CombinedImport implements ToCollection, WithHeadingRow, WithCalculatedForm
     public function collection(Collection $rows)
     {
         foreach ($rows as $row) {
-            // Convert keys to snake_case (lowercase and replace spaces with underscores)
             $row = collect($row)->mapWithKeys(function ($value, $key) {
                 $newKey = strtolower(str_replace([' ', '-', '.', '/', '(', ')'], '_', trim($key)));
                 return [$newKey => $value];
             })->toArray();
-
-            // Ab apne model mein save karo, saare fields ko safe access karke
             NFR_Revenue::create([
                 'station'             => $row['station'] ?? '',
                 'location'            => $row['location'] ?? '',

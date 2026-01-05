@@ -8,9 +8,10 @@
             <div class="ibox">
 
 
-                <div class="card p-4">
+                {{-- <div class="card p-4">
 
-                    <form action="{{ route('superadmin.catering.store') }}" method="POST" class="bg-white p-4 rounded shadow-sm border">
+                    <form action="{{ route('superadmin.catering.store') }}" method="POST"
+                        class="bg-white p-4 rounded shadow-sm border">
                         @csrf
                         <!-- NAME -->
                         <div class="mb-3">
@@ -70,19 +71,22 @@
                         <!-- TOTAL UNITS -->
                         <div class="mb-3">
                             <label class="form-label fw-bold">Total Units</label>
-                            <input type="text" name="total_units" class="form-control number-dot-only" placeholder="Enter Total Units">
+                            <input type="text" name="total_units" class="form-control number-dot-only"
+                                placeholder="Enter Total Units">
                         </div>
 
                         <!-- ANNUAL L/FEE -->
                         <div class="mb-3">
                             <label class="form-label fw-bold">Annual L/Fee (in Cr.)</label>
-                            <input type="text" name="annual_fee" class="form-control number-dot-only" placeholder="Enter Annual L/Fee">
+                            <input type="text" name="annual_fee" class="form-control number-dot-only"
+                                placeholder="Enter Annual L/Fee">
                         </div>
 
                         <!-- L/FEE PAID -->
                         <div class="mb-3">
                             <label class="form-label fw-bold">L/Fee Paid (in Cr.)</label>
-                            <input type="text" name="fee_paid" class="form-control number-dot-only" placeholder="Enter L/Fee Paid">
+                            <input type="text" name="fee_paid" class="form-control number-dot-only"
+                                placeholder="Enter L/Fee Paid">
                         </div>
 
                         <!-- BUTTON -->
@@ -93,7 +97,17 @@
                         </div>
 
                     </form>
-                </div>
+                </div> --}}
+
+                <h1>Excel File Upload</h1>
+                @if (session('success'))
+                    <p style="color:green;">{{ session('success') }}</p>
+                @endif
+                <form action="{{ route('superadmin.catering.import') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" name="file" required>
+                    <button type="submit">Import</button>
+                </form>
             </div>
 
         </div>
