@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Backend\Superadmin;
 
+use App\Exports\CoachingExport;
 use App\Http\Controllers\Controller;
 use App\Imports\CateringImport;
 use App\Imports\CoachingImport;
@@ -13,13 +14,13 @@ use App\Models\Coaching;
 use App\Models\CoachingDetail;
 use App\Models\Goods_office_answer;
 use App\Models\Goods_Shed_office_form;
-use App\Models\inspection_tea_answer;
 use App\Models\inspectionkitchen_answer;
 use App\Models\InspectionPantryCar_answer;
 use App\Models\InspectionPantryCar_form;
 use App\Models\InspectionPassenger_items__answer;
 use App\Models\InspectionPayUseToilets_answer;
 use App\Models\InspectionPayUseToilets_location_form;
+use App\Models\inspection_tea_answer;
 use App\Models\NonFare_Revenue_answer;
 use App\Models\Parcel;
 use App\Models\Parcel_answer;
@@ -29,16 +30,14 @@ use App\Models\PRS_office_form;
 use App\Models\Report;
 use App\Models\Station;
 use App\Models\StationCleanliness_answer;
+use App\Models\TicketChecking;
 use App\Models\Ticket_Examineroffice_form;
 use App\Models\Ticket_office_answer;
-use App\Models\TicketChecking;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class SuperadminDashboardController extends Controller
@@ -311,20 +310,18 @@ class SuperadminDashboardController extends Controller
             ->with('success', 'Coaching data stored successfully');
     }
 
-    public function importCoaching(Request $request)
+    public function chingimport(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls|max:20480', // max 20MB
+            'excel_file' => 'required|mimes:xls,xlsx',
         ]);
 
         try {
-            Excel::import(new CoachingImport, $request->file('file'));
+            Excel::import(new CoachingImport, $request->file('excel_file'));
 
-            return back()->with('success', 'Coaching data successfully imported!');
+            return back()->with('success', 'Excel data successfully imported!');
         } catch (\Exception $e) {
-            \Log::error('Coaching Import Failed: ' . $e->getMessage());
-
-            return back()->with('error', 'Import failed: ' . $e->getMessage());
+            return back()->with('error', $e->getMessage());
         }
     }
 
@@ -349,34 +346,28 @@ class SuperadminDashboardController extends Controller
     {
         $totalUnreservedPassengers = Coaching::selectRaw(
             'SUM(CAST(Unreserved_Passengers AS UNSIGNED)) as total'
-        )->value('total');
+        )->value('total') ?? 0;
 
         $totalUnreservedEarning = Coaching::selectRaw(
             'SUM(CAST(Unreserved_Earning AS DECIMAL(15,2))) as total'
-        )->value('total');
+        )->value('total') ?? 0;
 
         $totalReservedPassengers = Coaching::selectRaw(
             'SUM(CAST(Reserved_Passengers AS UNSIGNED)) as total'
-        )->value('total');
+        )->value('total') ?? 0;
 
         $totalReservedEarning = Coaching::selectRaw(
             'SUM(CAST(Reserved_Earning AS DECIMAL(15,2))) as total'
-        )->value('total');
-
-        $totalPassengers = Coaching::selectRaw(
-            'SUM(CAST(Total_Passengers AS UNSIGNED)) as total'
-        )->value('total');
-
-        $totalEarning = Coaching::selectRaw(
-            'SUM(CAST(Total_Earning AS DECIMAL(15,2))) as total'
-        )->value('total');
+        )->value('total') ?? 0;
 
         $totalPassengersFormatted = $this->formatThreeWithTwoDecimal($totalUnreservedPassengers);
         $totalEarningFormatted    = $this->formatThreeWithTwoDecimal($totalUnreservedEarning);
+
         $totalReserved_Passengers = $this->formatThreeWithTwoDecimal($totalReservedPassengers);
         $totalReserved_Earning    = $this->formatThreeWithTwoDecimal($totalReservedEarning);
-        $manualTotalPassengers    = $totalUnreservedPassengers + $totalReservedPassengers;
-        $manualTotalEarning       = $totalUnreservedEarning + $totalReservedEarning;
+
+        $manualTotalPassengers = $totalUnreservedPassengers + $totalReservedPassengers;
+        $manualTotalEarning    = $totalUnreservedEarning + $totalReservedEarning;
 
         $Total_Passengers = $this->formatThreeWithTwoDecimal($manualTotalPassengers);
         $Total_Earning    = $this->formatThreeWithTwoDecimal($manualTotalEarning);
@@ -436,7 +427,8 @@ class SuperadminDashboardController extends Controller
 
         $passengerChartData = [];
         foreach ($rawReservedPassengersData as $row) {
-            $passengerChartData[$row->dataYear][$row->dataMonth] = round($row->totalReservedPassengers / 100000, 2);
+            $passengerChartData[$row->dataYear][$row->dataMonth] =
+                round($row->totalReservedPassengers / 100000, 2);
         }
 
         $stationSummary = Coaching::select(
@@ -455,12 +447,8 @@ class SuperadminDashboardController extends Controller
 
         foreach ($stationSummary as $row) {
             $passengerLabels[] = $row->Station;
-
-            // Passenger → Lakh
             $passengerValues[] = round($row->passengers / 100000, 2);
-
-            // Revenue → Crore
-            $revenueValues[] = round($row->earning / 10000000, 2);
+            $revenueValues[]   = round($row->earning / 10000000, 2);
         }
 
         $stationReservedSummary = Coaching::select(
@@ -479,13 +467,11 @@ class SuperadminDashboardController extends Controller
 
         foreach ($stationReservedSummary as $row) {
             $reservedPassengerLabels[] = $row->Station;
-
-            // Passenger → Lakh
             $reservedPassengerValues[] = round($row->passengers / 100000, 2);
-
-            // Revenue → Crore
-            $reservedRevenueValues[] = round($row->earning / 10000000, 2);
+            $reservedRevenueValues[]   = round($row->earning / 10000000, 2);
         }
+
+        $records = Coaching::orderBy('id', 'desc')->paginate(10);
 
         return view('superadmin.​coachingdashboard', compact(
             'totalPassengersFormatted',
@@ -504,8 +490,14 @@ class SuperadminDashboardController extends Controller
             'revenueValues',
             'reservedPassengerLabels',
             'reservedPassengerValues',
-            'reservedRevenueValues'
+            'reservedRevenueValues',
+            'records'
         ));
+    }
+
+    public function coachingexportExcel()
+    {
+        return Excel::download(new CoachingExport, 'coaching_data.xlsx');
     }
 
     public function parceldashboard()
@@ -547,7 +539,9 @@ class SuperadminDashboardController extends Controller
             ? ($weightInTonnes / $totalWeightTarget) * 100
             : 0;
 
-        return view('superadmin.parceldashboard', compact('revenueInCr', 'revenuePercentage', 'packageInLakh', 'packagePercentage', 'station', 'item', 'weightInTonnes', 'weightPercentage'));
+        $records = Parcel::orderBy('id', 'desc')->paginate(5);
+
+        return view('superadmin.parceldashboard', compact('revenueInCr', 'revenuePercentage', 'packageInLakh', 'packagePercentage', 'station', 'item', 'weightInTonnes', 'weightPercentage', 'records'));
     }
 
     public function create()
@@ -604,7 +598,9 @@ class SuperadminDashboardController extends Controller
             ->orderBy('location')
             ->pluck('location');
 
-        return view('superadmin.ticketchecking', compact('cases', 'casesInLakh', 'percentage', 'revenueInCr', 'revenuePercentage', 'cadres', 'locations'));
+         $records = TicketChecking::orderBy('id', 'desc')->paginate(10);
+
+        return view('superadmin.ticketchecking', compact('cases', 'casesInLakh', 'percentage', 'revenueInCr', 'revenuePercentage', 'cadres', 'locations','records'));
     }
 
     public function ticketcheckingmaster()

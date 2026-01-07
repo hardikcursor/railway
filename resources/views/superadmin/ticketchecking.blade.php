@@ -76,7 +76,7 @@
                             <div class="metric-columns">
                                 <div class="metric-column">
                                     <div class="metric-value">
-                                        {{ number_format((float) $revenueInCr, 3) }} 
+                                        {{ number_format((float) $revenueInCr, 3) }}
                                     </div>
                                     <div class="metric-change positive"><span class="arrow-up"></span>
                                         {{ number_format((float) $revenuePercentage, 2) }} % </div>
@@ -329,6 +329,46 @@
                         Revenue (in Cr.) and Cases (in Lakh) - YOY
                     </h3>
                     <canvas id="yoyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container mt-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white fw-bold">
+                    Ticket Checking etails
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover align-middle text-center">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>cadre</th>
+                                    <th>location</th>
+                                    <th>cases</th>
+                                    <th>revenue</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach ($records as $key => $row)
+                                    <tr>
+                                        <td>{{ ++$key }}</td>
+                                        <td>{{ $row->cadre }}</td>
+                                        <td>{{ $row->location }}</td>
+                                        <td>{{ $row->cases }}</td>
+                                        <td>{{ $row->revenue }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-center mt-3">
+                        {{ $records->links('pagination::bootstrap-5') }}
+                    </div>
                 </div>
             </div>
         </div>

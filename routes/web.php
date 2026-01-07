@@ -42,7 +42,9 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
     Route::get('superadmin/coaching', [SuperadminDashboardController::class, 'coaching'])->name('superadmin.coaching');
     Route::post('superadmin/coaching', [SuperadminDashboardController::class, 'coachingStore'])
         ->name('superadmin.coaching.store');
-    Route::post('/coaching/import', [SuperadminDashboardController::class, 'importCoaching'])->name('coaching.import');
+    Route::post('/coaching/import', [SuperadminDashboardController::class, 'chingimport'])->name('coaching.import');
+    Route::get('/coaching/export-excel', [SuperadminDashboardController::class, 'coachingexportExcel'])->name('coaching.export.excel');
+
     Route::get('/superadmin/coachingdashboard', [SuperadminDashboardController::class, 'coachingdashboard'])->name('superadmin.coachingdashboard');
     Route::get('/superadmin/parceldashboard', [SuperadminDashboardController::class, 'parceldashboard'])->name('superadmin.parceldashboard');
     Route::get('/superadmin/parcelform', [SuperadminDashboardController::class, 'create'])->name('superadmin.parcelform');

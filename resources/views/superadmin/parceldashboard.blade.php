@@ -57,7 +57,8 @@
                         <div class="kpi-card bg-success">
                             <div class="kpi-title">Weight (In Tonnes)</div>
                             <div class="kpi-value">
-                                <h4 class="text-white">    {{ number_format($weightInTonnes, 2) }} <span class="text-white small">▲ 3.2%</span></h4>
+                                <h4 class="text-white"> {{ number_format($weightInTonnes, 2) }} <span
+                                        class="text-white small">▲ 3.2%</span></h4>
                             </div>
                         </div>
                     </div>
@@ -66,7 +67,8 @@
                         <div class="kpi-card bg-warning">
                             <div class="kpi-title">Package (In Lakh)</div>
                             <div class="kpi-value">
-                                <h4 class="text-white">   {{ number_format($packageInLakh, 2) }} <span class="text-white small">▲ 1.8%</span></h4>
+                                <h4 class="text-white"> {{ number_format($packageInLakh, 2) }} <span
+                                        class="text-white small">▲ 1.8%</span></h4>
                             </div>
                         </div>
                     </div>
@@ -189,6 +191,54 @@
                     </div>
 
                 </div>
+
+                <div class="container mt-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-dark text-white fw-bold">
+                            Parcel / Package Details
+                        </div>
+
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover align-middle text-center">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Revenue</th>
+                                            <th>Weight</th>
+                                            <th>Package</th>
+                                            <th>Date</th>
+                                            <th>Items</th>
+                                            <th>Station</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @foreach ($records as $row)
+                                            <tr>
+                                                <td>{{ $row->id }}</td>
+                                                <td>{{ $row->name }}</td>
+                                                <td>{{ number_format($row->revenue, 2) }}</td>
+                                                <td>{{ number_format($row->weight, 2) }}</td>
+                                                <td>{{ $row->package }}</td>
+                                                <td>{{ $row->date }}</td>
+                                                <td>{{ $row->items }}</td>
+                                                <td>{{ $row->station }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="d-flex justify-content-center mt-3">
+                                {{ $records->links('pagination::bootstrap-5') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
 
         </div>
@@ -280,28 +330,28 @@
             font-weight: bold
         }
 
-       
-        
-            .chart-container {
-                height: 300px;
+
+
+        .chart-container {
+            height: 300px;
+            width: 100%;
+        }
+
+
+        @media (max-width: 992px) {
+            .metrics-container {
+                flex-direction: column;
+            }
+
+            .filters {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .filter-group {
                 width: 100%;
             }
-
-          
-            @media (max-width: 992px) {
-                .metrics-container {
-                    flex-direction: column;
-                }
-
-                .filters {
-                    flex-direction: column;
-                    gap: 10px;
-                }
-
-                .filter-group {
-                    width: 100%;
-                }
-            }
+        }
     </style>
 
 
@@ -313,28 +363,27 @@
     </script>
 
     <script>
- 
         Chart.register(ChartDataLabels);
 
-      
+
         const MONTHS = ['APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'JAN', 'FEB', 'MAR'];
-        const REVENUE_COLOR = '#1976D2'; 
-        const WEIGHT_COLOR = '#00BCD4'; 
+        const REVENUE_COLOR = '#1976D2';
+        const WEIGHT_COLOR = '#00BCD4';
 
 
-        const getBackgroundColor = (hex) => hex + '40'; 
+        const getBackgroundColor = (hex) => hex + '40';
 
         const revenueYOYData = {
             labels: MONTHS,
             datasets: [{
                     label: '2024-2025',
-                    data: [5.76, 6.8, 6.0, 5.8, 6.0, 6.0, 5.8, 5.5, 5.3, 5.8, 6.0, 6.0], 
-                    borderColor: '#4CAF50', 
+                    data: [5.76, 6.8, 6.0, 5.8, 6.0, 6.0, 5.8, 5.5, 5.3, 5.8, 6.0, 6.0],
+                    borderColor: '#4CAF50',
                     backgroundColor: 'transparent',
                     pointBackgroundColor: '#4CAF50',
                     tension: 0.4,
                     datalabels: {
-                        display: (context) => context.dataIndex < 3, 
+                        display: (context) => context.dataIndex < 3,
                         align: 'end',
                         color: '#4CAF50',
                         formatter: (value) => value.toFixed(2),
@@ -393,7 +442,7 @@
         });
 
 
-    
+
         const weightYOYData = {
             labels: MONTHS,
             datasets: [{
@@ -461,22 +510,22 @@
             }
         });
 
-     
+
         const locationData = {
             labels: ['ADI', 'LCH', 'PNU', 'SBIB', 'ASV', 'GIMB', 'NBVJ', 'GNC', 'MSH', 'Other'],
             datasets: [{
                 data: [61.6, 13, 16.1, 2.5, 1.5, 1.5, 1, 1, 1, 0.8],
                 backgroundColor: [
-                    REVENUE_COLOR, 
-                    '#FF5722', 
-                    '#E91E63', 
-                    '#FFC107', 
-                    '#4CAF50', 
-                    '#009688', 
-                    '#9E9E9E', 
-                    '#607D8B', 
+                    REVENUE_COLOR,
+                    '#FF5722',
+                    '#E91E63',
+                    '#FFC107',
+                    '#4CAF50',
+                    '#009688',
+                    '#9E9E9E',
+                    '#607D8B',
                     '#FF9800',
-                    '#795548', 
+                    '#795548',
                 ],
                 borderWidth: 1,
             }]
@@ -510,7 +559,7 @@
                     datalabels: {
                         color: '#fff',
                         formatter: (value, context) => {
-                        
+
                             if (value > 5) {
                                 return value.toFixed(1) + '%';
                             }
@@ -526,14 +575,14 @@
         });
 
 
-       
+
         const itemsBarData = {
             labels: ['Leasing', 'Non-Perishable', 'RMT', 'Perishable', 'Luggage'],
             datasets: [{
                     type: 'bar',
                     label: 'Revenue(In Cr.)',
                     backgroundColor: REVENUE_COLOR,
-                    data: [10.44, 4.42, 2.76, 0.33, 0.26], 
+                    data: [10.44, 4.42, 2.76, 0.33, 0.26],
                     yAxisID: 'y1',
                     datalabels: {
                         anchor: 'end',
@@ -549,7 +598,7 @@
                     type: 'bar',
                     label: 'Weight(MT)',
                     backgroundColor: WEIGHT_COLOR,
-                    data: [145.43, 102.63, 133.33, 12.06, 3.60], 
+                    data: [145.43, 102.63, 133.33, 12.06, 3.60],
                     yAxisID: 'y2',
                     datalabels: {
                         anchor: 'end',
@@ -606,20 +655,20 @@
                             drawOnChartArea: false
                         },
                         min: 0,
-                        max: 150 
+                        max: 150
                     }
                 }
             }
         });
 
-   
+
         const yoyBarChartData = {
             labels: ['2021-2022', '2022-2023', '2023-2024', '2020-2021', '2019-2020', '2024-2025'],
             datasets: [{
                     type: 'bar',
                     label: 'Frgt In Cr',
                     backgroundColor: REVENUE_COLOR,
-                    data: [100.86, 94.33, 80.24, 77.67, 72.51, 18.2], 
+                    data: [100.86, 94.33, 80.24, 77.67, 72.51, 18.2],
                     yAxisID: 'y1',
                     datalabels: {
                         anchor: 'end',
@@ -635,7 +684,7 @@
                     type: 'bar',
                     label: 'Weight (MT)',
                     backgroundColor: WEIGHT_COLOR,
-                    data: [2607.05, 2725.5, 2079.02, 2318.34, 2092.01, 397.05], 
+                    data: [2607.05, 2725.5, 2079.02, 2318.34, 2092.01, 397.05],
                     yAxisID: 'y2',
                     datalabels: {
                         anchor: 'end',
@@ -677,7 +726,7 @@
                             text: 'Frgt In Cr'
                         },
                         min: 0,
-                        max: 150, 
+                        max: 150,
                         grid: {
                             drawOnChartArea: true
                         }
@@ -693,7 +742,7 @@
                             drawOnChartArea: false
                         },
                         min: 0,
-                        max: 3000 
+                        max: 3000
                     }
                 }
             }
@@ -703,13 +752,13 @@
         const compositionPieData = {
             labels: ['Leasing', 'Non-Perishable', 'RMT', 'Perishable', 'Luggage'],
             datasets: [{
-                data: [57.4, 24.3, 15.2, 1.6, 1.5], 
+                data: [57.4, 24.3, 15.2, 1.6, 1.5],
                 backgroundColor: [
-                    '#E91E63', 
-                    '#673AB7', 
-                    REVENUE_COLOR, 
-                    '#FF9800', 
-                    '#4CAF50', 
+                    '#E91E63',
+                    '#673AB7',
+                    REVENUE_COLOR,
+                    '#FF9800',
+                    '#4CAF50',
                 ],
                 borderWidth: 1,
             }]

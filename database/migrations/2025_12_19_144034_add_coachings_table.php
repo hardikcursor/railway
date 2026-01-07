@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('coachings', function (Blueprint $table) {
             $table->id();
-            $table->string('Name');
-            $table->string('Station');
-            $table->string('Unreserved_Passengers');
-            $table->string('Unreserved_Earning');
-            $table->string('Reserved_Passengers');
-            $table->string('Reserved_Earning');
-            $table->string('Total_Passengers');
-            $table->string('Total_Earning');
-            $table->string('Date');
+            $table->string('Name')->nullable();
+            $table->string('Station')->nullable();
+            $table->string('Unreserved_Passengers')->nullable();
+            $table->string('Unreserved_Earning')->nullable();
+            $table->string('Reserved_Passengers')->nullable();
+            $table->string('Reserved_Earning')->nullable();
+            $table->string('Total_Passengers')->nullable();
+            $table->string('Total_Earning')->nullable();
+            $table->string('Date')->nullable();
             $table->timestamps();
         });
     }

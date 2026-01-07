@@ -8,13 +8,24 @@ class Coaching extends Model
 {
     use HasFactory;
 
+    // protected $fillable = [
+    //     'Name',
+    //     'Station',
+    //     'Unreserved_Passengers',
+    //     'Unreserved_Earning',
+    //     'Reserved_Passengers',
+    //     'Reserved_Earning',
+    //     'Date',
+    // ];
+
     protected $fillable = [
-        'Name',
         'Station',
         'Unreserved_Passengers',
         'Unreserved_Earning',
         'Reserved_Passengers',
         'Reserved_Earning',
+        'Total_Passengers',
+        'Total_Earning',
         'Date',
     ];
 }

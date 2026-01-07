@@ -4,9 +4,9 @@ namespace App\Imports;
 use App\Models\Coaching;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
-use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 
 class CoachingImport implements ToModel, WithHeadingRow, WithCalculatedFormulas
 {
@@ -22,15 +22,17 @@ class CoachingImport implements ToModel, WithHeadingRow, WithCalculatedFormulas
 
     public function model(array $row)
     {
+        if (empty($row['station'])) {
+            return null; // skip row if station missing
+        }
+
         return new Coaching([
-            'Station'               => $row['station'],
-            'Unreserved_Passengers' => intval($row['unreserved_passengers']),
-            'Unreserved_Earning'    => floatval($row['unreserved_earning']),
-            'Reserved_Passengers'   => intval($row['reserved_passengers']),
-            'Reserved_Earning'      => floatval($row['reserved_earning']),
-            'Total_Passengers'      => intval($row['total_passengers']),
-            'Total_Earning'         => floatval($row['total_earning']),
-            'Date'                  => $this->parseDate($row['date']),
+            'Station'               => trim($row['station']),
+            'Unreserved_Passengers' => (int) ($row['unreserved_passengers'] ?? 0),
+            'Unreserved_Earning'    => (float) ($row['unreserved_earning'] ?? 0),
+            'Reserved_Passengers'   => (int) ($row['reserved_passengers'] ?? 0),
+            'Reserved_Earning'      => (float) ($row['reserved_earning'] ?? 0),
+            'Date'                  => $this->parseDate($row['date'] ?? null),
         ]);
     }
 

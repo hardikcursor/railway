@@ -1,4 +1,6 @@
-@extends('layouts.backend') @section('main')
+@extends('layouts.backend')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+@section('main')
     <div class="content-wrapper">
         <div class="page-content fade-in-up">
             <div class="ibox">
@@ -24,13 +26,23 @@
                     </div>
 
                     <div class="filter-group ml-auto">
-                        <select>
-                            <option>Apr 1, 2024 - Mar 31, 2025</option>
-                        </select>
+                        <input type="text" id="dateRange" class="form-control" placeholder="Apr 1, 2024 - Mar 31, 2025"
+                            readonly>
                     </div>
+
+                    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+                    <script>
+                        flatpickr("#dateRange", {
+                            mode: "range",
+                            dateFormat: "M d, Y",
+                            defaultDate: ["2024-04-01", "2025-03-31"]
+                        });
+                    </script>
+
                 </div>
                 <div class="d-flex justify-content-end align-items-center m-3">
-                    <a href="#" class="btn btn-primary" style="margin-right:12px;">
+                    <a href="{{ route('coaching.export.excel') }}" class="btn btn-primary" style="margin-right:12px;">
                         ↑ Import Excel
                     </a>
 
@@ -109,14 +121,14 @@
 
                 <div class="row mt-4">
                     <div class="col-md-6 col-12">
-                        <div class="chart-box">
+                        <div class="ticket-box">
                             <canvas id="revenueChart"></canvas>
                         </div>
                     </div>
 
 
                     <div class="col-md-6 col-12">
-                        <div class="chart-box">
+                        <div class="ticket-box">
                             <canvas id="passengerChart"></canvas>
                         </div>
                     </div>
@@ -135,28 +147,16 @@
                     const monthOrder = [4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3];
                     const colors = ['#6ab04c', '#ffc107', '#ff7a00', '#00a8ff', '#9c27b0'];
 
-                    const revenueDatasets = Object.keys(rawRevenueData)
-                        .map(yearStr => parseInt(yearStr))
-                        .sort((a, b) => b - a)
-                        .map((year, i) => {
-                            const data = monthOrder.map(m => +(rawRevenueData[year]?.[m] || 0) / 10000000);
-                            return {
-                                label: `${year}-${(year+1).toString().slice(-2)}`,
-                                data: data,
-                                borderColor: colors[i % colors.length],
-                                backgroundColor: colors[i % colors.length],
-                                tension: 0.4,
-                                pointRadius: 3,
-                                fill: false,
-                                spanGaps: true
-                            };
-                        });
+                    /* =======================
+                       REVENUE CHART
+                    ======================= */
 
-                    const passengerDatasets = years.map((year, i) => {
-                        const data = monthOrder.map(m => passengerData[year]?.[m] || 0);
+                    const revenueYears = Object.keys(rawRevenueData);
+
+                    const revenueDatasets = revenueYears.map((year, i) => {
                         return {
-                            label: `${year}-${(year+1).toString().slice(-2)}`,
-                            data: data,
+                            label: `${year}-${(parseInt(year)+1).toString().slice(-2)}`,
+                            data: monthOrder.map(m => (rawRevenueData[year]?.[m] || 0) / 10000000),
                             borderColor: colors[i % colors.length],
                             backgroundColor: colors[i % colors.length],
                             tension: 0.4,
@@ -165,6 +165,11 @@
                             spanGaps: true
                         };
                     });
+
+                    const revenueValues = revenueDatasets.flatMap(d => d.data);
+                    const maxRevenue = Math.max(...revenueValues, 1);
+                    const revenueStep = maxRevenue <= 1 ? 0.2 : maxRevenue <= 2 ? 0.5 : 1;
+                    const revenueMaxY = Math.ceil(maxRevenue / revenueStep) * revenueStep;
 
                     new Chart(document.getElementById('revenueChart'), {
                         type: 'line',
@@ -186,15 +191,10 @@
                             },
                             scales: {
                                 y: {
-                                    min: 0,
-                                    max: 2,
+                                    beginAtZero: true,
+                                    max: revenueMaxY,
                                     ticks: {
-                                        stepSize: 0.5,
-                                        callback: val => {
-                                            const lakhVal = val * 100;
-                                            const allowed = [0, 50, 100, 150, 200];
-                                            return allowed.includes(lakhVal) ? lakhVal.toString() : '';
-                                        }
+                                        stepSize: revenueStep
                                     },
                                     title: {
                                         display: true,
@@ -210,25 +210,33 @@
                         }
                     });
 
-                    const allPassengerValues = passengerDatasets.flatMap(d => d.data);
-                    const maxPassengerValue = Math.max(...allPassengerValues);
+                    /* =======================
+                       PASSENGER CHART
+                    ======================= */
 
-                    // 🔹 Smart step size logic
-                    let stepSize = 5;
+                    const passengerDatasets = years.map((year, i) => {
+                        return {
+                            label: `${year}-${(year+1).toString().slice(-2)}`,
+                            data: monthOrder.map(m => passengerData[year]?.[m] || 0),
+                            borderColor: colors[i % colors.length],
+                            backgroundColor: colors[i % colors.length],
+                            tension: 0.4,
+                            pointRadius: 4,
+                            fill: false,
+                            spanGaps: true
+                        };
+                    });
 
-                    if (maxPassengerValue <= 5) {
-                        stepSize = 1;
-                    } else if (maxPassengerValue <= 10) {
-                        stepSize = 2;
-                    } else if (maxPassengerValue <= 20) {
-                        stepSize = 5;
-                    } else if (maxPassengerValue <= 50) {
-                        stepSize = 10;
-                    } else {
-                        stepSize = 20;
-                    }
+                    const passengerValues = passengerDatasets.flatMap(d => d.data);
+                    const maxPassenger = Math.max(...passengerValues, 1);
 
-                    const maxY = Math.ceil(maxPassengerValue / stepSize) * stepSize;
+                    let passengerStep = 5;
+                    if (maxPassenger <= 5) passengerStep = 1;
+                    else if (maxPassenger <= 10) passengerStep = 2;
+                    else if (maxPassenger <= 20) passengerStep = 5;
+                    else if (maxPassenger <= 50) passengerStep = 10;
+
+                    const passengerMaxY = Math.ceil(maxPassenger / passengerStep) * passengerStep;
 
                     new Chart(document.getElementById('passengerChart'), {
                         type: 'line',
@@ -244,18 +252,16 @@
                                 },
                                 tooltip: {
                                     callbacks: {
-                                        label: ctx =>
-                                            `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)} Lakh`
+                                        label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)} Lakh`
                                     }
                                 }
                             },
                             scales: {
                                 y: {
                                     beginAtZero: true,
-                                    max: maxY,
+                                    max: passengerMaxY,
                                     ticks: {
-                                        stepSize: stepSize,
-                                        callback: value => value + ' '
+                                        stepSize: passengerStep
                                     },
                                     title: {
                                         display: true,
@@ -271,6 +277,7 @@
                         }
                     });
                 </script>
+
 
                 <div class="row">
                     <div class="col-6">
@@ -559,6 +566,63 @@
                 </div>
             </div>
         </div>
+
+
+
+        <div class="container mt-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white fw-bold">
+                    Coaching Passenger & Earning Details
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover align-middle text-center">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Station</th>
+                                    <th>Unreserved Passengers</th>
+                                    <th>Unreserved Earning</th>
+                                    <th>Reserved Passengers</th>
+                                    <th>Reserved Earning</th>
+                                    <th>Total Passengers</th>
+                                    <th>Total Earning</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @forelse ($records as $row)
+                                    <tr>
+                                        <td>{{ $row->id }}</td>
+                                        <td>{{ $row->Name }}</td>
+                                        <td>{{ $row->Station }}</td>
+                                        <td>{{ number_format($row->Unreserved_Passengers) }}</td>
+                                        <td>{{ number_format($row->Unreserved_Earning, 2) }}</td>
+                                        <td>{{ number_format($row->Reserved_Passengers) }}</td>
+                                        <td>{{ number_format($row->Reserved_Earning, 2) }}</td>
+                                        <td>{{ number_format($row->Total_Passengers) }}</td>
+                                        <td>{{ number_format($row->Total_Earning, 2) }}</td>
+                                        <td>{{ $row->Date }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="10">No records found</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-center mt-3">
+                        {{ $records->links('pagination::bootstrap-5') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <style>
@@ -685,9 +749,6 @@
             border-bottom: 7px solid #4caf50;
             margin-right: 5px;
         }
-
-
-
 
         .ticket-box {
             background: white;
