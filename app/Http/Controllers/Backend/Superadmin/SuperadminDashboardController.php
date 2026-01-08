@@ -28,13 +28,16 @@ use App\Models\Parcel_Office_form;
 use App\Models\PRS_office_answer;
 use App\Models\PRS_office_form;
 use App\Models\Report;
+use App\Models\SleeperCase;
 use App\Models\Station;
 use App\Models\StationCleanliness_answer;
+use App\Models\Stationery;
 use App\Models\TicketChecking;
 use App\Models\Ticket_Examineroffice_form;
 use App\Models\Ticket_office_answer;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -45,7 +48,32 @@ class SuperadminDashboardController extends Controller
 
     public function admindashboard()
     {
-        return view('superadmin.admindashboard');
+
+        // Coaching
+        $Unreserved_Earning = Coaching::sum(
+            DB::raw('CAST(Unreserved_Earning AS DECIMAL(15,2))')
+        );
+
+        $Reserved_Earning = Coaching::sum(
+            DB::raw('CAST(Reserved_Earning AS DECIMAL(15,2))')
+        );
+
+        $Total_Earning = $Unreserved_Earning + $Reserved_Earning;
+
+        $Unreserved_Earning = number_format($Unreserved_Earning / 10000000, 2);
+        $Reserved_Earning   = number_format($Reserved_Earning / 10000000, 2);
+        $Total_Earning      = number_format($Total_Earning / 10000000, 2);
+
+        $totalCases  = TicketChecking::sum('case') + SleeperCase::sum('case') + Stationery::sum('case');
+        $totalAmount = TicketChecking::sum('amount') + SleeperCase::sum('amount') + Stationery::sum('amount');
+
+        return view('superadmin.admindashboard', compact(
+            'Unreserved_Earning',
+            'Reserved_Earning',
+            'Total_Earning',
+            'totalCases',
+            'totalAmount'
+        ));
     }
 
     public function index()
@@ -345,32 +373,32 @@ class SuperadminDashboardController extends Controller
     public function coachingdashboard()
     {
         $totalUnreservedPassengers = Coaching::selectRaw(
-            'SUM(CAST(Unreserved_Passengers AS UNSIGNED)) as total'
-        )->value('total') ?? 0;
-
-        $totalUnreservedEarning = Coaching::selectRaw(
-            'SUM(CAST(Unreserved_Earning AS DECIMAL(15,2))) as total'
-        )->value('total') ?? 0;
+            'SUM(CAST(Unreserved_Passengers AS UNSIGNED))'
+        )->value('SUM(CAST(Unreserved_Passengers AS UNSIGNED))') ?? 0;
 
         $totalReservedPassengers = Coaching::selectRaw(
-            'SUM(CAST(Reserved_Passengers AS UNSIGNED)) as total'
-        )->value('total') ?? 0;
+            'SUM(CAST(Reserved_Passengers AS UNSIGNED))'
+        )->value('SUM(CAST(Reserved_Passengers AS UNSIGNED))') ?? 0;
+
+        $totalUnreservedEarning = Coaching::selectRaw(
+            'SUM(CAST(Unreserved_Earning AS DECIMAL(15,2)))'
+        )->value('SUM(CAST(Unreserved_Earning AS DECIMAL(15,2)))') ?? 0;
 
         $totalReservedEarning = Coaching::selectRaw(
-            'SUM(CAST(Reserved_Earning AS DECIMAL(15,2))) as total'
-        )->value('total') ?? 0;
+            'SUM(CAST(Reserved_Earning AS DECIMAL(15,2)))'
+        )->value('SUM(CAST(Reserved_Earning AS DECIMAL(15,2)))') ?? 0;
 
         $totalPassengersFormatted = $this->formatThreeWithTwoDecimal($totalUnreservedPassengers);
-        $totalEarningFormatted    = $this->formatThreeWithTwoDecimal($totalUnreservedEarning);
-
         $totalReserved_Passengers = $this->formatThreeWithTwoDecimal($totalReservedPassengers);
-        $totalReserved_Earning    = $this->formatThreeWithTwoDecimal($totalReservedEarning);
+
+        $totalEarningFormatted = $this->formatThreeWithTwoDecimal($totalUnreservedEarning, 'crore');
+        $totalReserved_Earning = $this->formatThreeWithTwoDecimal($totalReservedEarning, 'crore');
 
         $manualTotalPassengers = $totalUnreservedPassengers + $totalReservedPassengers;
         $manualTotalEarning    = $totalUnreservedEarning + $totalReservedEarning;
 
         $Total_Passengers = $this->formatThreeWithTwoDecimal($manualTotalPassengers);
-        $Total_Earning    = $this->formatThreeWithTwoDecimal($manualTotalEarning);
+        $Total_Earning    = $this->formatThreeWithTwoDecimal($manualTotalEarning, 'crore');
 
         $years = Coaching::select(DB::raw('DISTINCT YEAR(Date) as year'))
             ->orderBy('year', 'DESC')
@@ -389,8 +417,8 @@ class SuperadminDashboardController extends Controller
         $data = [];
         foreach ($raw as $row) {
             $data[$row->Station][$row->Year] = [
-                'Passengers' => (float) $row->Passengers,
-                'Revenue'    => (float) $row->Revenue,
+                'Passengers' => round($row->Passengers / 100000, 2),
+                'Revenue'    => round($row->Revenue / 10000000, 2),
             ];
         }
 
@@ -412,7 +440,8 @@ class SuperadminDashboardController extends Controller
 
         $earningChartData = [];
         foreach ($rawRevenueData as $row) {
-            $earningChartData[$row->dataYear][$row->dataMonth] = (float) $row->totalReservedEarning;
+            $earningChartData[$row->dataYear][$row->dataMonth] =
+                round($row->totalReservedEarning / 10000000, 2);
         }
 
         $rawReservedPassengersData = Coaching::select(
@@ -574,33 +603,69 @@ class SuperadminDashboardController extends Controller
 
     public function ticketchecking()
     {
-        $cases = \App\Models\TicketChecking::sum('cases');
+        $totalCases =
+        TicketChecking::sum('case') +
+        SleeperCase::sum('case') +
+        Stationery::sum('case');
 
-        $casesInLakh = $cases / 100000;
+        $casesInLakh = $totalCases / 100000;
 
         $totalTarget = 100000;
-        $percentage  = ($cases / $totalTarget) * 100;
+        $percentage  = ($totalCases / $totalTarget);
 
-        $revenue = TicketChecking::sum('revenue');
+        $totalRevenue =
+        TicketChecking::sum('amount') +
+        SleeperCase::sum('amount') +
+        Stationery::sum('amount');
 
-        $revenueInCr = $revenue / 10000000;
+        $revenueInCr = $totalRevenue / 10000000;
 
         $totalRevenueTarget = 10000000;
-        $revenuePercentage  = ($revenue / $totalRevenueTarget) * 100;
+        $revenuePercentage  = ($totalRevenue / $totalRevenueTarget);
 
-        $cadres = TicketChecking::select('cadre')
-            ->distinct()
-            ->orderBy('cadre')
-            ->pluck('cadre');
+        $records = TicketChecking::latest()->paginate(10);
 
-        $locations = TicketChecking::select('location')
-            ->distinct()
-            ->orderBy('location')
-            ->pluck('location');
+        $total = [
+            'staff'    =>
+            TicketChecking::sum('staff') +
+            SleeperCase::sum('staff') +
+            Stationery::sum('staff'),
 
-         $records = TicketChecking::orderBy('id', 'desc')->paginate(10);
+            'case'     =>
+            TicketChecking::sum('case') +
+            SleeperCase::sum('case') +
+            Stationery::sum('case'),
 
-        return view('superadmin.ticketchecking', compact('cases', 'casesInLakh', 'percentage', 'revenueInCr', 'revenuePercentage', 'cadres', 'locations','records'));
+            'amount'   =>
+            TicketChecking::sum('amount') +
+            SleeperCase::sum('amount') +
+            Stationery::sum('amount'),
+
+            'avg_case' =>
+            TicketChecking::avg('avg_case') +
+            SleeperCase::avg('avg_case') +
+            Stationery::avg('avg_case'),
+
+            'avg_amt'  =>
+            TicketChecking::avg('avg_amt') +
+            SleeperCase::avg('avg_amt') +
+            Stationery::avg('avg_amt'),
+
+            'amt_ly'   =>
+            TicketChecking::sum('amt_ly') +
+            SleeperCase::sum('amt_ly') +
+            Stationery::sum('amt_ly'),
+        ];
+
+        return view('superadmin.ticketchecking', compact(
+            'totalCases',
+            'casesInLakh',
+            'percentage',
+            'revenueInCr',
+            'revenuePercentage',
+            'records',
+            'total'
+        ));
     }
 
     public function ticketcheckingmaster()
@@ -610,51 +675,54 @@ class SuperadminDashboardController extends Controller
 
     public function ticketcheckingmasterstore(Request $request)
     {
-        $request->validate([
-            'cadre'    => 'required|string',
-            'location' => 'required|string',
-            'cases'    => 'required|integer|min:0',
-            'revenue'  => 'required|numeric|min:0',
-        ]);
+        DB::transaction(function () use ($request) {
 
-        TicketChecking::create($request->only([
-            'cadre',
-            'location',
-            'cases',
-            'revenue',
-        ]));
+            $checking = TicketChecking::create($request->checking);
+
+            SleeperCase::create([
+                'ticket_checking_id' => $checking->id,
+                ...$request->sleeper,
+            ]);
+
+            Stationery::create([
+                'ticket_checking_id' => $checking->id,
+                ...$request->stationery,
+            ]);
+        });
 
         return redirect()->route('superadmin.ticketchecking')->with('success', 'Ticket Checking data saved successfully!');
     }
 
     public function cateringdashboard()
     {
+        $station  = Catering::select('station')->distinct()->orderBy('station')->pluck('station');
+        $category = Catering::select('category')->distinct()->orderBy('category')->pluck('category');
+        $unittype = Catering::select('unit_type')->distinct()->orderBy('unit_type')->pluck('unit_type');
 
-        $station = Catering::select('station')
-            ->distinct()
-            ->orderBy('station')
-            ->pluck('station');
-
-        $category = Catering::select('category')
-            ->distinct()
-            ->orderBy('category')
-            ->pluck('category');
-
-        $unittype = Catering::select('unit_type')
-            ->distinct()
-            ->orderBy('unit_type')
-            ->pluck('unit_type');
-
-        $totalunit = Catering::count('total_units');
-
+        $totalunit      = Catering::count('total_units');
         $totalAnnualFee = Catering::sum('annual_license_fee');
-
-        $revenueInCr  = round($totalAnnualFee / 10000000, 2);
-        $fee_paidInCr = Catering::sum('fee_paid');
+        $revenueInCr    = round($totalAnnualFee / 10000000, 2);
 
         $totalFee = Catering::sum('annual_fee');
-
         $lfeeInCr = round($totalFee / 10000000, 2);
+
+        // 🔹 Month wise fee paid
+        $monthWiseFee = Catering::select(
+            DB::raw("MONTH(date_of_commencement) as month"),
+            DB::raw("SUM(fee_paid) as total_fee")
+        )
+            ->whereNotNull('date_of_commencement')
+            ->groupBy(DB::raw("MONTH(date_of_commencement)"))
+            ->orderBy(DB::raw("MONTH(date_of_commencement)"))
+            ->get();
+
+        $months = [];
+        $fees   = [];
+
+        foreach ($monthWiseFee as $row) {
+            $months[] = Carbon::create()->month($row->month)->format('M');
+            $fees[]   = round($row->total_fee / 100000, 2); // In Lakh
+        }
 
         $caterings = Catering::orderBy('annual_license_fee', 'desc')->paginate(10);
 
@@ -665,7 +733,9 @@ class SuperadminDashboardController extends Controller
             'totalunit',
             'revenueInCr',
             'caterings',
-            'lfeeInCr'
+            'lfeeInCr',
+            'months',
+            'fees'
         ));
     }
 
@@ -690,19 +760,24 @@ class SuperadminDashboardController extends Controller
 
     public function cateringstore(Request $request)
     {
-        $request->validate([
-            'name'        => 'required|string|max:255',
-            'category'    => 'required',
-            'station'     => 'required',
-            'unit_type'   => 'required',
-            'total_units' => 'required|integer',
-            'annual_fee'  => 'required|numeric',
-            'fee_paid'    => 'required|numeric',
+        $validated = $request->validate([
+            'name'                 => 'required|string|max:255',
+            'name_of_unit'         => 'required|string|max:255',
+            'station'              => 'required|string|max:255',
+            'category'             => 'required|string|max:255',
+            'type_of_unit'         => 'required|string|max:255',
+            'platform_no'          => 'required|integer',
+            'annual_license_fee'   => 'required|numeric',
+            'category_of_unit'     => 'required|string|max:255',
+            'unit_allotted'        => 'required|string|max:255',
+            'date_of_commencement' => 'required|date',
         ]);
 
-        Catering::create($request->all());
+        Catering::create($validated);
 
-        return redirect()->route('superadmin.cateringdashboard')->with('success', 'Data stored successfully!');
+        return redirect()
+            ->route('superadmin.cateringdashboard')
+            ->with('success', 'Data stored successfully!');
     }
 
     public function importFreightform()

@@ -12,10 +12,6 @@ class Catering extends Model
         'name',
         'category',
         'station',
-        'unit_type',
-        'total_units',
-        'annual_fee',
-        'fee_paid',
         'name_of_unit',
         'type_of_unit',
         'platform_no',
@@ -24,5 +20,6 @@ class Catering extends Model
         'unit_allotted',
         'date_of_commencement',
     ];
+
     protected $dates = ['date_of_commencement'];
 }

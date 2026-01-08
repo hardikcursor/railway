@@ -1,16 +1,89 @@
 @extends('layouts.backend')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
+<style>
+    .ibox .card {
+        border-radius: 10px;
+        background: #ffffff;
+    }
+
+    .ibox h5 {
+        display: flex;
+        align-items: center;
+    }
+
+    .ibox input[type="file"] {
+        padding: 10px;
+    }
+</style>
 @section('main')
     <div class="content-wrapper">
         <div class="page-content fade-in-up">
 
             <div class="ibox">
-
-
-                {{-- <div class="card p-4">
-
+                <div class="card p-4">
                     <form action="{{ route('superadmin.catering.store') }}" method="POST"
+                        class="bg-white p-4 rounded shadow-sm border">
+                        @csrf
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Name *</label>
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Name of Unit *</label>
+                            <input type="text" name="name_of_unit" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Station *</label>
+                            <input type="text" name="station" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Category *</label>
+                            <input type="text" name="category" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Type of Unit *</label>
+                            <input type="text" name="type_of_unit" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Platform No *</label>
+                            <input type="number" name="platform_no" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Annual License Fee *</label>
+                            <input type="number" name="annual_license_fee" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Category of Unit *</label>
+                            <input type="text" name="category_of_unit" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Unit Allotted *</label>
+                            <input type="text" name="unit_allotted" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Date of Commencement *</label>
+                            <input type="date" name="date_of_commencement" class="form-control" required>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-success px-5">
+                                Save Data
+                            </button>
+                        </div>
+                    </form>
+
+                    {{-- <form action="{{ route('superadmin.catering.store') }}" method="POST"
                         class="bg-white p-4 rounded shadow-sm border">
                         @csrf
                         <!-- NAME -->
@@ -96,18 +169,49 @@
                             </button>
                         </div>
 
-                    </form>
-                </div> --}}
+                    </form> --}}
+                </div>
 
-                <h1>Excel File Upload</h1>
-                @if (session('success'))
-                    <p style="color:green;">{{ session('success') }}</p>
-                @endif
-                <form action="{{ route('superadmin.catering.import') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <input type="file" name="file" required>
-                    <button type="submit">Import</button>
-                </form>
+                <div class="ibox mt-4">
+                    <div class="card p-4 shadow-sm border">
+
+                        <h5 class="mb-3 fw-bold text-primary">
+                            <i class="fa fa-file-excel-o me-2"></i> Excel File Upload
+                        </h5>
+
+                        @if (session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        @endif
+
+                        <form action="{{ route('superadmin.catering.import') }}" method="POST"
+                            enctype="multipart/form-data">
+
+                            @csrf
+
+                            <div class="row align-items-end">
+                                <div class="col-md-8">
+                                    <label class="form-label fw-bold">Upload Excel File</label>
+                                    <input type="file" name="file" class="form-control" accept=".xls,.xlsx"
+                                        required>
+                                    <small class="text-muted">
+                                        Allowed formats: .xls, .xlsx
+                                    </small>
+                                </div>
+
+                                <div class="col-md-4 mt-3 mt-md-0">
+                                    <button type="submit" class="btn btn-success w-100">
+                                        <i class="fa fa-upload me-1"></i> Import Excel
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
             </div>
 
         </div>

@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ticketcheckings', function (Blueprint $table) {
+        Schema::create('stationeries', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
+            $table->foreignId('ticket_checking_id')
+                ->constrained('ticketcheckings')
+                ->cascadeOnDelete();
             $table->integer('staff');
             $table->integer('case');
             $table->bigInteger('amount');
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ticketcheckings');
+        Schema::dropIfExists('stationeries');
     }
 };

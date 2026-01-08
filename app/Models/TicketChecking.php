@@ -8,12 +8,20 @@ class TicketChecking extends Model
 {
     use HasFactory;
 
-     protected $table = 'ticketcheckings';
+    protected $table = 'ticketcheckings';
 
     protected $fillable = [
-        'cadre',
-        'location',
-        'cases',
-        'revenue',
+        'date', 'staff', 'case', 'amount', 'avg_case', 'avg_amt', 'amt_ly',
     ];
+
+    public function sleeper()
+    {
+        return $this->hasOne(SleeperCase::class);
+    }
+
+    public function stationery()
+    {
+        return $this->hasOne(Stationery::class);
+    }
+
 }

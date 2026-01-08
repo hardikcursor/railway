@@ -1253,7 +1253,6 @@ class BookingOfficeAnswerController extends Controller
             foreach ($allResponses as $response) {
                 $imagePath = null;
 
-                // ✅ Handle Image Upload (Base64 support)
                 if (! empty($response['image_path'])) {
                     $base64Image = $response['image_path'];
 

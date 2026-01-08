@@ -126,14 +126,12 @@
                         </div>
                     </div>
 
-
                     <div class="col-md-6 col-12">
                         <div class="ticket-box">
                             <canvas id="passengerChart"></canvas>
                         </div>
                     </div>
                 </div>
-
 
                 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
                 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
@@ -147,16 +145,12 @@
                     const monthOrder = [4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3];
                     const colors = ['#6ab04c', '#ffc107', '#ff7a00', '#00a8ff', '#9c27b0'];
 
-                    /* =======================
-                       REVENUE CHART
-                    ======================= */
-
                     const revenueYears = Object.keys(rawRevenueData);
 
                     const revenueDatasets = revenueYears.map((year, i) => {
                         return {
-                            label: `${year}-${(parseInt(year)+1).toString().slice(-2)}`,
-                            data: monthOrder.map(m => (rawRevenueData[year]?.[m] || 0) / 10000000),
+                            label: `${year}-${(parseInt(year) + 1).toString().slice(-2)}`,
+                            data: monthOrder.map(m => rawRevenueData[year]?.[m] || 0),
                             borderColor: colors[i % colors.length],
                             backgroundColor: colors[i % colors.length],
                             tension: 0.4,
@@ -210,13 +204,9 @@
                         }
                     });
 
-                    /* =======================
-                       PASSENGER CHART
-                    ======================= */
-
                     const passengerDatasets = years.map((year, i) => {
                         return {
-                            label: `${year}-${(year+1).toString().slice(-2)}`,
+                            label: `${year}-${(year + 1).toString().slice(-2)}`,
                             data: monthOrder.map(m => passengerData[year]?.[m] || 0),
                             borderColor: colors[i % colors.length],
                             backgroundColor: colors[i % colors.length],
@@ -279,11 +269,13 @@
                 </script>
 
 
+
                 <div class="row">
                     <div class="col-6">
                         <div class="ticket-box"
                             style="border: 1px solid #eee; padding: 15px; border-radius: 8px; overflow: visible;">
-                            <div class="chart-title" style="font-weight: bold; color: #555;">Unreserved Passengers (in Lakh)
+                            <div class="chart-title" style="font-weight: bold; color: #555;">
+                                Unreserved Passengers (in Lakh)
                             </div>
                             <div id="dynamic_passenger_chart"></div>
                         </div>
@@ -304,6 +296,7 @@
                     const stationLabels = @json($passengerLabels);
                     const passengerSeries = @json($passengerValues);
                     const revenueSeries = @json($revenueValues);
+                    const totalPassengerLakh = {{ $totalPassengersFormatted }};
                 </script>
 
                 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
@@ -332,8 +325,10 @@
                                                 show: true,
                                                 label: centerLabel,
                                                 formatter: function(w) {
-                                                    let total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
-                                                    return total.toFixed(2) + ' ' + unit;
+                                                    let total = w.globals.seriesTotals
+                                                        .reduce((a, b) => a + b, 0);
+
+                                                    return total.toFixed(2); // 👈 17.06
                                                 }
                                             }
                                         }
@@ -359,7 +354,6 @@
                 </script>
 
                 <script>
-                    /* 🔵 Passenger Donut (Lakh) */
                     createDynamicDonut(
                         "#dynamic_passenger_chart",
                         passengerSeries,
@@ -367,8 +361,6 @@
                         "Total Passengers",
                         "Lakh"
                     );
-
-                    /* 🟢 Revenue Donut (Crore) */
                     createDynamicDonut(
                         "#dynamic_revenue_chart",
                         revenueSeries,

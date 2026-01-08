@@ -97,7 +97,7 @@
                                     </div>
                                     <div class="metric-column">
                                         <div class="metric-label">Revenue</div>
-                                        <div class="metric-value">26.65 </div>
+                                        <div class="metric-value"> {{ $Total_Earning }} </div>
                                     </div>
                                 </div>
                             </div>
@@ -188,15 +188,16 @@
                                 <div class="metric-columns">
                                     <div class="metric-column">
                                         <div class="metric-label">Total Cases</div>
-                                        <div class="metric-value">00.00</div>
+                                        <div class="metric-value">{{ number_format($totalCases, 2) }}</div>
                                     </div>
 
                                     <div class="metric-column">
                                         <div class="metric-label">Amount</div>
-                                        <div class="metric-value">3.120 </div>
+                                        <div class="metric-value">{{ number_format($totalAmount, 3) }}</div>
                                     </div>
                                 </div>
                             </div>
+
                         </a>
                     </div>
                 </div>

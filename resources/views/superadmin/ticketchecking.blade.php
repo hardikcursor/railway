@@ -1,4 +1,7 @@
-@extends('layouts.backend') @section('main')
+@extends('layouts.backend')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+@section('main')
     <div class="content-wrapper">
         <div class="page-content fade-in-up">
             <div class="ibox">
@@ -9,11 +12,7 @@
                         <select class="form-select" name="cadre">
                             <option value="">All Cadre / Type</option>
 
-                            @foreach ($cadres as $cadre)
-                                <option value="{{ $cadre }}">
-                                    {{ $cadre }}
-                                </option>
-                            @endforeach
+
                         </select>
                     </div>
 
@@ -22,21 +21,27 @@
                         <label>Location</label>
                         <select class="form-select">
                             <option value="">Select Location</option>
-                            @foreach ($locations as $location)
-                                <option value="{{ $location }}">
-                                    {{ $location }}
-                                </option>
-                            @endforeach
+
                         </select>
                     </div>
 
 
 
-                    <div class="filter-group ml-auto">
-                        <select>
-                            <option>Apr 1, 2024 - Mar 31, 2025</option>
-                        </select>
+                    <div class="filter-group ms-auto">
+                        <input type="text" id="dateRange" class="form-control" placeholder="select date" readonly>
                     </div>
+
+                    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            flatpickr("#dateRange", {
+                                mode: "range",
+                                dateFormat: "M d, Y",
+                                defaultDate: ["2024-04-01", "2025-03-31"]
+                            });
+                        });
+                    </script>
                 </div>
 
                 <div class="d-flex justify-content-end m-3">
@@ -55,13 +60,13 @@
                                 <div class="metric-column">
                                     <!-- Lakh value -->
                                     <div class="metric-value">
-                                        {{ number_format($casesInLakh, 3) }}
+                                        {{ number_format($casesInLakh, 2) }}
                                     </div>
 
                                     <!-- Percentage -->
                                     <div class="metric-change positive">
                                         <span class="arrow-up"></span>
-                                        {{ number_format($percentage, 2) }} %
+                                        {{ number_format($percentage, 2) }}
                                     </div>
                                 </div>
                             </div>
@@ -337,7 +342,7 @@
         <div class="container mt-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-dark text-white fw-bold">
-                    Ticket Checking etails
+                    Ticket Checking Details
                 </div>
 
                 <div class="card-body">
@@ -346,29 +351,45 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th>ID</th>
-                                    <th>cadre</th>
-                                    <th>location</th>
-                                    <th>cases</th>
-                                    <th>revenue</th>
+                                    <th>Date</th>
+                                    <th>Staff</th>
+                                    <th>Cases</th>
+                                    <th>Amount</th>
+                                    <th>AVG Case</th>
+                                    <th>AVG Amt</th>
+                                    <th>AMT L.Y</th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                @foreach ($records as $key => $row)
+                                @forelse ($records as $row)
                                     <tr>
-                                        <td>{{ ++$key }}</td>
-                                        <td>{{ $row->cadre }}</td>
-                                        <td>{{ $row->location }}</td>
-                                        <td>{{ $row->cases }}</td>
-                                        <td>{{ $row->revenue }}</td>
+                                        <td>{{ $row->id }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($row->date)->format('d-m-Y') }}</td>
+                                        <td>{{ $total['staff'] }}</td>
+                                        <td>{{ $total['case'] }}</td>
+                                        <td>{{ number_format($total['amount']) }}</td>
+                                        <td>{{ number_format($total['avg_case'], 2) }}</td>
+                                        <td>{{ number_format($total['avg_amt'], 2) }}</td>
+                                        <td>{{ number_format($total['amt_ly']) }}</td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="8" class="text-danger text-center">
+                                            No records found
+                                        </td>
+                                    </tr>
+                                @endforelse
                             </tbody>
+
                         </table>
+
+                        <div class="mt-3">
+                            {{ $records->links() }}
+                        </div>
+
                     </div>
-                    <div class="d-flex justify-content-center mt-3">
-                        {{ $records->links('pagination::bootstrap-5') }}
-                    </div>
+
                 </div>
             </div>
         </div>
